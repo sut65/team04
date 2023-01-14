@@ -18,11 +18,15 @@ func SetupDatabase() {
 	if err != nil {
 		panic("failed to connect database")
 	}
+
 	db.AutoMigrate(
 		&BookPurchasing{},
 		&Librarian{},
 		&BookCategory{},
 		&Publisher{},
 	)
+
+	// Purchasing System
+	bookPurchasingData(db)
 
 }
