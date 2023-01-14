@@ -22,6 +22,7 @@ func SetupDatabase() {
 		&BookPurchasing{},
 		&Librarian{},
 		&BookCategory{},
+		&Publisher{},
 	)
 
 }

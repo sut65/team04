@@ -23,6 +23,13 @@ type BookCategory struct {
 	BookPurchasings []BookPurchasing `gorm:"foreignKey:BookCategoryID"`
 }
 
+type Publisher struct {
+	gorm.Model
+	Name string
+
+	BookPurchasings []BookPurchasing `gorm:"foreignKey:PublisherID"`
+}
+
 type BookPurchasing struct {
 	gorm.Model
 	BookName   string
@@ -35,4 +42,7 @@ type BookPurchasing struct {
 
 	BookCategoryID *uint
 	BookCategory   BookCategory `gorm:"references:id;"`
+
+	PublisherID *uint
+	Publisher   Publisher `gorm:"references:id;"`
 }
