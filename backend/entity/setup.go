@@ -21,6 +21,7 @@ func SetupDatabase() {
 	db.AutoMigrate(
 		&BookPurchasing{},
 		&Librarian{},
+		&BookCategory{},
 	)
 
 }
