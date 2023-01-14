@@ -18,5 +18,8 @@ func SetupDatabase() {
 	if err != nil {
 		panic("failed to connect database")
 	}
+	db.AutoMigrate(
+		&BookPurchasing{},
+	)
 
 }
