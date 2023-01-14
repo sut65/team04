@@ -14,19 +14,20 @@ func DB() *gorm.DB {
 }
 
 func SetupDatabase() {
-	db, err := gorm.Open(sqlite.Open("sa65-team04.db"), &gorm.Config{})
+	database, err := gorm.Open(sqlite.Open("sa65-team04.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
 
-	db.AutoMigrate(
+	database.AutoMigrate(
 		&BookPurchasing{},
 		&Librarian{},
 		&BookCategory{},
 		&Publisher{},
 	)
+	db = database
 
-	// Purchasing System
+	// BookPurchasing System
 	bookPurchasingData(db)
 
 }

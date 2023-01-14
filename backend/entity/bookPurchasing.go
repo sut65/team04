@@ -25,7 +25,7 @@ type BookCategory struct {
 
 type Publisher struct {
 	gorm.Model
-	Name string
+	Name string `gorm:"uniqueIndex"`
 
 	BookPurchasings []BookPurchasing `gorm:"foreignKey:PublisherID"`
 }
