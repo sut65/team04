@@ -29,4 +29,6 @@ type Preorder struct {
 
 	LibrarianID *uint
 	Librarian   Librarian `gorm:"references:id;"`
+
+	Confirmation []Confirmation `gorm:"foreignKey:PreorderID"`
 }
