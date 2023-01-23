@@ -14,8 +14,9 @@ type User struct {
 	Email    string `gorm:"uniqueIndex"`
 	Password string
 
-	BorrowBooks []BorrowBook `gorm:"foreignKey:UserID"`
-	Introduces  []Introduce  `gorm:"foreignKey:UserID"`
+	BorrowBooks      []BorrowBook      `gorm:"foreignKey:UserID"`
+	BorrowEquipments []BorrowEquipment `gorm:"foreignKey:UserID"`
+	Introduces       []Introduce       `gorm:"foreignKey:UserID"`
 }
 
 type BorrowBook struct {
