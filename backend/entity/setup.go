@@ -419,4 +419,38 @@ func SetupDatabase() {
 	}
 	db.Model(&Introduce{}).Create(&introduce3)
 
+	//Level khanoon
+	level1 := Level{
+		Name: "น้อย",
+	}
+	db.Model(&Level{}).Create(&level1)
+	level2 := Level{
+		Name: "ปานกลาง",
+	}
+	db.Model(&Level{}).Create(&level2)
+	level3 := Level{
+		Name: "มาก",
+	}
+	db.Model(&Level{}).Create(&level3)
+
+	//จำลองตาราง BookRepair khanoon
+	db.Model(&BookRepair{}).Create(&BookRepair{
+		BookName: 	"มือใหม่ Python เก่งได้ใน 30 วัน",
+		Level: 		level1,
+		Date:		time.Now(),
+		Librarian: 	sirivipa,
+	})
+	db.Model(&BookRepair{}).Create(&BookRepair{
+		BookName: 	"เธอมีค่าในแบบที่ เป็น",
+		Level: 		level2,
+		Date:		time.Now(),
+		Librarian: 	thanphirom,
+	})
+	db.Model(&BookRepair{}).Create(&BookRepair{
+		BookName: 	"ประวัติกฎหมาย ไทย",
+		Level: 		level3,
+		Date:		time.Now(),
+		Librarian: 	chanaporn,
+	})
+
 }
