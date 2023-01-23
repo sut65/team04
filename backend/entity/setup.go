@@ -199,4 +199,37 @@ func SetupDatabase() {
 	}
 	db.Model(&BorrowBook{}).Create(&borrowBook2)
 
+	//
+	//------ LostBook Data
+	lostBook1 := LostBook{
+		Name: "หาย",
+	}
+	db.Model(&LostBook{}).Create(&lostBook1)
+
+	lostBook2 := LostBook{
+		Name: "ไม่หาย",
+	}
+	db.Model(&LostBook{}).Create(&lostBook2)
+
+	//
+	//-----จำลองตาราง ReturnBook ---เปรี้ยว---
+	returnBook1 := ReturnBook{
+		Current_Day:    time.Now(),
+		Late_Number:    5,
+		Book_Condition: "สมบูรณ์ ปกติดี",
+		LostBook:       lostBook2,
+		Librarian:      thanphirom,
+		BorrowBook:     borrowBook1,
+	}
+	db.Model(&ReturnBook{}).Create(&returnBook1)
+
+	returnBook2 := ReturnBook{
+		Current_Day:    time.Now(),
+		Late_Number:    5,
+		Book_Condition: "สมบูรณ์ ปกติดี",
+		LostBook:       lostBook2,
+		Librarian:      thanphirom,
+		BorrowBook:     borrowBook2,
+	}
+	db.Model(&ReturnBook{}).Create(&returnBook2)
 }
