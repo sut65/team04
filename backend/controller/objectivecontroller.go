@@ -26,7 +26,7 @@ func GetAllObjective(c *gin.Context) {
 func GetObjectiveByID(c *gin.Context) {
 
 	var objective entity.Objective
-	Id := c.Param("id") //id ที่เราตั้งไว้ใน main.go ที่อยู่หลัง : ตัวอย่าง >> /publisher/:id
+	Id := c.Param("id") //id ที่เราตั้งไว้ใน main.go ที่อยู่หลัง : ตัวอย่าง >> /objective/:id
 	if err := entity.DB().Model(&entity.Objective{}).Where("ID = ?", Id).Scan(&objective).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
