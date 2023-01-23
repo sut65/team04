@@ -14,6 +14,8 @@ type Librarian struct {
 	Password string
 
 	BookPurchasings []BookPurchasing `gorm:"foreignKey:LibrarianID"`
+	BorrowBooks     []BorrowBook     `gorm:"foreignKey:LibrarianID"`
+	// ReturnBooks     []ReturnBook     `gorm:"foreignKey:LibrarianID"`
 }
 
 type BookCategory struct {
@@ -45,4 +47,6 @@ type BookPurchasing struct {
 
 	PublisherID *uint
 	Publisher   Publisher `gorm:"references:id;"`
+
+	BorrowBooks []BorrowBook `gorm:"foreignKey:BookPurchasingID"`
 }
