@@ -15,7 +15,7 @@ type Librarian struct {
 
 	BookPurchasings []BookPurchasing `gorm:"foreignKey:LibrarianID"`
 	BorrowBooks     []BorrowBook     `gorm:"foreignKey:LibrarianID"`
-	// ReturnBooks     []ReturnBook     `gorm:"foreignKey:LibrarianID"`
+	ReturnBooks     []ReturnBook     `gorm:"foreignKey:LibrarianID"`
 }
 
 type BookCategory struct {
