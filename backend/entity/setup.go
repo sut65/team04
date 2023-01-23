@@ -32,6 +32,11 @@ func SetupDatabase() {
 		&ReturnBook{},
 		&EquipmentPurchasing{},
 		&Payment{}, &Preorder{},
+		&Confirmation{},
+		&Forfeit{},
+		&Introduce{},
+		&Objective{},
+		&Type{},
 	)
 
 	db = database
@@ -245,6 +250,14 @@ func SetupDatabase() {
 		Name: "โอนชำระผ่านธนาคาร",
 	}
 	db.Model(&Payment{}).Create(&pay2)
+	pay3 := Payment{
+		Name: "สแกนคิวอาร์โค้ด",
+	}
+	db.Model(&Payment{}).Create(&pay3)
+	pay4 := Payment{
+		Name: "ระยะการยืมเวลาไม่เกินกำหนด ไม่ต้องชำระเงิน",
+	}
+	db.Model(&Payment{}).Create(&pay4)
 
 	//preorder
 	preorder1 := Preorder{
@@ -290,22 +303,45 @@ func SetupDatabase() {
 
 	// --- ตารางหลัก Confirmation
 
-	db.Model(&Confirmation{}).Create(&Confirmation{
+	confirmation1 := Confirmation{
 		User:      mumana,
 		Preorder:  preorder1,
 		Receiver:  receiver1,
 		Note:      "-",
 		Datetime:  time.Now(),
 		Librarian: chanaporn,
-	})
+	}
+	db.Model(&Confirmation{}).Create(&confirmation1)
 
-	db.Model(&Confirmation{}).Create(&Confirmation{
+	confirmation2 := Confirmation{
 		User:      montree,
 		Preorder:  preorder2,
 		Receiver:  receiver2,
 		Note:      "1778899445561, สมชาย ใจดี, 0879456321",
 		Datetime:  time.Now(),
 		Librarian: chanaporn,
-	})
+	}
+	db.Model(&Confirmation{}).Create(&confirmation2)
+
+	//จำลองตาราง Forfeit ---จูเนียร์---
+	forfeit1 := Forfeit{
+		ReturnBook: returnBook1,
+		Pay:        25,
+		Payment:    pay1,
+		Pay_Date:   time.Now(),
+		Note:       "ไม่มี",
+		Librarian:  chanaporn,
+	}
+	db.Model(&Forfeit{}).Create(&forfeit1)
+
+	forfeit2 := Forfeit{
+		ReturnBook: returnBook2,
+		Pay:        10,
+		Payment:    pay3,
+		Pay_Date:   time.Now(),
+		Note:       "ไม่มี",
+		Librarian:  chanaporn,
+	}
+	db.Model(&Forfeit{}).Create(&forfeit2)
 
 }
