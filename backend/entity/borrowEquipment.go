@@ -21,5 +21,5 @@ type BorrowEquipment struct {
 	EquipmentPurchasingID *uint
 	EquipmentPurchasing   EquipmentPurchasing `gorm:"references:id;"`
 
-	ReturnEquipment []ReturnEquipment `gorm:"foreignKey:BorrowEquipmentID"`
+	ReturnEquipments []ReturnEquipment `gorm:"foreignKey:BorrowEquipmentID"`
 }
