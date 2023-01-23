@@ -30,6 +30,7 @@ func SetupDatabase() {
 		&BorrowBook{},
 		&LostBook{},
 		&ReturnBook{},
+		&EquipmentPurchasing{},
 	)
 
 	db = database
