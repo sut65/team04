@@ -13,10 +13,12 @@ type Librarian struct {
 	Email    string `gorm:"uniqueIndex"`
 	Password string
 
-	BookPurchasings []BookPurchasing `gorm:"foreignKey:LibrarianID"`
-	BorrowBooks     []BorrowBook     `gorm:"foreignKey:LibrarianID"`
-	ReturnBooks     []ReturnBook     `gorm:"foreignKey:LibrarianID"`
-	Forfeits        []Forfeit        `gorm:"foreignKey:PaymentID"`
+	BookPurchasings  []BookPurchasing  `gorm:"foreignKey:LibrarianID"`
+	BorrowBooks      []BorrowBook      `gorm:"foreignKey:LibrarianID"`
+	ReturnBooks      []ReturnBook      `gorm:"foreignKey:LibrarianID"`
+	Forfeits         []Forfeit         `gorm:"foreignKey:PaymentID"`
+	BorrowEquipments []BorrowEquipment `gorm:"foreignKey:LibrarianID"`
+	ReturnEquipments []ReturnEquipment `gorm:"foreignKey:LibrarianID"`
 }
 
 type BookCategory struct {
