@@ -323,7 +323,7 @@ func SetupDatabase() {
 	}
 	db.Model(&Confirmation{}).Create(&confirmation2)
 
-	//จำลองตาราง Forfeit ---จูเนียร์---
+	//-----จำลองตาราง Forfeit ---จูเนียร์--
 	forfeit1 := Forfeit{
 		ReturnBook: returnBook1,
 		Pay:        25,
@@ -343,5 +343,80 @@ func SetupDatabase() {
 		Librarian:  chanaporn,
 	}
 	db.Model(&Forfeit{}).Create(&forfeit2)
+
+	//-----จำลอง Type
+	type1 := Type{
+		Name: "หนังสือ",
+	}
+	db.Model(&Type{}).Create(&type1)
+	type2 := Type{
+		Name: "E-Book",
+	}
+	db.Model(&Type{}).Create(&type2)
+	type3 := Type{
+		Name: "Audiobook",
+	}
+	db.Model(&Type{}).Create(&type3)
+	type4 := Type{
+		Name: "อื่นๆ",
+	}
+	db.Model(&Type{}).Create(&type4)
+
+	//-----จำลอง Objective
+	objective1 := Objective{
+		Name: "การเรียนการสอน",
+	}
+	db.Model(&Objective{}).Create(&objective1)
+	objective2 := Objective{
+		Name: "คู่มือสำหรับการปฏิบัติงาน",
+	}
+	db.Model(&Objective{}).Create(&objective2)
+	objective3 := Objective{
+		Name: "ทั่วไป",
+	}
+	db.Model(&Objective{}).Create(&objective3)
+
+	//-----จำลองตาราง Introduce ---จูเนียร์--
+	introduce1 := Introduce{
+		Title:     "แคลคูลัส 1 สำหรับวิศวกร",
+		Author:    "รศ. ดร.ธีระศักดิ์ อุรัจนานนท์",
+		ISBN:      9786162139130,
+		Edition:   1,
+		Pub_Name:  "สกายบุ๊กส์ บ.จ.ก.",
+		Pub_Year:  "2012",
+		Type:      type1,
+		Objective: objective1,
+		I_Date:    time.Now(),
+		User:      montree,
+	}
+	db.Model(&Introduce{}).Create(&introduce1)
+
+	introduce2 := Introduce{
+		Title:     "คัมภีร์ Python",
+		Author:    "อรพิน ประวัติบริสุทธิ์",
+		ISBN:      9786162047930,
+		Edition:   1,
+		Pub_Name:  "Provision",
+		Pub_Year:  "2021",
+		Type:      type1,
+		Objective: objective1,
+		I_Date:    time.Now(),
+		User:      montree,
+	}
+	db.Model(&Introduce{}).Create(&introduce2)
+
+	introduce3 := Introduce{
+		Title:     "เพียงชั่วเวลากาแฟยังอุ่น ตราบชั่วเวลาของคำโกหก",
+		Author:    "คาวางุจิ โทชิคาซึ",
+		ISBN:      9786161848330,
+		Edition:   1,
+		Pub_Name:  "แพรว ส.น.พ.",
+		Pub_Year:  "2022",
+		Type:      type1,
+		Objective: objective3,
+		I_Date:    time.Now(),
+		User:      montree,
+	}
+	db.Model(&Introduce{}).Create(&introduce3)
 
 }
