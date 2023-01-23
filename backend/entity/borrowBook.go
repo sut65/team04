@@ -15,6 +15,7 @@ type User struct {
 	Password string
 
 	BorrowBooks []BorrowBook `gorm:"foreignKey:UserID"`
+	Introduces  []Introduce  `gorm:"foreignKey:UserID"`
 }
 
 type BorrowBook struct {
