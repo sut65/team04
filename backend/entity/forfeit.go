@@ -10,7 +10,8 @@ type Payment struct {
 	gorm.Model
 	Name string
 
-	Forfeits []Forfeit `gorm:"foreignKey:PaymentID"`
+	Preorder []Preorder `gorm:"foreignKey:PaymentID"`
+	Forfeits []Forfeit  `gorm:"foreignKey:PaymentID"`
 }
 
 type Forfeit struct {
