@@ -247,7 +247,7 @@ func SetupDatabase() {
 	db.Model(&Payment{}).Create(&pay2)
 
 	//preorder
-	db.Model(&Preorder{}).Create(&Preorder{
+	preorder1 := Preorder{
 		Owner:      mumana,
 		Name:       "Java",
 		Price:      150,
@@ -259,8 +259,10 @@ func SetupDatabase() {
 		Payment:    pay1,
 		Datetime:   time.Now(),
 		Librarian:  chanaporn,
-	})
-	db.Model(&Preorder{}).Create(&Preorder{
+	}
+	db.Model(&Preorder{}).Create(&preorder1)
+
+	preorder2 := Preorder{
 		Owner:      montree,
 		Name:       "Chinese",
 		Price:      120,
@@ -272,5 +274,38 @@ func SetupDatabase() {
 		Payment:    pay1,
 		Datetime:   time.Now(),
 		Librarian:  chanaporn,
+	}
+	db.Model(&Preorder{}).Create(&preorder2)
+
+	// --- จำลอง Confirmaition ---
+	// --- วิธีการรับสินค้า ---
+	receiver1 := Receiver{
+		Type: "รับโดยสมาชิก",
+	}
+	db.Model(&Receiver{}).Create(&receiver1)
+	receiver2 := Receiver{
+		Type: "รับโดยตัวแทน",
+	}
+	db.Model(&Receiver{}).Create(&receiver2)
+
+	// --- ตารางหลัก Confirmation
+
+	db.Model(&Confirmation{}).Create(&Confirmation{
+		User:      mumana,
+		Preorder:  preorder1,
+		Receiver:  receiver1,
+		Note:      "-",
+		Datetime:  time.Now(),
+		Librarian: chanaporn,
 	})
+
+	db.Model(&Confirmation{}).Create(&Confirmation{
+		User:      montree,
+		Preorder:  preorder2,
+		Receiver:  receiver2,
+		Note:      "1778899445561, สมชาย ใจดี, 0879456321",
+		Datetime:  time.Now(),
+		Librarian: chanaporn,
+	})
+
 }
