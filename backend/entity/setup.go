@@ -31,6 +31,7 @@ func SetupDatabase() {
 		&LostBook{},
 		&ReturnBook{},
 		&EquipmentPurchasing{},
+		&Payment{}, &Preorder{},
 	)
 
 	db = database
@@ -233,4 +234,43 @@ func SetupDatabase() {
 		BorrowBook:     borrowBook2,
 	}
 	db.Model(&ReturnBook{}).Create(&returnBook2)
+
+	//--- maprang ---
+	//payment
+	pay1 := Payment{
+		Name: "เงินสด",
+	}
+	db.Model(&Payment{}).Create(&pay1)
+	pay2 := Payment{
+		Name: "โอนชำระผ่านธนาคาร",
+	}
+	db.Model(&Payment{}).Create(&pay2)
+
+	//preorder
+	db.Model(&Preorder{}).Create(&Preorder{
+		Owner:      mumana,
+		Name:       "Java",
+		Price:      150,
+		Author:     "ม.ม่วง",
+		Edition:    1,
+		Year:       "2560",
+		Quantity:   1,
+		Totalprice: 150,
+		Payment:    pay1,
+		Datetime:   time.Now(),
+		Librarian:  chanaporn,
+	})
+	db.Model(&Preorder{}).Create(&Preorder{
+		Owner:      montree,
+		Name:       "Chinese",
+		Price:      120,
+		Author:     "Xiao Lu",
+		Edition:    5,
+		Year:       "c2010",
+		Quantity:   2,
+		Totalprice: 240,
+		Payment:    pay1,
+		Datetime:   time.Now(),
+		Librarian:  chanaporn,
+	})
 }
