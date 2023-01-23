@@ -12,12 +12,18 @@ func main() {
 	r.Use(CORSMiddleware())
 	r.GET("/health", controller.Health)
 
-	// BookPurchasing System
+	//------ BookPurchasing System ------//
 	r.GET("/publisher", controller.GetAllPublisher)
 	r.GET("/publisher/:id", controller.GetPublisherByID)
 	r.POST("/publisher", controller.CreatePublisher)
 	r.PATCH("/publisher", controller.UpdatePublisher)
 	r.DELETE("/publisher/:id", controller.DeletePublisher)
+	//Librarian
+	r.GET("/librarian", controller.GetAllLibrarian)
+	r.GET("/librarian/:id", controller.GetLibrarianByID)
+	r.POST("/librarian", controller.CreateLibrarian)
+	r.PATCH("/librarian", controller.UpdateLibrarian)
+	r.DELETE("/librarian/:id", controller.DeleteLibrarian)
 	r.Run()
 
 }
