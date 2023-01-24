@@ -12,6 +12,7 @@ func main() {
 	r.Use(CORSMiddleware())
 	r.GET("/health", controller.Health)
 
+	//
 	//------ BookPurchasing System ------//
 	r.GET("/publisher", controller.GetAllPublisher)
 	r.GET("/publisher/:id", controller.GetPublisherByID)
@@ -36,8 +37,25 @@ func main() {
 	r.POST("/bookPurchasing", controller.CreateBookPurchasing)
 	r.PATCH("/bookPurchasing", controller.UpdateBookPurchasing)
 	r.DELETE("/bookPurchasing/:id", controller.DeleteBookPurchasing)
-	r.Run()
 
+	//
+	//------ BorrowBook System ------//
+	// User
+	r.GET("/users", controller.ListUsers)
+	r.GET("/users/:id", controller.GetUser)
+	r.POST("/users", controller.CreateUser)
+	r.PATCH("/users", controller.UpdateUser)
+	r.DELETE("/users/:id", controller.DeleteUser)
+
+	// BorrowBook
+	r.GET("/borrow_books", controller.ListBorrowBooks)
+	r.GET("/borrow_books/:id", controller.GetBorrowBook)
+	r.POST("/borrow_books", controller.CreateBorrowBook)
+	r.PATCH("/borrow_books", controller.UpdateBorrowBook)
+	r.DELETE("/borrow_books/:id", controller.DeleteBorrowBook)
+
+	// Run the server
+	r.Run()
 }
 
 func CORSMiddleware() gin.HandlerFunc {
