@@ -38,7 +38,7 @@ func SetupDatabase() {
 		&Forfeit{},
 		&Introduce{},
 		&Objective{},
-		&Book_Type{},
+		&BookType{},
 		&BorrowEquipment{},
 		&EquipmentStatus{},
 		&ReturnEquipment{},
@@ -422,22 +422,22 @@ func SetupDatabase() {
 	db.Model(&Forfeit{}).Create(&forfeit2)
 
 	//-----จำลอง Book_Type
-	book_type1 := Book_Type{
+	bookType1 := BookType{
 		Name: "หนังสือ",
 	}
-	db.Model(&Book_Type{}).Create(&book_type1)
-	book_type2 := Book_Type{
+	db.Model(&BookType{}).Create(&bookType1)
+	bookType2 := BookType{
 		Name: "E-Book",
 	}
-	db.Model(&Book_Type{}).Create(&book_type2)
-	book_type3 := Book_Type{
+	db.Model(&BookType{}).Create(&bookType2)
+	bookType3 := BookType{
 		Name: "Audiobook",
 	}
-	db.Model(&Book_Type{}).Create(&book_type3)
-	book_type4 := Book_Type{
+	db.Model(&BookType{}).Create(&bookType3)
+	bookType4 := BookType{
 		Name: "อื่นๆ",
 	}
-	db.Model(&Book_Type{}).Create(&book_type4)
+	db.Model(&BookType{}).Create(&bookType4)
 
 	//-----จำลอง Objective
 	objective1 := Objective{
@@ -461,7 +461,7 @@ func SetupDatabase() {
 		Edition:   1,
 		Pub_Name:  "สกายบุ๊กส์ บ.จ.ก.",
 		Pub_Year:  "2012",
-		Book_Type: book_type1,
+		BookType:  bookType1,
 		Objective: objective1,
 		I_Date:    time.Now(),
 		User:      montree,
@@ -475,7 +475,7 @@ func SetupDatabase() {
 		Edition:   1,
 		Pub_Name:  "Provision",
 		Pub_Year:  "2021",
-		Book_Type: book_type1,
+		BookType:  bookType1,
 		Objective: objective1,
 		I_Date:    time.Now(),
 		User:      montree,
@@ -489,7 +489,7 @@ func SetupDatabase() {
 		Edition:   1,
 		Pub_Name:  "แพรว ส.น.พ.",
 		Pub_Year:  "2022",
-		Book_Type: book_type1,
+		BookType:  bookType1,
 		Objective: objective3,
 		I_Date:    time.Now(),
 		User:      montree,
