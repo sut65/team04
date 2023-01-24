@@ -8,20 +8,22 @@ import (
 
 type Level struct {
 	gorm.Model
-	Name 		string
+	Name string
 
-	BookRepairs	[]BookRepair `gorm:"foreignKey:LevelID"`
+	BookRepairs []BookRepair `gorm:"foreignKey:LevelID"`
 }
 
 type BookRepair struct {
 	gorm.Model
-	BookName		 	string
 
-	LevelID	 			*uint
-	Level				`gorm:"references:id;"`
+	BookPurchasingID *uint
+	BookPurchasing   BookPurchasing `gorm:"references:id;"`
 
-	Date 				time.Time
+	LevelID *uint
+	Level   `gorm:"references:id;"`
 
-	LibrarianID			*uint
-	Librarian 			`gorm:"references:id;"`
+	Date time.Time
+
+	LibrarianID *uint
+	Librarian   `gorm:"references:id;"`
 }

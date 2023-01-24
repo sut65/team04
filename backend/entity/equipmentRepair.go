@@ -8,13 +8,14 @@ import (
 
 type EquipmentRepair struct {
 	gorm.Model
-	EquipmentName 			string
+	EquipmentPurchasingID *uint
+	EquipmentPurchasing   EquipmentPurchasing `gorm:"references:id;"`
 
-	LevelID	 				*uint
-	Level					`gorm:"references:id;"`
+	LevelID *uint
+	Level   `gorm:"references:id;"`
 
-	Date 					time.Time
+	Date time.Time
 
-	LibrarianID				*uint
-	Librarian  				`gorm:"references:id;"`
+	LibrarianID *uint
+	Librarian   `gorm:"references:id;"`
 }
