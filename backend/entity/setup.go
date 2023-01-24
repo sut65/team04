@@ -42,6 +42,9 @@ func SetupDatabase() {
 		&BorrowEquipment{},
 		&EquipmentStatus{},
 		&ReturnEquipment{},
+		&Level{},
+		&EquipmentRepair{},
+		&BookRepair{},
 	)
 
 	db = database
@@ -509,43 +512,43 @@ func SetupDatabase() {
 
 	//จำลองตาราง BookRepair khanoon
 	db.Model(&BookRepair{}).Create(&BookRepair{
-		BookName:  "มือใหม่ Python เก่งได้ใน 30 วัน",
-		Level:     level1,
-		Date:      time.Now(),
-		Librarian: sirivipa,
+		BookPurchasing: bookPurchasing1,
+		Level:          level1,
+		Date:           time.Now(),
+		Librarian:      sirivipa,
 	})
 	db.Model(&BookRepair{}).Create(&BookRepair{
-		BookName:  "เธอมีค่าในแบบที่ เป็น",
-		Level:     level2,
-		Date:      time.Now(),
-		Librarian: thanphirom,
+		BookPurchasing: bookPurchasing1,
+		Level:          level2,
+		Date:           time.Now(),
+		Librarian:      thanphirom,
 	})
 	db.Model(&BookRepair{}).Create(&BookRepair{
-		BookName:  "ประวัติกฎหมาย ไทย",
-		Level:     level3,
-		Date:      time.Now(),
-		Librarian: chanaporn,
+		BookPurchasing: bookPurchasing2,
+		Level:          level3,
+		Date:           time.Now(),
+		Librarian:      chanaporn,
 	})
 
 	//จำลองตาราง EquipmentRepair khanoon
 	db.Model(&EquipmentRepair{}).Create(&EquipmentRepair{
 
-		EquipmentName: "ปากกาไวท์บอร์ด PILOT สีน้ำเงิน",
-		Level:         level1,
-		Date:          time.Now(),
-		Librarian:     sirivipa,
+		EquipmentPurchasing: EquipmentPurchasing1,
+		Level:               level1,
+		Date:                time.Now(),
+		Librarian:           sirivipa,
 	})
 	db.Model(&EquipmentRepair{}).Create(&EquipmentRepair{
-		EquipmentName: "ปากกาลูกลื่นสีแดง",
-		Level:         level2,
-		Date:          time.Now(),
-		Librarian:     thanphirom,
+		EquipmentPurchasing: EquipmentPurchasing2,
+		Level:               level2,
+		Date:                time.Now(),
+		Librarian:           thanphirom,
 	})
 	db.Model(&EquipmentRepair{}).Create(&EquipmentRepair{
-		EquipmentName: "Headphone",
-		Level:         level3,
-		Date:          time.Now(),
-		Librarian:     chanaporn,
+		EquipmentPurchasing: EquipmentPurchasing1,
+		Level:               level3,
+		Date:                time.Now(),
+		Librarian:           chanaporn,
 	})
 
 	//B6223090 นิด
