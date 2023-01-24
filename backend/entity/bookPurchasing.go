@@ -55,4 +55,5 @@ type BookPurchasing struct {
 	Publisher   Publisher `gorm:"references:id;"`
 
 	BorrowBooks []BorrowBook `gorm:"foreignKey:BookPurchasingID"`
+	BookRepairs []BookRepair `gorm:"foreignKey:BookPurchasingID"`
 }

@@ -15,7 +15,9 @@ type Level struct {
 
 type BookRepair struct {
 	gorm.Model
-	BookName string
+
+	BookPurchasingID *uint
+	BookPurchasing   BookPurchasing `gorm:"references:id;"`
 
 	LevelID *uint
 	Level   `gorm:"references:id;"`
