@@ -37,6 +37,9 @@ func SetupDatabase() {
 		&Introduce{},
 		&Objective{},
 		&Type{},
+		&BorrowEquipment{},
+		&EquipmentStatus{},
+		&ReturnEquipment{},
 	)
 
 	db = database
@@ -181,6 +184,75 @@ func SetupDatabase() {
 		Librarian:    thanphirom,
 	}
 	db.Model(&BookPurchasing{}).Create(&bookPurchasing2)
+
+	//EquipmentCategory --- ฟ้า
+	equipmentCategory1 := EquipmentCategory{
+		Name: "อุปกรณ์เครื่องเขียน",
+	}
+	db.Model(&EquipmentCategory{}).Create(&equipmentCategory1)
+
+	equipmentCategory2 := EquipmentCategory{
+		Name: "อุปกรณ์อิเล็กทรอนิกส์",
+	}
+	db.Model(&EquipmentCategory{}).Create(&equipmentCategory2)
+
+	equipmentCategory3 := EquipmentCategory{
+		Name: "อุปกรณ์โสตทัศนูปกรณ์",
+	}
+	db.Model(&EquipmentCategory{}).Create(&equipmentCategory3)
+
+	equipmentCategory4 := EquipmentCategory{
+		Name: "อุปกรณ์แสดงผลข้อมูลในรูปแบบเสียง",
+	}
+	db.Model(&EquipmentCategory{}).Create(&equipmentCategory4)
+
+	equipmentCategory5 := EquipmentCategory{
+		Name: "อุปกรณ์พกพา",
+	}
+	db.Model(&EquipmentCategory{}).Create(&equipmentCategory5)
+
+	//
+	//------ Company Data
+	Company1 := Company{
+		Name: "ไอ.โอ.เทคนิค จำกัด",
+	}
+	db.Model(&Company{}).Create(&Company1)
+
+	Company2 := Company{
+		Name: "เอปสัน พรีซิซั่น (ไทยแลนด์) จำกัด",
+	}
+	db.Model(&Company{}).Create(&Company2)
+
+	Company3 := Company{
+		Name: "ซีพีเค.ไวท์ร์ด จำกัด",
+	}
+	db.Model(&Company{}).Create(&Company3)
+
+	Company4 := Company{
+		Name: "พรีเมี่ยม เพอร์เฟค จำกัด",
+	}
+	db.Model(&Company{}).Create(&Company4)
+
+	//
+	// จำลองตาราง EquipmentPurchasing ---ฟ้า---
+	EquipmentPurchasing1 := EquipmentPurchasing{
+		EquipmentName:     "ปากกาไวท์บอ์ด PILOT สีน้ำเงิน",
+		Amount:            50,
+		Date:              time.Now(),
+		EquipmentCategory: equipmentCategory1,
+		Company:           Company4,
+		Librarian:         sirivipa,
+	}
+	db.Model(&EquipmentPurchasing{}).Create(&EquipmentPurchasing1)
+	EquipmentPurchasing2 := EquipmentPurchasing{
+		EquipmentName:     "ปากกาลูกลื่น",
+		Amount:            75,
+		Date:              time.Now(),
+		EquipmentCategory: equipmentCategory3,
+		Company:           Company2,
+		Librarian:         thanphirom,
+	}
+	db.Model(&EquipmentPurchasing{}).Create(&EquipmentPurchasing2)
 
 	//
 	//-----จำลองตาราง BorrowBook ---เปรี้ยว---
@@ -435,41 +507,92 @@ func SetupDatabase() {
 
 	//จำลองตาราง BookRepair khanoon
 	db.Model(&BookRepair{}).Create(&BookRepair{
-		BookName: 	"มือใหม่ Python เก่งได้ใน 30 วัน",
-		Level: 		level1,
-		Date:		time.Now(),
-		Librarian: 	sirivipa,
+		BookName:  "มือใหม่ Python เก่งได้ใน 30 วัน",
+		Level:     level1,
+		Date:      time.Now(),
+		Librarian: sirivipa,
 	})
 	db.Model(&BookRepair{}).Create(&BookRepair{
-		BookName: 	"เธอมีค่าในแบบที่ เป็น",
-		Level: 		level2,
-		Date:		time.Now(),
-		Librarian: 	thanphirom,
+		BookName:  "เธอมีค่าในแบบที่ เป็น",
+		Level:     level2,
+		Date:      time.Now(),
+		Librarian: thanphirom,
 	})
 	db.Model(&BookRepair{}).Create(&BookRepair{
-		BookName: 	"ประวัติกฎหมาย ไทย",
-		Level: 		level3,
-		Date:		time.Now(),
-		Librarian: 	chanaporn,
+		BookName:  "ประวัติกฎหมาย ไทย",
+		Level:     level3,
+		Date:      time.Now(),
+		Librarian: chanaporn,
 	})
 
 	//จำลองตาราง EquipmentRepair khanoon
 	db.Model(&EquipmentRepair{}).Create(&EquipmentRepair{
-		EquipmentName: 	"ปากกาไวท์บอร์ด PILOT สีน้ำเงิน",
-		Level: 			level1,
-		Date:			time.Now(),
-		Librarian: 		sirivipa,
+
+		EquipmentName: "ปากกาไวท์บอร์ด PILOT สีน้ำเงิน",
+		Level:         level1,
+		Date:          time.Now(),
+		Librarian:     sirivipa,
 	})
 	db.Model(&EquipmentRepair{}).Create(&EquipmentRepair{
-		EquipmentName: 	"ปากกาลูกลื่นสีแดง",
-		Level: 			level2,
-		Date:			time.Now(),
-		Librarian: 		thanphirom,
+		EquipmentName: "ปากกาลูกลื่นสีแดง",
+		Level:         level2,
+		Date:          time.Now(),
+		Librarian:     thanphirom,
 	})
 	db.Model(&EquipmentRepair{}).Create(&EquipmentRepair{
-		EquipmentName: 	"Headphone",
-		Level: 			level3,
-		Date:			time.Now(),
-		Librarian: 		chanaporn,
+		EquipmentName: "Headphone",
+		Level:         level3,
+		Date:          time.Now(),
+		Librarian:     chanaporn,
 	})
+
+	//B6223090 นิด
+	//------ Equipment Status Data
+	equipment_status1 := EquipmentStatus{
+		Name: "ชำรุด",
+	}
+	db.Model(&EquipmentStatus{}).Create(&equipment_status1)
+
+	equipment_status2 := EquipmentStatus{
+		Name: "ไม่ชำรุด",
+	}
+	db.Model(&EquipmentStatus{}).Create(&equipment_status2)
+
+	//-----จำลองตาราง Borrow Equipment
+	borrowEquipment1 := BorrowEquipment{
+		BorrowEquipment_Day:    time.Now(),
+		Amount_BorrowEquipment: 1,
+		Librarian:              chanaporn,
+		User:                   montree,
+		EquipmentPurchasing:    EquipmentPurchasing1,
+	}
+	db.Model(&BorrowEquipment{}).Create(&borrowEquipment1)
+
+	borrowEquipment2 := BorrowEquipment{
+		BorrowEquipment_Day:    time.Now(),
+		Amount_BorrowEquipment: 1,
+		Librarian:              chanaporn,
+		User:                   montree,
+		EquipmentPurchasing:    EquipmentPurchasing2,
+	}
+	db.Model(&BorrowEquipment{}).Create(&borrowEquipment2)
+
+	//-----จำลองตาราง Return Equipment
+	returnEquipment1 := ReturnEquipment{
+		Return_Day:      time.Now(),
+		EquipmentStatus: equipment_status2,
+		Return_Detail:   "ปกติ",
+		Librarian:       chanaporn,
+		BorrowEquipment: borrowEquipment1,
+	}
+	db.Model(&ReturnEquipment{}).Create(&returnEquipment1)
+
+	returnEquipment2 := ReturnEquipment{
+		Return_Day:      time.Now(),
+		EquipmentStatus: equipment_status1,
+		Return_Detail:   "ปากกาเขียนไม่ติด",
+		Librarian:       chanaporn,
+		BorrowEquipment: borrowEquipment2,
+	}
+	db.Model(&ReturnEquipment{}).Create(&returnEquipment2)
 }
