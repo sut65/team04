@@ -453,4 +453,23 @@ func SetupDatabase() {
 		Librarian: 	chanaporn,
 	})
 
+	//จำลองตาราง EquipmentRepair khanoon
+	db.Model(&EquipmentRepair{}).Create(&EquipmentRepair{
+		EquipmentName: 	"ปากกาไวท์บอร์ด PILOT สีน้ำเงิน",
+		Level: 			level1,
+		Date:			time.Now(),
+		Librarian: 		sirivipa,
+	})
+	db.Model(&EquipmentRepair{}).Create(&EquipmentRepair{
+		EquipmentName: 	"ปากกาลูกลื่นสีแดง",
+		Level: 			level2,
+		Date:			time.Now(),
+		Librarian: 		thanphirom,
+	})
+	db.Model(&EquipmentRepair{}).Create(&EquipmentRepair{
+		EquipmentName: 	"Headphone",
+		Level: 			level3,
+		Date:			time.Now(),
+		Librarian: 		chanaporn,
+	})
 }
