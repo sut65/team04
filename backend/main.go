@@ -12,6 +12,7 @@ func main() {
 	r.Use(CORSMiddleware())
 	r.GET("/health", controller.Health)
 
+	//
 	//------ BookPurchasing System ------//
 	//bookPurchasing
 	r.GET("/bookPurchasing", controller.GetAllBookPurchasing)
@@ -31,6 +32,7 @@ func main() {
 	r.POST("/librarian", controller.CreateLibrarian)
 	r.PATCH("/librarian", controller.UpdateLibrarian)
 	r.DELETE("/librarian/:id", controller.DeleteLibrarian)
+<<<<<<< HEAD
 
 	// //------ EquipmentPurchasing System ------//
 	// //EquipmentPurchasing
@@ -41,7 +43,54 @@ func main() {
 	// r.DELETE("/equipmentPurchasing/:id", controller.DeleteEquipmentPurchasing)
 
 	r.Run()
+=======
+	//publisher
+	r.GET("/publisher", controller.GetAllPublisher)
+	r.GET("/publisher/:id", controller.GetPublisherByID)
+	r.POST("/publisher", controller.CreatePublisher)
+	r.PATCH("/publisher", controller.UpdatePublisher)
+	r.DELETE("/publisher/:id", controller.DeletePublisher)
+	//bookPurchasing
+	r.GET("/bookPurchasing", controller.GetAllBookPurchasing)
+	r.GET("/bookPurchasing/:id", controller.GetBookPurchasingByID)
+	r.POST("/bookPurchasing", controller.CreateBookPurchasing)
+	r.PATCH("/bookPurchasing", controller.UpdateBookPurchasing)
+	r.DELETE("/bookPurchasing/:id", controller.DeleteBookPurchasing)
+>>>>>>> 750dc120ebd4f8b09cfa4ca1a326082b477c5ec6
 
+	//
+	//------ BorrowBook System ------//
+	// User
+	r.GET("/users", controller.ListUsers)
+	r.GET("/users/:id", controller.GetUser)
+	r.POST("/users", controller.CreateUser)
+	r.PATCH("/users", controller.UpdateUser)
+	r.DELETE("/users/:id", controller.DeleteUser)
+	// BorrowBook
+	r.GET("/borrow_books", controller.ListBorrowBooks)
+	r.GET("/borrow_books/:id", controller.GetBorrowBook)
+	r.POST("/borrow_books", controller.CreateBorrowBook)
+	r.PATCH("/borrow_books", controller.UpdateBorrowBook)
+	r.DELETE("/borrow_books/:id", controller.DeleteBorrowBook)
+
+	//
+	//------ ReturnBook System ------//
+	// LostBook
+	r.GET("/lost_books", controller.ListLostBooks)
+	r.GET("/lost_books/:id", controller.GetLostBook)
+	r.POST("/lost_books", controller.CreateLostBook)
+	r.PATCH("/lost_books", controller.UpdateLostBook)
+	r.DELETE("/lost_books/:id", controller.DeleteLostBook)
+	// ReturnBook
+	r.GET("/return_books", controller.ListReturnBooks)
+	r.GET("/return_books/:id", controller.GetReturnBook)
+	r.POST("/return_books", controller.CreateReturnBook)
+	r.PATCH("/return_books", controller.UpdateReturnBook)
+	r.DELETE("/return_books/:id", controller.DeleteReturnBook)
+
+	//
+	// Run the server
+	r.Run()
 }
 
 func CORSMiddleware() gin.HandlerFunc {

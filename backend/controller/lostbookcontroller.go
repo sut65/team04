@@ -1,50 +1,19 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/team04/entity"
 )
 
-// GET Lostbook
-func GetAllLostbook(c *gin.Context) {
-
-	var lostbook []entity.LostBook
-
-	if err := entity.DB().Model(&entity.LostBook{}).Scan(&lostbook).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"data": lostbook})
-
-}
-
-// GET Lostbook By ID
-func GetLostBookByID(c *gin.Context) {
-
-	var lostbook entity.LostBook
-	Id := c.Param("id") //id ที่เราตั้งไว้ใน main.go ที่อยู่หลัง : ตัวอย่าง >> /lostbook/:id
-	if err := entity.DB().Model(&entity.LostBook{}).Where("ID = ?", Id).Scan(&lostbook).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"data": lostbook})
-
-}
-
-// POST LostBook
+// POST /lost_books
 func CreateLostBook(c *gin.Context) {
 	var lostbook entity.LostBook
-
-	if err := c.ShouldBindJSON(&lostbook); err != nil { //การแปลงข้อมูลที่อยู่ในคอนเทคมาอยู่ในรูปแบบภาษาโก
+	if err := c.ShouldBindJSON(&lostbook); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
 	if err := entity.DB().Create(&lostbook).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -52,34 +21,51 @@ func CreateLostBook(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": lostbook})
 }
 
-// PATCH /Lostbook
+// GET /lost_books/:id
+func GetLostBook(c *gin.Context) {
+	var lostbook entity.LostBook
+	id := c.Param("id")
+	if err := entity.DB().Raw("SELECT * FROM lost_books WHERE id = ?", id).Find(&lostbook).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": lostbook})
+}
+
+// GET /lost_books
+func ListLostBooks(c *gin.Context) {
+	var lostbooks []entity.User
+	if err := entity.DB().Raw("SELECT * FROM lost_books").Find(&lostbooks).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": lostbooks})
+}
+
+// DELETE /lost_books/:id
+func DeleteLostBook(c *gin.Context) {
+	id := c.Param("id")
+	if tx := entity.DB().Exec("DELETE FROM lost_books WHERE id = ?", id); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "lost_book not found"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": id})
+}
+
+// PATCH /lost_books
 func UpdateLostBook(c *gin.Context) {
 	var lostbook entity.LostBook
 	if err := c.ShouldBindJSON(&lostbook); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	if tx := entity.DB().Where("id = ?", lostbook.ID).First(&entity.LostBook{}); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "lostbook not found"})
+	if tx := entity.DB().Where("id = ?", lostbook.ID).First(&lostbook); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "lost_book not found"})
 		return
 	}
-
-	if err := entity.DB().Model(&lostbook).Update("Name", lostbook.Name).Error; err != nil {
+	if err := entity.DB().Save(&lostbook).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
 	c.JSON(http.StatusOK, gin.H{"data": lostbook})
-}
-
-// DELETE Lostbook By id
-func DeleteLostBook(c *gin.Context) {
-	Id := c.Param("id")
-	if tx := entity.DB().Delete(&entity.LostBook{}, Id); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "lostbook ID not found"})
-		return
-	}
-
-	c.JSON(http.StatusOK, fmt.Sprintf("LostBookID :  %s deleted.", Id))
 }

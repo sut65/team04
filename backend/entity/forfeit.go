@@ -20,11 +20,11 @@ type Forfeit struct {
 	Pay_Date time.Time
 	Note     string
 
-	PaymentID *uint
-	Payment   Payment `gorm:"references:id;"`
-
 	ReturnBookID *uint
 	ReturnBook   ReturnBook `gorm:"references:id;"`
+
+	PaymentID *uint
+	Payment   Payment `gorm:"references:id;"`
 
 	LibrarianID *uint
 	Librarian   Librarian `gorm:"references:id;"`
