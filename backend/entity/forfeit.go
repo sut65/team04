@@ -18,6 +18,7 @@ type Forfeit struct {
 	gorm.Model
 	Pay      uint
 	Pay_Date time.Time
+	Note     string
 
 	PaymentID *uint
 	Payment   Payment `gorm:"references:id;"`
