@@ -31,15 +31,8 @@ func SetupDatabase() {
 		&LostBook{},
 		&ReturnBook{},
 		&EquipmentPurchasing{},
-		&Payment{}, &Preorder{},
-		&Confirmation{},
-		&Forfeit{},
-		&Introduce{},
-		&Objective{},
-		&Type{},
-		&BorrowEquipment{},
-		&EquipmentStatus{},
-		&ReturnEquipment{},
+		&Payment{},
+		&Preorder{},
 	)
 
 	db = database
@@ -175,84 +168,16 @@ func SetupDatabase() {
 	db.Model(&BookPurchasing{}).Create(&bookPurchasing1)
 
 	bookPurchasing2 := BookPurchasing{
-		BookName:     "ประวัติกฎหมายไทย",
-		AuthorName:   "ร.เเลงกานต์",
-		Amount:       94,
-		Date:         time.Now(),
+		BookName:   "ประวัติกฎหมายไทย",
+		AuthorName: "ร.เเลงกานต์",
+		Amount:     94,
+		Date:       time.Now(),
+
 		BookCategory: bookCategory1,
 		Publisher:    publisher1,
 		Librarian:    thanphirom,
 	}
 	db.Model(&BookPurchasing{}).Create(&bookPurchasing2)
-
-	//EquipmentCategory --- ฟ้า
-	equipmentCategory1 := EquipmentCategory{
-		Name: "อุปกรณ์เครื่องเขียน",
-	}
-	db.Model(&EquipmentCategory{}).Create(&equipmentCategory1)
-
-	equipmentCategory2 := EquipmentCategory{
-		Name: "อุปกรณ์อิเล็กทรอนิกส์",
-	}
-	db.Model(&EquipmentCategory{}).Create(&equipmentCategory2)
-
-	equipmentCategory3 := EquipmentCategory{
-		Name: "อุปกรณ์โสตทัศนูปกรณ์",
-	}
-	db.Model(&EquipmentCategory{}).Create(&equipmentCategory3)
-
-	equipmentCategory4 := EquipmentCategory{
-		Name: "อุปกรณ์แสดงผลข้อมูลในรูปแบบเสียง",
-	}
-	db.Model(&EquipmentCategory{}).Create(&equipmentCategory4)
-
-	equipmentCategory5 := EquipmentCategory{
-		Name: "อุปกรณ์พกพา",
-	}
-	db.Model(&EquipmentCategory{}).Create(&equipmentCategory5)
-
-	//
-	//------ Company Data
-	Company1 := Company{
-		Name: "ไอ.โอ.เทคนิค จำกัด",
-	}
-	db.Model(&Company{}).Create(&Company1)
-
-	Company2 := Company{
-		Name: "เอปสัน พรีซิซั่น (ไทยแลนด์) จำกัด",
-	}
-	db.Model(&Company{}).Create(&Company2)
-
-	Company3 := Company{
-		Name: "ซีพีเค.ไวท์ร์ด จำกัด",
-	}
-	db.Model(&Company{}).Create(&Company3)
-
-	Company4 := Company{
-		Name: "พรีเมี่ยม เพอร์เฟค จำกัด",
-	}
-	db.Model(&Company{}).Create(&Company4)
-
-	//
-	// จำลองตาราง EquipmentPurchasing ---ฟ้า---
-	EquipmentPurchasing1 := EquipmentPurchasing{
-		EquipmentName:     "ปากกาไวท์บอ์ด PILOT สีน้ำเงิน",
-		Amount:            50,
-		Date:              time.Now(),
-		EquipmentCategory: equipmentCategory1,
-		Company:           Company4,
-		Librarian:         sirivipa,
-	}
-	db.Model(&EquipmentPurchasing{}).Create(&EquipmentPurchasing1)
-	EquipmentPurchasing2 := EquipmentPurchasing{
-		EquipmentName:     "ปากกาลูกลื่น",
-		Amount:            75,
-		Date:              time.Now(),
-		EquipmentCategory: equipmentCategory3,
-		Company:           Company2,
-		Librarian:         thanphirom,
-	}
-	db.Model(&EquipmentPurchasing{}).Create(&EquipmentPurchasing2)
 
 	//
 	//-----จำลองตาราง BorrowBook ---เปรี้ยว---
@@ -322,17 +247,9 @@ func SetupDatabase() {
 		Name: "โอนชำระผ่านธนาคาร",
 	}
 	db.Model(&Payment{}).Create(&pay2)
-	pay3 := Payment{
-		Name: "สแกนคิวอาร์โค้ด",
-	}
-	db.Model(&Payment{}).Create(&pay3)
-	pay4 := Payment{
-		Name: "ระยะการยืมเวลาไม่เกินกำหนด ไม่ต้องชำระเงิน",
-	}
-	db.Model(&Payment{}).Create(&pay4)
 
 	//preorder
-	preorder1 := Preorder{
+	db.Model(&Preorder{}).Create(&Preorder{
 		Owner:      mumana,
 		Name:       "Java",
 		Price:      150,
@@ -344,10 +261,8 @@ func SetupDatabase() {
 		Payment:    pay1,
 		Datetime:   time.Now(),
 		Librarian:  chanaporn,
-	}
-	db.Model(&Preorder{}).Create(&preorder1)
-
-	preorder2 := Preorder{
+	})
+	db.Model(&Preorder{}).Create(&Preorder{
 		Owner:      montree,
 		Name:       "Chinese",
 		Price:      120,
@@ -359,240 +274,5 @@ func SetupDatabase() {
 		Payment:    pay1,
 		Datetime:   time.Now(),
 		Librarian:  chanaporn,
-	}
-	db.Model(&Preorder{}).Create(&preorder2)
-
-	// --- จำลอง Confirmaition ---
-	// --- วิธีการรับสินค้า ---
-	receiver1 := Receiver{
-		Type: "รับโดยสมาชิก",
-	}
-	db.Model(&Receiver{}).Create(&receiver1)
-	receiver2 := Receiver{
-		Type: "รับโดยตัวแทน",
-	}
-	db.Model(&Receiver{}).Create(&receiver2)
-
-	// --- ตารางหลัก Confirmation
-
-	confirmation1 := Confirmation{
-		User:      mumana,
-		Preorder:  preorder1,
-		Receiver:  receiver1,
-		Note:      "-",
-		Datetime:  time.Now(),
-		Librarian: chanaporn,
-	}
-	db.Model(&Confirmation{}).Create(&confirmation1)
-
-	confirmation2 := Confirmation{
-		User:      montree,
-		Preorder:  preorder2,
-		Receiver:  receiver2,
-		Note:      "1778899445561, สมชาย ใจดี, 0879456321",
-		Datetime:  time.Now(),
-		Librarian: chanaporn,
-	}
-	db.Model(&Confirmation{}).Create(&confirmation2)
-
-	//-----จำลองตาราง Forfeit ---จูเนียร์--
-	forfeit1 := Forfeit{
-		ReturnBook: returnBook1,
-		Pay:        25,
-		Payment:    pay1,
-		Pay_Date:   time.Now(),
-		Note:       "ไม่มี",
-		Librarian:  chanaporn,
-	}
-	db.Model(&Forfeit{}).Create(&forfeit1)
-
-	forfeit2 := Forfeit{
-		ReturnBook: returnBook2,
-		Pay:        10,
-		Payment:    pay3,
-		Pay_Date:   time.Now(),
-		Note:       "ไม่มี",
-		Librarian:  chanaporn,
-	}
-	db.Model(&Forfeit{}).Create(&forfeit2)
-
-	//-----จำลอง Type
-	type1 := Type{
-		Name: "หนังสือ",
-	}
-	db.Model(&Type{}).Create(&type1)
-	type2 := Type{
-		Name: "E-Book",
-	}
-	db.Model(&Type{}).Create(&type2)
-	type3 := Type{
-		Name: "Audiobook",
-	}
-	db.Model(&Type{}).Create(&type3)
-	type4 := Type{
-		Name: "อื่นๆ",
-	}
-	db.Model(&Type{}).Create(&type4)
-
-	//-----จำลอง Objective
-	objective1 := Objective{
-		Name: "การเรียนการสอน",
-	}
-	db.Model(&Objective{}).Create(&objective1)
-	objective2 := Objective{
-		Name: "คู่มือสำหรับการปฏิบัติงาน",
-	}
-	db.Model(&Objective{}).Create(&objective2)
-	objective3 := Objective{
-		Name: "ทั่วไป",
-	}
-	db.Model(&Objective{}).Create(&objective3)
-
-	//-----จำลองตาราง Introduce ---จูเนียร์--
-	introduce1 := Introduce{
-		Title:     "แคลคูลัส 1 สำหรับวิศวกร",
-		Author:    "รศ. ดร.ธีระศักดิ์ อุรัจนานนท์",
-		ISBN:      9786162139130,
-		Edition:   1,
-		Pub_Name:  "สกายบุ๊กส์ บ.จ.ก.",
-		Pub_Year:  "2012",
-		Type:      type1,
-		Objective: objective1,
-		I_Date:    time.Now(),
-		User:      montree,
-	}
-	db.Model(&Introduce{}).Create(&introduce1)
-
-	introduce2 := Introduce{
-		Title:     "คัมภีร์ Python",
-		Author:    "อรพิน ประวัติบริสุทธิ์",
-		ISBN:      9786162047930,
-		Edition:   1,
-		Pub_Name:  "Provision",
-		Pub_Year:  "2021",
-		Type:      type1,
-		Objective: objective1,
-		I_Date:    time.Now(),
-		User:      montree,
-	}
-	db.Model(&Introduce{}).Create(&introduce2)
-
-	introduce3 := Introduce{
-		Title:     "เพียงชั่วเวลากาแฟยังอุ่น ตราบชั่วเวลาของคำโกหก",
-		Author:    "คาวางุจิ โทชิคาซึ",
-		ISBN:      9786161848330,
-		Edition:   1,
-		Pub_Name:  "แพรว ส.น.พ.",
-		Pub_Year:  "2022",
-		Type:      type1,
-		Objective: objective3,
-		I_Date:    time.Now(),
-		User:      montree,
-	}
-	db.Model(&Introduce{}).Create(&introduce3)
-
-	//Level khanoon
-	level1 := Level{
-		Name: "น้อย",
-	}
-	db.Model(&Level{}).Create(&level1)
-	level2 := Level{
-		Name: "ปานกลาง",
-	}
-	db.Model(&Level{}).Create(&level2)
-	level3 := Level{
-		Name: "มาก",
-	}
-	db.Model(&Level{}).Create(&level3)
-
-	//จำลองตาราง BookRepair khanoon
-	db.Model(&BookRepair{}).Create(&BookRepair{
-		BookName:  "มือใหม่ Python เก่งได้ใน 30 วัน",
-		Level:     level1,
-		Date:      time.Now(),
-		Librarian: sirivipa,
 	})
-	db.Model(&BookRepair{}).Create(&BookRepair{
-		BookName:  "เธอมีค่าในแบบที่ เป็น",
-		Level:     level2,
-		Date:      time.Now(),
-		Librarian: thanphirom,
-	})
-	db.Model(&BookRepair{}).Create(&BookRepair{
-		BookName:  "ประวัติกฎหมาย ไทย",
-		Level:     level3,
-		Date:      time.Now(),
-		Librarian: chanaporn,
-	})
-
-	//จำลองตาราง EquipmentRepair khanoon
-	db.Model(&EquipmentRepair{}).Create(&EquipmentRepair{
-
-		EquipmentName: "ปากกาไวท์บอร์ด PILOT สีน้ำเงิน",
-		Level:         level1,
-		Date:          time.Now(),
-		Librarian:     sirivipa,
-	})
-	db.Model(&EquipmentRepair{}).Create(&EquipmentRepair{
-		EquipmentName: "ปากกาลูกลื่นสีแดง",
-		Level:         level2,
-		Date:          time.Now(),
-		Librarian:     thanphirom,
-	})
-	db.Model(&EquipmentRepair{}).Create(&EquipmentRepair{
-		EquipmentName: "Headphone",
-		Level:         level3,
-		Date:          time.Now(),
-		Librarian:     chanaporn,
-	})
-
-	//B6223090 นิด
-	//------ Equipment Status Data
-	equipment_status1 := EquipmentStatus{
-		Name: "ชำรุด",
-	}
-	db.Model(&EquipmentStatus{}).Create(&equipment_status1)
-
-	equipment_status2 := EquipmentStatus{
-		Name: "ไม่ชำรุด",
-	}
-	db.Model(&EquipmentStatus{}).Create(&equipment_status2)
-
-	//-----จำลองตาราง Borrow Equipment
-	borrowEquipment1 := BorrowEquipment{
-		BorrowEquipment_Day:    time.Now(),
-		Amount_BorrowEquipment: 1,
-		Librarian:              chanaporn,
-		User:                   montree,
-		EquipmentPurchasing:    EquipmentPurchasing1,
-	}
-	db.Model(&BorrowEquipment{}).Create(&borrowEquipment1)
-
-	borrowEquipment2 := BorrowEquipment{
-		BorrowEquipment_Day:    time.Now(),
-		Amount_BorrowEquipment: 1,
-		Librarian:              chanaporn,
-		User:                   montree,
-		EquipmentPurchasing:    EquipmentPurchasing2,
-	}
-	db.Model(&BorrowEquipment{}).Create(&borrowEquipment2)
-
-	//-----จำลองตาราง Return Equipment
-	returnEquipment1 := ReturnEquipment{
-		Return_Day:      time.Now(),
-		EquipmentStatus: equipment_status2,
-		Return_Detail:   "ปกติ",
-		Librarian:       chanaporn,
-		BorrowEquipment: borrowEquipment1,
-	}
-	db.Model(&ReturnEquipment{}).Create(&returnEquipment1)
-
-	returnEquipment2 := ReturnEquipment{
-		Return_Day:      time.Now(),
-		EquipmentStatus: equipment_status1,
-		Return_Detail:   "ปากกาเขียนไม่ติด",
-		Librarian:       chanaporn,
-		BorrowEquipment: borrowEquipment2,
-	}
-	db.Model(&ReturnEquipment{}).Create(&returnEquipment2)
 }
