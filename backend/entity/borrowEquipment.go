@@ -8,9 +8,8 @@ import (
 
 type BorrowEquipment struct {
 	gorm.Model
-	BorrowEquipment_Day      time.Time
-	CheckRetrunEquipment_Day time.Time
-	Amount_BorrowEquipment   int
+	BorrowEquipment_Day    time.Time
+	Amount_BorrowEquipment int
 
 	LibrarianID *uint
 	Librarian   Librarian `gorm:"references:id;"`
