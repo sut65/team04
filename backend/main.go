@@ -13,6 +13,13 @@ func main() {
 	r.GET("/health", controller.Health)
 
 	//------ BookPurchasing System ------//
+	//bookPurchasing
+	r.GET("/bookPurchasing", controller.GetAllBookPurchasing)
+	r.GET("/bookPurchasing/:id", controller.GetBookPurchasingByID)
+	r.POST("/bookPurchasing", controller.CreateBookPurchasing)
+	r.PATCH("/bookPurchasing", controller.UpdateBookPurchasing)
+	r.DELETE("/bookPurchasing/:id", controller.DeleteBookPurchasing)
+	//publisher
 	r.GET("/publisher", controller.GetAllPublisher)
 	r.GET("/publisher/:id", controller.GetPublisherByID)
 	r.POST("/publisher", controller.CreatePublisher)
@@ -24,18 +31,15 @@ func main() {
 	r.POST("/librarian", controller.CreateLibrarian)
 	r.PATCH("/librarian", controller.UpdateLibrarian)
 	r.DELETE("/librarian/:id", controller.DeleteLibrarian)
-	//publisher
-	r.GET("/publisher", controller.GetAllPublisher)
-	r.GET("/publisher/:id", controller.GetPublisherByID)
-	r.POST("/publisher", controller.CreatePublisher)
-	r.PATCH("/publisher", controller.UpdatePublisher)
-	r.DELETE("/publisher/:id", controller.DeletePublisher)
-	//bookPurchasing
-	r.GET("/bookPurchasing", controller.GetAllBookPurchasing)
-	r.GET("/bookPurchasing/:id", controller.GetBookPurchasingByID)
-	r.POST("/bookPurchasing", controller.CreateBookPurchasing)
-	r.PATCH("/bookPurchasing", controller.UpdateBookPurchasing)
-	r.DELETE("/bookPurchasing/:id", controller.DeleteBookPurchasing)
+
+	// //------ EquipmentPurchasing System ------//
+	// //EquipmentPurchasing
+	// r.GET("/equipmentPurchasing", controller.GetAllEquipmentPurchasing)
+	// r.GET("/equipmentPurchasing/:id", controller.GetEquipmentPurchasingByID)
+	// r.POST("/equipmentPurchasing", controller.CreateEquipmentPurchasing)
+	// r.PATCH("/equipmentPurchasing", controller.UpdateEquipmentPurchasing)
+	// r.DELETE("/equipmentPurchasing/:id", controller.DeleteEquipmentPurchasing)
+
 	r.Run()
 
 }
