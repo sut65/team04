@@ -46,7 +46,6 @@ func main() {
 	r.POST("/users", controller.CreateUser)
 	r.PATCH("/users", controller.UpdateUser)
 	r.DELETE("/users/:id", controller.DeleteUser)
-
 	// BorrowBook
 	r.GET("/borrow_books", controller.ListBorrowBooks)
 	r.GET("/borrow_books/:id", controller.GetBorrowBook)
@@ -54,6 +53,22 @@ func main() {
 	r.PATCH("/borrow_books", controller.UpdateBorrowBook)
 	r.DELETE("/borrow_books/:id", controller.DeleteBorrowBook)
 
+	//
+	//------ ReturnBook System ------//
+	// LostBook
+	r.GET("/lost_books", controller.ListLostBooks)
+	r.GET("/lost_books/:id", controller.GetLostBook)
+	r.POST("/lost_books", controller.CreateLostBook)
+	r.PATCH("/lost_books", controller.UpdateLostBook)
+	r.DELETE("/lost_books/:id", controller.DeleteLostBook)
+	// ReturnBook
+	r.GET("/return_books", controller.ListReturnBooks)
+	r.GET("/return_books/:id", controller.GetReturnBook)
+	r.POST("/return_books", controller.CreateReturnBook)
+	r.PATCH("/return_books", controller.UpdateReturnBook)
+	r.DELETE("/return_books/:id", controller.DeleteReturnBook)
+
+	//
 	// Run the server
 	r.Run()
 }
