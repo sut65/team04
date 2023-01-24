@@ -16,7 +16,7 @@ func CreateIntroduce(c *gin.Context) {
 	var objective entity.Objective
 	var user entity.User
 
-	// ผลลัพธ์ที่ได้จากขั้นตอนที่ 10 จะถูก bind เข้าตัวแปร introduce
+	// ผลลัพธ์ที่ได้จากขั้นตอนที่ 8 จะถูก bind เข้าตัวแปร introduce
 	if err := c.ShouldBindJSON(&introduce); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
