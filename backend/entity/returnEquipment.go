@@ -18,6 +18,9 @@ type ReturnEquipment struct {
 	Return_Day    time.Time
 	Return_Detail string
 
+	EquipmentStatusID *uint
+	EquipmentStatus   EquipmentStatus `gorm:"references:id;"`
+
 	LibrarianID *uint
 	Librarian   Librarian `gorm:"references:id;"`
 
