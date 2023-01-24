@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type Type struct {
+type Book_Type struct {
 	gorm.Model
 	Name string
 
@@ -30,8 +30,8 @@ type Introduce struct {
 	Pub_Year string
 	I_Date   time.Time
 
-	TypeID *uint
-	Type   Type `gorm:"references:id;"`
+	Book_TypeID *uint
+	Book_Type   Book_Type `gorm:"references:id;"`
 
 	ObjectiveID *uint
 	Objective   Objective `gorm:"references:id;"`
