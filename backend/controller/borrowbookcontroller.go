@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -65,7 +66,7 @@ func GetBorrowBook(c *gin.Context) {
 	var borrowbook entity.BorrowBook
 	id := c.Param("id")
 	if err := entity.DB().Preload("User").Preload("BookPurchasing").Preload("Librarian").Raw("SELECT * FROM borrow_books WHERE id = ?", id).Find(&borrowbook).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("BorrowBookID :  Id%s not found.", id)})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": borrowbook})
@@ -94,17 +95,32 @@ func DeleteBorrowBook(c *gin.Context) {
 // PATCH /borrow_books
 func UpdateBorrowBook(c *gin.Context) {
 	var borrowbook entity.BorrowBook
+	// if err := c.ShouldBindJSON(&borrowbook); err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 	return
+	// }
+	// if tx := entity.DB().Where("id = ?", borrowbook.ID).First(&borrowbook); tx.RowsAffected == 0 {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Borrowbook not found"})
+	// 	return
+	// }
+	// if err := entity.DB().Save(&borrowbook).Error; err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 	return
+	// }
+	// c.JSON(http.StatusOK, gin.H{"data": borrowbook})
+
 	if err := c.ShouldBindJSON(&borrowbook); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	if tx := entity.DB().Where("id = ?", borrowbook.ID).First(&borrowbook); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Borrowbook not found"})
+	if tx := entity.DB().Where("id = ?", borrowbook.ID).First(&entity.BorrowBook{}); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "borrowbook not found"}) //เช็คว่ามีไอดีอยู่ในดาต้าเบสมั้ย
 		return
 	}
 	if err := entity.DB().Save(&borrowbook).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
 	c.JSON(http.StatusOK, gin.H{"data": borrowbook})
 }
