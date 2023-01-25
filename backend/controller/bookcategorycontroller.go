@@ -59,16 +59,29 @@ func UpdateBookCategory(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	if tx := entity.DB().Where("id = ?", bookCategory.ID).First(&entity.BookCategory{}); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "category not found"})
+	if tx := entity.DB().Where("id = ?", bookCategory.ID).First(&bookCategory); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "bookCategory not found"})
 		return
 	}
-
-	if err := entity.DB().Model(&bookCategory).Update("Name", bookCategory.Name).Error; err != nil {
+	if err := entity.DB().Save(&bookCategory).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	// if err := c.ShouldBindJSON(&bookCategory); err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 	return
+	// }
+
+	// if tx := entity.DB().Where("id = ?", bookCategory.ID).First(&entity.BookCategory{}); tx.RowsAffected == 0 {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "category not found"})
+	// 	return
+	// }
+
+	// if err := entity.DB().Model(&bookCategory).Update("Name", bookCategory.Name).Error; err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 	return
+	// }
 
 	c.JSON(http.StatusOK, gin.H{"data": bookCategory})
 }
