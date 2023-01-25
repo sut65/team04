@@ -3,7 +3,7 @@ import { EquipmentCategoryInterface } from "./IEquipmentCategory"
 import { LibrarianInterface } from "./ILibrarian"
 
 
-export interface BookPurchasingInterface {
+export interface EquipmentPurchasingInterface {
 
     Id: number
 	Date:    Date
