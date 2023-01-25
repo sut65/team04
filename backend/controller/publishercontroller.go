@@ -59,16 +59,29 @@ func UpdatePublisher(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	if tx := entity.DB().Where("id = ?", publisher.ID).First(&entity.Publisher{}); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "category not found"})
+	if tx := entity.DB().Where("id = ?", publisher.ID).First(&publisher); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "publisher not found"})
 		return
 	}
-
-	if err := entity.DB().Model(&publisher).Update("Name", publisher.Name).Error; err != nil {
+	if err := entity.DB().Save(&publisher).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	// if err := c.ShouldBindJSON(&publisher); err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 	return
+	// }
+
+	// if tx := entity.DB().Where("id = ?", publisher.ID).First(&entity.Publisher{}); tx.RowsAffected == 0 {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "category not found"})
+	// 	return
+	// }
+
+	// if err := entity.DB().Model(&publisher).Update("Name", publisher.Name).Error; err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 	return
+	// }
 
 	c.JSON(http.StatusOK, gin.H{"data": publisher})
 }
