@@ -421,19 +421,22 @@ func SetupDatabase() {
 	}
 	db.Model(&Forfeit{}).Create(&forfeit2)
 
-	//-----จำลอง Book_Type
+	//-----จำลอง BookType
 	bookType1 := BookType{
 		Name: "หนังสือ",
 	}
 	db.Model(&BookType{}).Create(&bookType1)
+
 	bookType2 := BookType{
 		Name: "E-Book",
 	}
 	db.Model(&BookType{}).Create(&bookType2)
+
 	bookType3 := BookType{
 		Name: "Audiobook",
 	}
 	db.Model(&BookType{}).Create(&bookType3)
+
 	bookType4 := BookType{
 		Name: "อื่นๆ",
 	}
