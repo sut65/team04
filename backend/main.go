@@ -121,13 +121,13 @@ func main() {
 	r.PATCH("/receiver", controller.UpdateReceiver)
 	r.DELETE("/receiver/:id", controller.DeleteReceiver)
 
+	//--- มะปราง ----
 	//--- Confirmation ---
 	r.GET("/confirmation", controller.ListConfirmations)
 	r.GET("/confirmation/:id", controller.GetConfirmation)
 	r.POST("/confirmation", controller.CreateConfirmation)
 	r.PATCH("/confirmation", controller.UpdateConfirmation)
 	r.DELETE("/confirmation/:id", controller.DeleteConfirmation)
-
 	//--- Preorder ---
 	r.GET("/preorder", controller.ListPreorders)
 	r.GET("/preorder/:id", controller.GetPreorder)
