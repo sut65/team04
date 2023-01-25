@@ -24,14 +24,14 @@ func CreateBorrowBook(c *gin.Context) {
 	// : ค้นหา User ด้วย id
 	if tx := entity.DB().Where("id = ?",
 		borrowbook.UserID).First(&user); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "User not found"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "user not found"})
 		return
 	}
 
 	// : ค้นหา Bookpurchasing ด้วย id
 	if tx := entity.DB().Where("id = ?",
 		borrowbook.BookPurchasingID).First(&bookpurchasing); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Bookpurchasing not found"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "bookpurchasing not found"})
 		return
 	}
 
@@ -58,57 +58,33 @@ func CreateBorrowBook(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": ps})
+	c.JSON(http.StatusOK, gin.H{"data": ps}) //ส่ง ps กลับไปตรงที่ fetch ที่เราเรียกใช้
 }
 
-// GET /borrow_books/:id
-func GetBorrowBook(c *gin.Context) {
-	var borrowbook entity.BorrowBook
-	id := c.Param("id")
-	if err := entity.DB().Preload("User").Preload("BookPurchasing").Preload("Librarian").Raw("SELECT * FROM borrow_books WHERE id = ?", id).Find(&borrowbook).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("BorrowBookID :  Id%s not found.", id)})
+// GET /borrow_books
+func GetAllBorrowBook(c *gin.Context) {
+	var borrowbook []entity.BorrowBook
+	if err := entity.DB().Model(&entity.BorrowBook{}).Preload("User").Preload("BookPurchasing").Preload("Librarian").Find(&borrowbook).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": borrowbook})
 }
 
-// GET /borrow_books
-func ListBorrowBooks(c *gin.Context) {
-	var Borrowbooks []entity.BorrowBook
-	if err := entity.DB().Preload("User").Preload("BookPurchasing").Preload("Librarian").Raw("SELECT * FROM borrow_books").Find(&Borrowbooks).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// GET /borrow_books/:id
+func GetBorrowBookByID(c *gin.Context) {
+	var borrowbook entity.BorrowBook
+	Id := c.Param("id") //id ที่เราตั้งไว้ใน main.go ที่อยู่หลัง : ตัวอย่าง >> /borrow_books/:id
+	if err := entity.DB().Model(&entity.BorrowBook{}).Where("ID = ?", Id).Preload("User").Preload("BookPurchasing").Preload("Librarian").Find(&borrowbook); err.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("BorrowBookID :  Id%s not found.", Id)})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": Borrowbooks})
-}
-
-// DELETE /borrow_books/:id
-func DeleteBorrowBook(c *gin.Context) {
-	id := c.Param("id")
-	if tx := entity.DB().Exec("DELETE FROM borrow_books WHERE id = ?", id); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "borrowbook not found"})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"data": id})
+	c.JSON(http.StatusOK, gin.H{"data": borrowbook})
 }
 
 // PATCH /borrow_books
 func UpdateBorrowBook(c *gin.Context) {
 	var borrowbook entity.BorrowBook
-	// if err := c.ShouldBindJSON(&borrowbook); err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return
-	// }
-	// if tx := entity.DB().Where("id = ?", borrowbook.ID).First(&borrowbook); tx.RowsAffected == 0 {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Borrowbook not found"})
-	// 	return
-	// }
-	// if err := entity.DB().Save(&borrowbook).Error; err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return
-	// }
-	// c.JSON(http.StatusOK, gin.H{"data": borrowbook})
-
 	if err := c.ShouldBindJSON(&borrowbook); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -121,6 +97,15 @@ func UpdateBorrowBook(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
 	c.JSON(http.StatusOK, gin.H{"data": borrowbook})
+}
+
+// DELETE /borrow_books/:id
+func DeleteBorrowBook(c *gin.Context) {
+	Id := c.Param("id")
+	if tx := entity.DB().Delete(&entity.BorrowBook{}, Id); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "borrowbook ID not found"})
+		return
+	}
+	c.JSON(http.StatusOK, fmt.Sprintf("BorrowBookID :  %s deleted.", Id))
 }
