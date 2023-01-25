@@ -87,7 +87,7 @@ func ListPreorders(c *gin.Context) { //เอา object ไปเชื่อม
 // DELETE /preorder/:id
 func DeletePreorder(c *gin.Context) {
 	id := c.Param("id")
-	if tx := entity.DB().Exec("DELETE FROM preorder WHERE id = ?", id); tx.RowsAffected == 0 {
+	if tx := entity.DB().Exec("DELETE FROM preorders WHERE id = ?", id); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "preorder not found"})
 		return
 	}
