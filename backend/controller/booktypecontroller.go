@@ -22,7 +22,7 @@ func CreateBookType(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": bookType})
 }
 
-// GET /BookType/:id
+// GET /bookType/:id
 func GetBookType(c *gin.Context) {
 	var bookType entity.BookType
 
