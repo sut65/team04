@@ -62,6 +62,7 @@ func CreateBorrowEquipment(c *gin.Context) {
 func GetBorrowEquipment(c *gin.Context) { //get โดนส่งพารามิเตอร์
 	var borrowequipment entity.BorrowEquipment
 	id := c.Param("id") //เรียกค่าจากตัวแปรที่อยู่แบบ object ซ้อน object ที่เป็น FK กัน
+	
 	if err := entity.DB().Preload("EquipmentPurchasing").Preload("User").Preload("Librarian").Raw("SELECT * FROM borrow_equipments WHERE id = ?", id).Find(&borrowequipment).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
