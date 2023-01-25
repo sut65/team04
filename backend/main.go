@@ -159,11 +159,11 @@ func main() {
 	r.DELETE("/objective/:id", controller.DeleteObjective)
 
 	// BookType
-	r.GET("/objective", controller.GetAllBookType)
-	r.GET("/objective/:id", controller.GetBookTypeByID)
-	r.POST("/objective", controller.CreateBookType)
-	r.PATCH("/objective", controller.UpdateBookType)
-	r.DELETE("/objective/:id", controller.DeleteBookType)
+	r.GET("/bookType", controller.GetAllBookType)
+	r.GET("/bookType/:id", controller.GetBookTypeByID)
+	r.POST("/bookType", controller.CreateBookType)
+	r.PATCH("/bookType", controller.UpdateBookType)
+	r.DELETE("/bookType/:id", controller.DeleteBookType)
 
 	// Introduce
 	r.GET("/introduce", controller.ListIntroduces)
