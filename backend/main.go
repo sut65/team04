@@ -71,6 +71,27 @@ func main() {
 	r.PATCH("/return_books", controller.UpdateReturnBook)
 	r.DELETE("/return_books/:id", controller.DeleteReturnBook)
 
+	//----------Borrow & Return Equipment & equipment status----
+	// BorrowEquipment
+	r.GET("/borrow_equipments", controller.ListBorrowEquipments)
+	r.GET("/borrow_equipments/:id", controller.GetBorrowEquipment)
+	r.POST("/borrow_equipments", controller.CreateBorrowEquipment)
+	r.PATCH("/borrow_equipments", controller.UpdateBorrowEquipment)
+	r.DELETE("/borrow_equipments/:id", controller.DeleteBorrowEquipment)
+
+	// equipment status
+	r.GET("/equipment_statuses", controller.ListEquipmentStatuses)
+	r.GET("/equipment_status/:id", controller.GetEquipmentStatus)
+	r.POST("/equipment_statuses", controller.CreateEquipmentStatus)
+	r.PATCH("/equipment_statuses", controller.UpdateEquipmentStatus)
+	r.DELETE("/equipment_statuses/:id", controller.DeleteEquipmentStatus)
+
+	// ReturnEquipment
+	r.GET("/return_equipments", controller.ListReturnEquipments)
+	r.GET("/return_equipments/:id", controller.GetReturnEquipment)
+	r.POST("/return_equipments", controller.CreateReturnEquipment)
+	r.PATCH("/return_equipments", controller.UpdateReturnEquipment)
+	r.DELETE("/return_equipments/:id", controller.DeleteReturnEquipment)
 	//
 	// Run the server
 	r.Run()
