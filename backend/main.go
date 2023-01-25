@@ -144,11 +144,33 @@ func main() {
 	r.DELETE("/payment/:id", controller.DeletePayment)
 
 	// Forfeit
-	r.GET("/equipmentPurchasing", controller.ListForfeits)
-	r.GET("/equipmentPurchasing/:id", controller.GetForfeit)
-	r.POST("/equipmentPurchasing", controller.CreateForfeit)
-	r.PATCH("/equipmentPurchasing", controller.UpdateForfeit)
-	r.DELETE("/equipmentPurchasing/:id", controller.DeleteForfeit)
+	r.GET("/forfeit", controller.ListForfeits)
+	r.GET("/forfeit/:id", controller.GetForfeit)
+	r.POST("/forfeit", controller.CreateForfeit)
+	r.PATCH("/forfeit", controller.UpdateForfeit)
+	r.DELETE("/forfeit/:id", controller.DeleteForfeit)
+
+	//------ Introduce ------//
+	// Objective
+	r.GET("/objective", controller.GetAllObjective)
+	r.GET("/objective/:id", controller.GetObjectiveByID)
+	r.POST("/objective", controller.CreateObjective)
+	r.PATCH("/objective", controller.UpdateObjective)
+	r.DELETE("/objective/:id", controller.DeleteObjective)
+
+	// BookType
+	r.GET("/objective", controller.GetAllBookType)
+	r.GET("/objective/:id", controller.GetBookTypeByID)
+	r.POST("/objective", controller.CreateBookType)
+	r.PATCH("/objective", controller.UpdateBookType)
+	r.DELETE("/objective/:id", controller.DeleteBookType)
+
+	// Introduce
+	r.GET("/introduce", controller.ListIntroduces)
+	r.GET("/introduce/:id", controller.GetIntroduce)
+	r.POST("/introduce", controller.CreateIntroduce)
+	r.PATCH("/introduce", controller.UpdateIntroduce)
+	r.DELETE("/introduce/:id", controller.DeleteIntroduce)
 
 	//
 	// Run the server

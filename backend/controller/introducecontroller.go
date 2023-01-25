@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -68,25 +69,25 @@ func CreateIntroduce(c *gin.Context) {
 func GetIntroduce(c *gin.Context) {
 	var introduce entity.Introduce
 	id := c.Param("id")
-	if err := entity.DB().Preload("BookType").Preload("Objective").Preload("User").Raw("SELECT * FROM introduces WHERE id = ?", id).Find(&introduce).Error; err != nil {
+	if err := entity.DB().Model(&entity.Introduce{}).Where("ID = ?", id).Preload("BookType").Preload("Objective").Preload("User").Find(&introduce).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": introduce})
 }
 
-// DELETE /introduces/:id
+// DELETE /introduce/:id
 func DeleteIntroduce(c *gin.Context) {
 	id := c.Param("id")
-	if tx := entity.DB().Exec("DELETE FROM introduces WHERE id = ?", id); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "introduce not found"})
+	if tx := entity.DB().Delete(&entity.Introduce{}, id); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "introduce ID not found"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": id})
+	c.JSON(http.StatusOK, fmt.Sprintf("IntroduceID :  id%s deleted.", id))
 }
 
-// PATCH /introduces
+// PATCH /introduce
 func UpdateIntroduce(c *gin.Context) {
 	var introduce entity.Introduce
 	if err := c.ShouldBindJSON(&introduce); err != nil {
@@ -107,13 +108,13 @@ func UpdateIntroduce(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": introduce})
 }
 
-// GET /introduces
+// GET /introduce
 
 func ListIntroduces(c *gin.Context) {
 
 	var introduce []entity.Introduce
 
-	if err := entity.DB().Preload("BookType").Preload("Objective").Preload("User").Raw("SELECT * FROM introduces").Find(&introduce).Error; err != nil {
+	if err := entity.DB().Model(&entity.Introduce{}).Preload("BookType").Preload("Objective").Preload("User").Find(&introduce).Error; err != nil {
 
 		//Preload เหมือนจอยตาราง
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

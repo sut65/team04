@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -10,7 +11,7 @@ import (
 // POST /objective
 func CreateObjective(c *gin.Context) {
 	var objective entity.Objective
-	if err := c.ShouldBindJSON(&objective); err != nil {
+	if err := c.ShouldBindJSON(&objective); err != nil { //การแปลงข้อมูลที่อยู่ในคอนเทคมาอยู่ในรูปแบบภาษาโก
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -23,11 +24,11 @@ func CreateObjective(c *gin.Context) {
 }
 
 // GET /objective/:id
-func GetObjective(c *gin.Context) {
+func GetObjectiveByID(c *gin.Context) {
 	var objective entity.Objective
 
-	id := c.Param("id")
-	if err := entity.DB().Raw("SELECT * FROM objectives WHERE id = ?", id).Find(&objective).Error; err != nil {
+	id := c.Param("id") //id ที่เราตั้งไว้ใน main.go ที่อยู่หลัง : ตัวอย่าง >> /objective/:id
+	if err := entity.DB().Model(&entity.Objective{}).Where("ID = ?", id).Scan(&objective).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -36,9 +37,9 @@ func GetObjective(c *gin.Context) {
 }
 
 // GET /objective
-func ListObjectives(c *gin.Context) {
+func GetAllObjective(c *gin.Context) {
 	var objective []entity.Objective
-	if err := entity.DB().Raw("SELECT * FROM objective").Find(&objective).Error; err != nil {
+	if err := entity.DB().Model(&entity.Objective{}).Scan(&objective).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -49,12 +50,12 @@ func ListObjectives(c *gin.Context) {
 // DELETE /objective/:id
 func DeleteObjective(c *gin.Context) {
 	id := c.Param("id")
-	if tx := entity.DB().Exec("DELETE FROM objectives WHERE id = ?", id); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "objective not found"})
+	if tx := entity.DB().Delete(&entity.Objective{}, id); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "objective ID not found"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": id})
+	c.JSON(http.StatusOK, fmt.Sprintf("objectiveID :  %s deleted.", id))
 }
 
 // PATCH /objectives
