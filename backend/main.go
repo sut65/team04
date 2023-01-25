@@ -135,6 +135,21 @@ func main() {
 	r.PATCH("/preorder", controller.UpdatePreorder)
 	r.DELETE("/preorder/:id", controller.DeletePreorder)
 
+	//------ Forfeit ------//
+	// Payment
+	r.GET("/payment", controller.GetAllPayment)
+	r.GET("/payment/:id", controller.GetPaymentByID)
+	r.POST("/payment", controller.CreatePayment)
+	r.PATCH("/payment", controller.UpdatePayment)
+	r.DELETE("/payment/:id", controller.DeletePayment)
+
+	// Forfeit
+	r.GET("/equipmentPurchasing", controller.ListForfeits)
+	r.GET("/equipmentPurchasing/:id", controller.GetForfeit)
+	r.POST("/equipmentPurchasing", controller.CreateForfeit)
+	r.PATCH("/equipmentPurchasing", controller.UpdateForfeit)
+	r.DELETE("/equipmentPurchasing/:id", controller.DeleteForfeit)
+
 	//
 	// Run the server
 	r.Run()
