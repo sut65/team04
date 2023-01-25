@@ -121,19 +121,34 @@ func main() {
 	r.PATCH("/receiver", controller.UpdateReceiver)
 	r.DELETE("/receiver/:id", controller.DeleteReceiver)
 
+	//--- มะปราง ----
 	//--- Confirmation ---
 	r.GET("/confirmation", controller.ListConfirmations)
 	r.GET("/confirmation/:id", controller.GetConfirmation)
 	r.POST("/confirmation", controller.CreateConfirmation)
 	r.PATCH("/confirmation", controller.UpdateConfirmation)
 	r.DELETE("/confirmation/:id", controller.DeleteConfirmation)
-
 	//--- Preorder ---
 	r.GET("/preorder", controller.ListPreorders)
 	r.GET("/preorder/:id", controller.GetPreorder)
 	r.POST("/preorder", controller.CreatePreorder)
 	r.PATCH("/preorder", controller.UpdatePreorder)
 	r.DELETE("/preorder/:id", controller.DeletePreorder)
+
+	//------ Forfeit ------//
+	// Payment
+	r.GET("/payment", controller.GetAllPayment)
+	r.GET("/payment/:id", controller.GetPaymentByID)
+	r.POST("/payment", controller.CreatePayment)
+	r.PATCH("/payment", controller.UpdatePayment)
+	r.DELETE("/payment/:id", controller.DeletePayment)
+
+	// Forfeit
+	r.GET("/equipmentPurchasing", controller.ListForfeits)
+	r.GET("/equipmentPurchasing/:id", controller.GetForfeit)
+	r.POST("/equipmentPurchasing", controller.CreateForfeit)
+	r.PATCH("/equipmentPurchasing", controller.UpdateForfeit)
+	r.DELETE("/equipmentPurchasing/:id", controller.DeleteForfeit)
 
 	//
 	// Run the server

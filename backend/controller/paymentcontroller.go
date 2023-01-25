@@ -8,7 +8,7 @@ import (
 	"github.com/team04/entity"
 )
 
-// GET Payment
+// GET payment
 func GetAllPayment(c *gin.Context) {
 
 	var payment []entity.Payment
@@ -22,7 +22,7 @@ func GetAllPayment(c *gin.Context) {
 
 }
 
-// GET Payment By ID
+// GET payment By ID
 func GetPaymentByID(c *gin.Context) {
 
 	var payment entity.Payment
@@ -36,7 +36,7 @@ func GetPaymentByID(c *gin.Context) {
 
 }
 
-// POST Payment
+// POST payment
 func CreatePayment(c *gin.Context) {
 	var payment entity.Payment
 
@@ -52,7 +52,7 @@ func CreatePayment(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": payment})
 }
 
-// PATCH /Payment
+// PATCH /payment
 func UpdatePayment(c *gin.Context) {
 	var payment entity.Payment
 	if err := c.ShouldBindJSON(&payment); err != nil {
@@ -60,12 +60,12 @@ func UpdatePayment(c *gin.Context) {
 		return
 	}
 
-	if tx := entity.DB().Where("id = ?", payment.ID).First(&entity.Payment{}); tx.RowsAffected == 0 {
+	if tx := entity.DB().Where("id = ?", payment.ID).First(&payment); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "payment not found"})
 		return
 	}
 
-	if err := entity.DB().Model(&payment).Update("Name", payment.Name).Error; err != nil {
+	if err := entity.DB().Save(&payment).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -73,7 +73,7 @@ func UpdatePayment(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": payment})
 }
 
-// DELETE Payment By id
+// DELETE payment By id
 func DeletePayment(c *gin.Context) {
 	Id := c.Param("id")
 	if tx := entity.DB().Delete(&entity.Payment{}, Id); tx.RowsAffected == 0 {

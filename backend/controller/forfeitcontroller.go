@@ -62,16 +62,16 @@ func CreateForfeit(c *gin.Context) {
 
 // GET /forfeit/:id
 func GetForfeit(c *gin.Context) {
-	var forfeit entity.Forfeit
-	id := c.Param("id")
-	if err := entity.DB().Preload("ReturnBook.User").Preload("ReturnBook.LostBook").Preload("ReturnBook.Late_Number").Preload("ReturnBook").Preload("Payment").Preload("Librarian").Raw("SELECT * FROM forfeits WHERE id = ?", id).Find(&forfeit).Error; err != nil {
+	var forfeit []entity.Forfeit
+
+	if err := entity.DB().Model(&entity.Forfeit{}).Preload("ReturnBook.User").Preload("ReturnBook.LostBook").Preload("ReturnBook.Late_Number").Preload("ReturnBook").Preload("Payment").Preload("Librarian").Find(&forfeit).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": forfeit})
 }
 
-// DELETE /forfeits/:id
+// DELETE /forfeit/:id
 func DeleteForfeit(c *gin.Context) {
 	id := c.Param("id")
 	if tx := entity.DB().Exec("DELETE FROM forfeits WHERE id = ?", id); tx.RowsAffected == 0 {
@@ -82,7 +82,7 @@ func DeleteForfeit(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": id})
 }
 
-// PATCH /forfeits
+// PATCH /forfeit
 func UpdateForfeit(c *gin.Context) {
 	var forfeit entity.Forfeit
 	if err := c.ShouldBindJSON(&forfeit); err != nil {
@@ -103,21 +103,16 @@ func UpdateForfeit(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": forfeit})
 }
 
-// GET /forfeits
+// GET /forfeits ไม่มีเงื่อนไข ส่งไปทุก object
+func ListForfeits(c *gin.Context) { //เอา object ไปเชื่อมกัน Preload คือ ดึง object ของ object
+	var forfeits []entity.Forfeit //ดึงมาทั้งหมด
 
-func ListForfeits(c *gin.Context) {
-
-	var forfeit []entity.Forfeit
-
-	if err := entity.DB().Preload("ReturnBook.User").Preload("ReturnBook.LostBook").Preload("ReturnBook.Late_Number").Preload("ReturnBook").Preload("Payment").Preload("Librarian").Raw("SELECT * FROM forfeits").Find(&forfeit).Error; err != nil {
-
+	if err := entity.DB().Preload("ReturnBook.User").Preload("ReturnBook.LostBook").Preload("ReturnBook.Late_Number").Preload("ReturnBook").Preload("Payment").Preload("Librarian").Raw("SELECT * FROM forfeits").Find(&forfeits).Error; err != nil {
 		//Preload เหมือนจอยตาราง
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-
 		return
-
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": forfeit})
+	c.JSON(http.StatusOK, gin.H{"data": forfeits})
 
 }
