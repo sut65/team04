@@ -1,4 +1,4 @@
-import { BookCategoryInterface } from "./IbookCategory"
+import { BookCategoryInterface } from "./IBookCategory"
 import { LibrarianInterface } from "./ILibrarian"
 import { PublisherInterface } from "./IPublisher"
 
