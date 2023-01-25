@@ -47,7 +47,7 @@ func CreateEquipmentPurchasing(c *gin.Context) { // c รับข้อมู�
 		Librarian:         librarian,                         // โยงความสัมพันธ์กับ Entity Librarian
 		Company:           company,                           // โยงความสัมพันธ์กับ Entity Company
 		EquipmentCategory: equipmentcategory,                 // โยงความสัมพันธ์กับ Entity EquipmentCategory
-		Amount:            equipmentpurchasing.Amount,
+		Amount:            equipmentpurchasing.Amount,        //ตั้งค่าฟิลด์ Amount
 	}
 
 	// 18: บันทึก
