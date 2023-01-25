@@ -18,16 +18,14 @@ type Receiver struct {
 type Confirmation struct {
 	gorm.Model
 
-	UserID *uint
-	User   User `gorm:"references:id;"`
-
 	PreorderID *uint
 	Preorder   Preorder `gorm:"references:id;"`
 
 	ReceiverID *uint
 	Receiver   Receiver `gorm:"references:id;"`
 
-	Note     string
+	NoteName string
+	NoteTel  string
 	Datetime time.Time
 
 	LibrarianID *uint

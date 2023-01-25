@@ -18,8 +18,7 @@ type User struct {
 	BorrowEquipments []BorrowEquipment `gorm:"foreignKey:UserID"`
 	Introduces       []Introduce       `gorm:"foreignKey:UserID"`
 
-	Preorder     []Preorder     `gorm:"foreignKey:OwnerID"`
-	Confirmation []Confirmation `gorm:"foreignKey:UserID"`
+	Preorder []Preorder `gorm:"foreignKey:OwnerID"`
 }
 
 type BorrowBook struct {

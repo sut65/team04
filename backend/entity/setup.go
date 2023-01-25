@@ -381,20 +381,20 @@ func SetupDatabase() {
 	// --- ตารางหลัก Confirmation
 
 	confirmation1 := Confirmation{
-		User:      mumana,
 		Preorder:  preorder1,
 		Receiver:  receiver1,
-		Note:      "-",
+		NoteName:  "-",
+		NoteTel:   "-",
 		Datetime:  time.Now(),
 		Librarian: chanaporn,
 	}
 	db.Model(&Confirmation{}).Create(&confirmation1)
 
 	confirmation2 := Confirmation{
-		User:      montree,
 		Preorder:  preorder2,
 		Receiver:  receiver2,
-		Note:      "1778899445561, สมชาย ใจดี, 0879456321",
+		NoteName:  "สมชาย ใจดี",
+		NoteTel:   "0879456321",
 		Datetime:  time.Now(),
 		Librarian: chanaporn,
 	}
