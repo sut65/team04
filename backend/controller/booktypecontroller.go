@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -10,7 +11,7 @@ import (
 // POST /bookType
 func CreateBookType(c *gin.Context) {
 	var bookType entity.BookType
-	if err := c.ShouldBindJSON(&bookType); err != nil {
+	if err := c.ShouldBindJSON(&bookType); err != nil { //การแปลงข้อมูลที่อยู่ในคอนเทคมาอยู่ในรูปแบบภาษาโก
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -23,11 +24,11 @@ func CreateBookType(c *gin.Context) {
 }
 
 // GET /bookType/:id
-func GetBookType(c *gin.Context) {
+func GetBookTypeByID(c *gin.Context) {
 	var bookType entity.BookType
 
-	id := c.Param("id")
-	if err := entity.DB().Raw("SELECT * FROM bookTypes WHERE id = ?", id).Find(&bookType).Error; err != nil {
+	id := c.Param("id") //id ที่เราตั้งไว้ใน main.go ที่อยู่หลัง : ตัวอย่าง >> /bookType/:id
+	if err := entity.DB().Model(&entity.BookType{}).Where("ID = ?", id).Scan(&bookType).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -36,25 +37,25 @@ func GetBookType(c *gin.Context) {
 }
 
 // GET /bookTypes
-func ListBookTypes(c *gin.Context) {
-	var bookTypes []entity.BookType
-	if err := entity.DB().Raw("SELECT * FROM bookTypes").Find(&bookTypes).Error; err != nil {
+func GetAllBookType(c *gin.Context) {
+	var bookType []entity.BookType
+	if err := entity.DB().Model(&entity.BookType{}).Scan(&bookType).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": bookTypes})
+	c.JSON(http.StatusOK, gin.H{"data": bookType})
 }
 
 // DELETE /bookType/:id
 func DeleteBookType(c *gin.Context) {
 	id := c.Param("id")
-	if tx := entity.DB().Exec("DELETE FROM bookTypes WHERE id = ?", id); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "bookType not found"})
+	if tx := entity.DB().Delete(&entity.BookType{}, id); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "bookType ID not found"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": id})
+	c.JSON(http.StatusOK, fmt.Sprintf("bookTypeID :  %s deleted.", id))
 }
 
 // PATCH /bookTypes

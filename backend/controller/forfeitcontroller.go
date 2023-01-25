@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -62,7 +63,7 @@ func CreateForfeit(c *gin.Context) {
 
 // GET /forfeit/:id
 func GetForfeit(c *gin.Context) {
-	var forfeit []entity.Forfeit
+	var forfeit entity.Forfeit
 
 	if err := entity.DB().Model(&entity.Forfeit{}).Preload("ReturnBook.User").Preload("ReturnBook.LostBook").Preload("ReturnBook.Late_Number").Preload("ReturnBook").Preload("Payment").Preload("Librarian").Find(&forfeit).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -74,12 +75,12 @@ func GetForfeit(c *gin.Context) {
 // DELETE /forfeit/:id
 func DeleteForfeit(c *gin.Context) {
 	id := c.Param("id")
-	if tx := entity.DB().Exec("DELETE FROM forfeits WHERE id = ?", id); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "forfeit not found"})
+	if tx := entity.DB().Delete(&entity.Forfeit{}, id); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Forfeit ID not found"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": id})
+	c.JSON(http.StatusOK, fmt.Sprintf("ForfeitID :  id%s deleted.", id))
 }
 
 // PATCH /forfeit
@@ -103,16 +104,16 @@ func UpdateForfeit(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": forfeit})
 }
 
-// GET /forfeits ไม่มีเงื่อนไข ส่งไปทุก object
+// GET /forfeit ไม่มีเงื่อนไข ส่งไปทุก object
 func ListForfeits(c *gin.Context) { //เอา object ไปเชื่อมกัน Preload คือ ดึง object ของ object
-	var forfeits []entity.Forfeit //ดึงมาทั้งหมด
+	var forfeit []entity.Forfeit //ดึงมาทั้งหมด
 
-	if err := entity.DB().Preload("ReturnBook.User").Preload("ReturnBook.LostBook").Preload("ReturnBook.Late_Number").Preload("ReturnBook").Preload("Payment").Preload("Librarian").Raw("SELECT * FROM forfeits").Find(&forfeits).Error; err != nil {
+	if err := entity.DB().Model(&entity.Forfeit{}).Preload("ReturnBook.User").Preload("ReturnBook.LostBook").Preload("ReturnBook.Late_Number").Preload("ReturnBook").Preload("Payment").Preload("Librarian").Find(&forfeit).Error; err != nil {
 		//Preload เหมือนจอยตาราง
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": forfeits})
+	c.JSON(http.StatusOK, gin.H{"data": forfeit})
 
 }
