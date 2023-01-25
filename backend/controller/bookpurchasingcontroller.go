@@ -78,7 +78,7 @@ func GetBookPurchasingByID(c *gin.Context) {
 
 	var bookPurchasing entity.BookPurchasing
 	Id := c.Param("id") //id ที่เราตั้งไว้ใน main.go ที่อยู่หลัง : ตัวอย่าง >> /bookPurchasing/:id
-	if err := entity.DB().Model(&entity.BookPurchasing{}).Where("ID = ?", Id).Preload("Librarian").Find(&bookPurchasing); err.RowsAffected == 0 {
+	if err := entity.DB().Model(&entity.BookPurchasing{}).Where("ID = ?", Id).Preload("Librarian").Preload("BookCategory").Preload("Publisher").Find(&bookPurchasing); err.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("BookPurchasingID :  Id%s not found.", Id)})
 		return
 	}
@@ -115,5 +115,5 @@ func DeleteBookPurchasing(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, fmt.Sprintf("BookPurchasingID :  %s deleted.", Id))
+	c.JSON(http.StatusOK, fmt.Sprintf("BookPurchasingID :  Id%s deleted.", Id))
 }
