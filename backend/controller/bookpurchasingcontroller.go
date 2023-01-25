@@ -64,7 +64,7 @@ func GetAllBookPurchasing(c *gin.Context) {
 
 	var bookPurchasing []entity.BookPurchasing
 
-	if err := entity.DB().Model(&entity.BookPurchasing{}).Preload("Librarian").Find(&bookPurchasing).Error; err != nil {
+	if err := entity.DB().Model(&entity.BookPurchasing{}).Preload("Librarian").Preload("BookCategory").Preload("Publisher").Find(&bookPurchasing).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
