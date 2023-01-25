@@ -4,200 +4,212 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/team04/controller"
 	"github.com/team04/entity"
+	"github.com/team04/middlewares"
 )
 
 func main() {
+
 	entity.SetupDatabase()
+
 	r := gin.Default()
 	r.Use(CORSMiddleware())
-	r.GET("/health", controller.Health)
 
-	//
-	//------ BookPurchasing System ------//
-	//bookPurchasing
-	r.GET("/bookPurchasing", controller.GetAllBookPurchasing)
-	r.GET("/bookPurchasing/:id", controller.GetBookPurchasingByID)
-	r.POST("/bookPurchasing", controller.CreateBookPurchasing)
-	r.PATCH("/bookPurchasing", controller.UpdateBookPurchasing)
-	r.DELETE("/bookPurchasing/:id", controller.DeleteBookPurchasing)
-	//publisher
-	r.GET("/publisher", controller.GetAllPublisher)
-	r.GET("/publisher/:id", controller.GetPublisherByID)
-	r.POST("/publisher", controller.CreatePublisher)
-	r.PATCH("/publisher", controller.UpdatePublisher)
-	r.DELETE("/publisher/:id", controller.DeletePublisher)
-	//Librarian
-	r.GET("/librarian", controller.GetAllLibrarian)
-	r.GET("/librarian/:id", controller.GetLibrarianByID)
-	r.POST("/librarian", controller.CreateLibrarian)
-	r.PATCH("/librarian", controller.UpdateLibrarian)
-	r.DELETE("/librarian/:id", controller.DeleteLibrarian)
+	api := r.Group("")
+	{
+		protected := api.Use(middlewares.Authorizes()) //บล็อคการดึงข้อมูล
+		{
 
-	// //------ EquipmentPurchasing System ------//
-	//EquipmentPurchasing
-	r.GET("/equipmentPurchasing", controller.GetAllEquipmentPurchasing)
-	r.GET("/equipmentPurchasing/:id", controller.GetEquipmentPurchasingByID)
-	r.POST("/equipmentPurchasing", controller.CreateEquipmentPurchasing)
-	r.PATCH("/equipmentPurchasing", controller.UpdateEquipmentPurchasing)
-	r.DELETE("/equipmentPurchasing/:id", controller.DeleteEquipmentPurchasing)
+			//------ BookPurchasing System ------//
+			//bookPurchasing
+			protected.GET("/bookPurchasing", controller.GetAllBookPurchasing)
+			protected.GET("/bookPurchasing/:id", controller.GetBookPurchasingByID)
+			protected.POST("/bookPurchasingCreate", controller.CreateBookPurchasing)
+			protected.PATCH("/bookPurchasingUpdate", controller.UpdateBookPurchasing)
+			protected.DELETE("/bookPurchasingDelete/:id", controller.DeleteBookPurchasing)
+			//publisher
+			protected.GET("/publisher", controller.GetAllPublisher)
+			protected.GET("/publisher/:id", controller.GetPublisherByID)
+			protected.POST("/publisher", controller.CreatePublisher)
+			protected.PATCH("/publisher", controller.UpdatePublisher)
+			protected.DELETE("/publisher/:id", controller.DeletePublisher)
+			//Librarian
+			protected.GET("/librarian", controller.GetAllLibrarian)
+			protected.GET("/librarian/:id", controller.GetLibrarianByID)
+			protected.POST("/librarian", controller.CreateLibrarian)
+			protected.PATCH("/librarian", controller.UpdateLibrarian)
+			protected.DELETE("/librarian/:id", controller.DeleteLibrarian)
 
-	//Company
-	r.GET("/company", controller.GetAllCompany)
-	r.GET("/company/:id", controller.GetcompanyByID)
-	r.POST("/company", controller.CreateCompany)
-	r.PATCH("/company", controller.UpdateCompany)
-	r.DELETE("/company/:id", controller.DeleteCompany)
+			// //------ EquipmentPurchasing System ------//
+			//EquipmentPurchasing
+			protected.GET("/equipmentPurchasing", controller.GetAllEquipmentPurchasing)
+			protected.GET("/equipmentPurchasing/:id", controller.GetEquipmentPurchasingByID)
+			protected.POST("/equipmentPurchasingCreate", controller.CreateEquipmentPurchasing)
+			protected.PATCH("/equipmentPurchasingUpdate", controller.UpdateEquipmentPurchasing)
+			protected.DELETE("/equipmentPurchasingDelete/:id", controller.DeleteEquipmentPurchasing)
 
-	//EquipmentCategory
-	r.GET("/equipmentCategory", controller.GetAllEquipmentCategory)
-	r.GET("/equipmentCategory/:id", controller.GetEquipmentCategoryByID)
-	r.POST("/equipmentCategory", controller.CreatEquipmentCategory)
-	r.PATCH("/equipmentCategory", controller.UpdateEquipmentCategory)
-	r.DELETE("/equipmentCategory/:id", controller.DeleteEquipmentCategory)
+			//Company
+			protected.GET("/company", controller.GetAllCompany)
+			protected.GET("/company/:id", controller.GetcompanyByID)
+			protected.POST("/company", controller.CreateCompany)
+			protected.PATCH("/company", controller.UpdateCompany)
+			protected.DELETE("/company/:id", controller.DeleteCompany)
 
-	//
-	//------ BorrowBook System ------//
-	// User
-	r.GET("/users", controller.ListUsers)
-	r.GET("/users/:id", controller.GetUser)
-	r.POST("/users", controller.CreateUser)
-	r.PATCH("/users", controller.UpdateUser)
-	r.DELETE("/users/:id", controller.DeleteUser)
-	// BorrowBook
-	r.GET("/borrow_books", controller.GetAllBorrowBook)
-	r.GET("/borrow_books/:id", controller.GetBorrowBookByID)
-	r.POST("/borrow_books", controller.CreateBorrowBook)
-	r.PATCH("/borrow_books", controller.UpdateBorrowBook)
-	r.DELETE("/borrow_books/:id", controller.DeleteBorrowBook)
+			//EquipmentCategory
+			protected.GET("/equipmentCategory", controller.GetAllEquipmentCategory)
+			protected.GET("/equipmentCategory/:id", controller.GetEquipmentCategoryByID)
+			protected.POST("/equipmentCategory", controller.CreatEquipmentCategory)
+			protected.PATCH("/equipmentCategory", controller.UpdateEquipmentCategory)
+			protected.DELETE("/equipmentCategory/:id", controller.DeleteEquipmentCategory)
 
-	//
-	//------ ReturnBook System ------//
-	// LostBook
-	r.GET("/lost_books", controller.ListLostBooks)
-	r.GET("/lost_books/:id", controller.GetLostBook)
-	r.POST("/lost_books", controller.CreateLostBook)
-	r.PATCH("/lost_books", controller.UpdateLostBook)
-	r.DELETE("/lost_books/:id", controller.DeleteLostBook)
-	// ReturnBook
-	r.GET("/return_books", controller.GetAllReturnBook)
-	r.GET("/return_books/:id", controller.GetReturnBookByID)
-	r.POST("/return_books", controller.CreateReturnBook)
-	r.PATCH("/return_books", controller.UpdateReturnBook)
-	r.DELETE("/return_books/:id", controller.DeleteReturnBook)
+			//
+			//------ BorrowBook System ------//
+			// User
+			protected.GET("/users", controller.ListUsers)
+			protected.GET("/users/:id", controller.GetUser)
+			protected.POST("/users", controller.CreateUser)
+			protected.PATCH("/users", controller.UpdateUser)
+			protected.DELETE("/users/:id", controller.DeleteUser)
+			// BorrowBook
+			protected.GET("/borrow_books", controller.GetAllBorrowBook)
+			protected.GET("/borrow_books/:id", controller.GetBorrowBookByID)
+			protected.POST("/borrow_books", controller.CreateBorrowBook)
+			protected.PATCH("/borrow_books", controller.UpdateBorrowBook)
+			protected.DELETE("/borrow_books/:id", controller.DeleteBorrowBook)
 
-	//----------Borrow & Return Equipment & equipment status----
-	// BorrowEquipment
-	r.GET("/borrowEquipment", controller.GetAllBorrowEquipment)
-	r.GET("/borrowEquipment/:id", controller.GetBorrowEquipmentByID)
-	r.POST("/borrowEquipment", controller.CreateBorrowEquipment)
-	r.PATCH("/borrowEquipment", controller.UpdateBorrowEquipment)
-	r.DELETE("/borrowEquipment/:id", controller.DeleteBorrowEquipment)
+			//
+			//------ ReturnBook System ------//
+			// LostBook
+			protected.GET("/lost_books", controller.ListLostBooks)
+			protected.GET("/lost_books/:id", controller.GetLostBook)
+			protected.POST("/lost_books", controller.CreateLostBook)
+			protected.PATCH("/lost_books", controller.UpdateLostBook)
+			protected.DELETE("/lost_books/:id", controller.DeleteLostBook)
+			// ReturnBook
+			protected.GET("/return_books", controller.GetAllReturnBook)
+			protected.GET("/return_books/:id", controller.GetReturnBookByID)
+			protected.POST("/return_books", controller.CreateReturnBook)
+			protected.PATCH("/return_books", controller.UpdateReturnBook)
+			protected.DELETE("/return_books/:id", controller.DeleteReturnBook)
 
-	// equipment status
-	r.GET("/equipment_statuses", controller.ListEquipmentStatuses)
-	r.GET("/equipment_status/:id", controller.GetEquipmentStatus)
-	r.POST("/equipment_statuses", controller.CreateEquipmentStatus)
-	r.PATCH("/equipment_statuses", controller.UpdateEquipmentStatus)
-	r.DELETE("/equipment_statuses/:id", controller.DeleteEquipmentStatus)
+			//----------Borrow & Return Equipment & equipment status----
+			// BorrowEquipment
+			protected.GET("/borrowEquipment", controller.GetAllBorrowEquipment)
+			protected.GET("/borrowEquipment/:id", controller.GetBorrowEquipmentByID)
+			protected.POST("/borrowEquipment", controller.CreateBorrowEquipment)
+			protected.PATCH("/borrowEquipment", controller.UpdateBorrowEquipment)
+			protected.DELETE("/borrowEquipment/:id", controller.DeleteBorrowEquipment)
 
-	// ReturnEquipment
-	r.GET("/returnEquipment", controller.GetAllReturnEquipment)
-	r.GET("/returnEquipment/:id", controller.GetReturnEquipmentByID)
-	r.POST("/returnEquipment", controller.CreateReturnEquipment)
-	r.PATCH("/returnEquipment", controller.UpdateReturnEquipment)
-	r.DELETE("/returnEquipment/:id", controller.DeleteReturnEquipment)
+			// equipment status
+			protected.GET("/equipment_statuses", controller.ListEquipmentStatuses)
+			protected.GET("/equipment_status/:id", controller.GetEquipmentStatus)
+			protected.POST("/equipment_statuses", controller.CreateEquipmentStatus)
+			protected.PATCH("/equipment_statuses", controller.UpdateEquipmentStatus)
+			protected.DELETE("/equipment_statuses/:id", controller.DeleteEquipmentStatus)
 
-	//BookCategory
-	r.GET("/bookCategory", controller.GetAllBookCategory)
-	r.GET("/bookCategory/:id", controller.GetBookCategoryByID)
-	r.POST("/bookCategory", controller.CreateBookCategory)
-	r.PATCH("/bookCategory", controller.UpdateBookCategory)
-	r.DELETE("/bookCategory/:id", controller.DeleteBookCategory)
+			// ReturnEquipment
+			protected.GET("/returnEquipment", controller.GetAllReturnEquipment)
+			protected.GET("/returnEquipment/:id", controller.GetReturnEquipmentByID)
+			protected.POST("/returnEquipment", controller.CreateReturnEquipment)
+			protected.PATCH("/returnEquipment", controller.UpdateReturnEquipment)
+			protected.DELETE("/returnEquipment/:id", controller.DeleteReturnEquipment)
 
-	//--- Receiver ---
-	r.GET("/receiver", controller.GetAllReceiver)
-	r.GET("/receiver/:id", controller.GetReceiverByID)
-	r.POST("/receiver", controller.CreateReceiver)
-	r.PATCH("/receiver", controller.UpdateReceiver)
-	r.DELETE("/receiver/:id", controller.DeleteReceiver)
+			//BookCategory
+			protected.GET("/bookCategory", controller.GetAllBookCategory)
+			protected.GET("/bookCategory/:id", controller.GetBookCategoryByID)
+			protected.POST("/bookCategory", controller.CreateBookCategory)
+			protected.PATCH("/bookCategory", controller.UpdateBookCategory)
+			protected.DELETE("/bookCategory/:id", controller.DeleteBookCategory)
 
-	//--- มะปราง ----
-	//--- Confirmation ---
-	r.GET("/confirmation", controller.ListConfirmations)
-	r.GET("/confirmation/:id", controller.GetConfirmation)
-	r.POST("/confirmation", controller.CreateConfirmation)
-	r.PATCH("/confirmation", controller.UpdateConfirmation)
-	r.DELETE("/confirmation/:id", controller.DeleteConfirmation)
-	//--- Preorder ---
-	r.GET("/preorder", controller.ListPreorders)
-	r.GET("/preorder/:id", controller.GetPreorder)
-	r.POST("/preorder", controller.CreatePreorder)
-	r.PATCH("/preorder", controller.UpdatePreorder)
-	r.DELETE("/preorder/:id", controller.DeletePreorder)
+			//--- Receiver ---
+			protected.GET("/receiver", controller.GetAllReceiver)
+			protected.GET("/receiver/:id", controller.GetReceiverByID)
+			protected.POST("/receiver", controller.CreateReceiver)
+			protected.PATCH("/receiver", controller.UpdateReceiver)
+			protected.DELETE("/receiver/:id", controller.DeleteReceiver)
 
-	//------ Forfeit ------//
-	// Payment
-	r.GET("/payment", controller.GetAllPayment)
-	r.GET("/payment/:id", controller.GetPaymentByID)
-	r.POST("/payment", controller.CreatePayment)
-	r.PATCH("/payment", controller.UpdatePayment)
-	r.DELETE("/payment/:id", controller.DeletePayment)
+			//--- มะปราง ----
+			//--- Confirmation ---
+			protected.GET("/confirmation", controller.ListConfirmations)
+			protected.GET("/confirmation/:id", controller.GetConfirmation)
+			protected.POST("/confirmation", controller.CreateConfirmation)
+			protected.PATCH("/confirmation", controller.UpdateConfirmation)
+			protected.DELETE("/confirmation/:id", controller.DeleteConfirmation)
+			//--- Preorder ---
+			protected.GET("/preorder", controller.ListPreorders)
+			protected.GET("/preorder/:id", controller.GetPreorder)
+			protected.POST("/preorder", controller.CreatePreorder)
+			protected.PATCH("/preorder", controller.UpdatePreorder)
+			protected.DELETE("/preorder/:id", controller.DeletePreorder)
 
-	// Forfeit
-	r.GET("/forfeit", controller.ListForfeits)
-	r.GET("/forfeit/:id", controller.GetForfeit)
-	r.POST("/forfeit", controller.CreateForfeit)
-	r.PATCH("/forfeit", controller.UpdateForfeit)
-	r.DELETE("/forfeit/:id", controller.DeleteForfeit)
+			//------ Forfeit ------//
+			// Payment
+			protected.GET("/payment", controller.GetAllPayment)
+			protected.GET("/payment/:id", controller.GetPaymentByID)
+			protected.POST("/payment", controller.CreatePayment)
+			protected.PATCH("/payment", controller.UpdatePayment)
+			protected.DELETE("/payment/:id", controller.DeletePayment)
 
-	//------ Introduce ------//
-	// Objective
-	r.GET("/objective", controller.GetAllObjective)
-	r.GET("/objective/:id", controller.GetObjectiveByID)
-	r.POST("/objective", controller.CreateObjective)
-	r.PATCH("/objective", controller.UpdateObjective)
-	r.DELETE("/objective/:id", controller.DeleteObjective)
+			// Forfeit
+			protected.GET("/forfeit", controller.ListForfeits)
+			protected.GET("/forfeit/:id", controller.GetForfeit)
+			protected.POST("/forfeit", controller.CreateForfeit)
+			protected.PATCH("/forfeit", controller.UpdateForfeit)
+			protected.DELETE("/forfeit/:id", controller.DeleteForfeit)
 
-	// BookType
-	r.GET("/bookType", controller.GetAllBookType)
-	r.GET("/bookType/:id", controller.GetBookTypeByID)
-	r.POST("/bookType", controller.CreateBookType)
-	r.PATCH("/bookType", controller.UpdateBookType)
-	r.DELETE("/bookType/:id", controller.DeleteBookType)
+			//------ Introduce ------//
+			// Objective
+			protected.GET("/objective", controller.GetAllObjective)
+			protected.GET("/objective/:id", controller.GetObjectiveByID)
+			protected.POST("/objective", controller.CreateObjective)
+			protected.PATCH("/objective", controller.UpdateObjective)
+			protected.DELETE("/objective/:id", controller.DeleteObjective)
 
-	// Introduce
-	r.GET("/introduce", controller.ListIntroduces)
-	r.GET("/introduce/:id", controller.GetIntroduce)
-	r.POST("/introduce", controller.CreateIntroduce)
-	r.PATCH("/introduce", controller.UpdateIntroduce)
-	r.DELETE("/introduce/:id", controller.DeleteIntroduce)
+			// BookType
+			protected.GET("/bookType", controller.GetAllBookType)
+			protected.GET("/bookType/:id", controller.GetBookTypeByID)
+			protected.POST("/bookType", controller.CreateBookType)
+			protected.PATCH("/bookType", controller.UpdateBookType)
+			protected.DELETE("/bookType/:id", controller.DeleteBookType)
 
-	//--- ขนุน ----
-	//--- Level ---
-	r.GET("/level", controller.GetAllLevel)
-	r.GET("/level/:id", controller.GetLevelByID)
-	r.POST("/level", controller.CreateLevel)
-	r.PATCH("/level", controller.UpdateLevel)
-	r.DELETE("/level/:id", controller.DeleteLevel)
+			// Introduce
+			protected.GET("/introduce", controller.ListIntroduces)
+			protected.GET("/introduce/:id", controller.GetIntroduce)
+			protected.POST("/introduce", controller.CreateIntroduce)
+			protected.PATCH("/introduce", controller.UpdateIntroduce)
+			protected.DELETE("/introduce/:id", controller.DeleteIntroduce)
 
-	//--- ขนุน ----
-	//--- BookRepair ---
-	r.GET("/bookrepair", controller.GetAllBookRepair)
-	r.GET("/bookrepair/:id", controller.GetBookRepairByID)
-	r.POST("/bookrepair", controller.CreateBookRepair)
-	r.PATCH("/bookrepair", controller.UpdateBookRepair)
-	r.DELETE("/bookrepair/:id", controller.DeleteBookRepair)
+			//--- ขนุน ----
+			//--- Level ---
+			protected.GET("/level", controller.GetAllLevel)
+			protected.GET("/level/:id", controller.GetLevelByID)
+			protected.POST("/level", controller.CreateLevel)
+			protected.PATCH("/level", controller.UpdateLevel)
+			protected.DELETE("/level/:id", controller.DeleteLevel)
 
-	//--- ขนุน ----
-	//--- EquipmentRepair ---
-	r.GET("/equipmentrepair", controller.GetAllEquipmentRepair)
-	r.GET("/equipmentrepair/:id", controller.GetEquipmentRepairByID)
-	r.POST("/equipmentrepair", controller.CreateEquipmentRepair)
-	r.PATCH("/equipmentrepair", controller.UpdateEquipmentRepair)
-	r.DELETE("/equipmentrepair/:id", controller.DeleteEquipmentRepair)
+			//--- ขนุน ----
+			//--- BookRepair ---
+			protected.GET("/bookrepair", controller.GetAllBookRepair)
+			protected.GET("/bookrepair/:id", controller.GetBookRepairByID)
+			protected.POST("/bookrepair", controller.CreateBookRepair)
+			protected.PATCH("/bookrepair", controller.UpdateBookRepair)
+			protected.DELETE("/bookrepair/:id", controller.DeleteBookRepair)
 
+			//--- ขนุน ----
+			//--- EquipmentRepair ---
+			protected.GET("/equipmentrepair", controller.GetAllEquipmentRepair)
+			protected.GET("/equipmentrepair/:id", controller.GetEquipmentRepairByID)
+			protected.POST("/equipmentrepair", controller.CreateEquipmentRepair)
+			protected.PATCH("/equipmentrepair", controller.UpdateEquipmentRepair)
+			protected.DELETE("/equipmentrepair/:id", controller.DeleteEquipmentRepair)
 
-	//
+		}
+	}
+
+	// Authentication Routes
+	r.POST("/loginUsesr", controller.LoginUser)
+	r.POST("/loginLibrarian", controller.LoginLibrarian)
+	r.GET("T", controller.ListUsers)
+
 	// Run the server
 	r.Run()
 }
