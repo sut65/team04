@@ -34,12 +34,26 @@ func main() {
 	r.DELETE("/librarian/:id", controller.DeleteLibrarian)
 
 	// //------ EquipmentPurchasing System ------//
-	// //EquipmentPurchasing
-	// r.GET("/equipmentPurchasing", controller.GetAllEquipmentPurchasing)
-	// r.GET("/equipmentPurchasing/:id", controller.GetEquipmentPurchasingByID)
-	// r.POST("/equipmentPurchasing", controller.CreateEquipmentPurchasing)
-	// r.PATCH("/equipmentPurchasing", controller.UpdateEquipmentPurchasing)
-	// r.DELETE("/equipmentPurchasing/:id", controller.DeleteEquipmentPurchasing)
+	//EquipmentPurchasing
+	r.GET("/equipmentPurchasing", controller.GetAllEquipmentPurchasing)
+	r.GET("/equipmentPurchasing/:id", controller.GetEquipmentPurchasingByID)
+	r.POST("/equipmentPurchasing", controller.CreateEquipmentPurchasing)
+	r.PATCH("/equipmentPurchasing", controller.UpdateEquipmentPurchasing)
+	r.DELETE("/equipmentPurchasing/:id", controller.DeleteEquipmentPurchasing)
+
+	//Company
+	r.GET("/company", controller.GetAllCompany)
+	r.GET("/company/:id", controller.GetcompanyByID)
+	r.POST("/company", controller.CreateCompany)
+	r.PATCH("/company", controller.UpdateCompany)
+	r.DELETE("/company/:id", controller.DeleteCompany)
+
+	//EquipmentCategory
+	r.GET("/equipmentCategory", controller.GetAllEquipmentCategory)
+	r.GET("/equipmentCategory/:id", controller.GetEquipmentCategoryByID)
+	r.POST("/equipmentCategory", controller.CreatEquipmentCategory)
+	r.PATCH("/equipmentCategory", controller.UpdateEquipmentCategory)
+	r.DELETE("/equipmentCategory/:id", controller.DeleteEquipmentCategory)
 
 	//
 	//------ BorrowBook System ------//
@@ -50,8 +64,8 @@ func main() {
 	r.PATCH("/users", controller.UpdateUser)
 	r.DELETE("/users/:id", controller.DeleteUser)
 	// BorrowBook
-	r.GET("/borrow_books", controller.ListBorrowBooks)
-	r.GET("/borrow_books/:id", controller.GetBorrowBook)
+	r.GET("/borrow_books", controller.GetAllBorrowBook)
+	r.GET("/borrow_books/:id", controller.GetBorrowBookByID)
 	r.POST("/borrow_books", controller.CreateBorrowBook)
 	r.PATCH("/borrow_books", controller.UpdateBorrowBook)
 	r.DELETE("/borrow_books/:id", controller.DeleteBorrowBook)
@@ -65,19 +79,19 @@ func main() {
 	r.PATCH("/lost_books", controller.UpdateLostBook)
 	r.DELETE("/lost_books/:id", controller.DeleteLostBook)
 	// ReturnBook
-	r.GET("/return_books", controller.ListReturnBooks)
-	r.GET("/return_books/:id", controller.GetReturnBook)
+	r.GET("/return_books", controller.GetAllReturnBook)
+	r.GET("/return_books/:id", controller.GetReturnBookByID)
 	r.POST("/return_books", controller.CreateReturnBook)
 	r.PATCH("/return_books", controller.UpdateReturnBook)
 	r.DELETE("/return_books/:id", controller.DeleteReturnBook)
 
 	//----------Borrow & Return Equipment & equipment status----
 	// BorrowEquipment
-	r.GET("/borrow_equipments", controller.ListBorrowEquipments)
-	r.GET("/borrow_equipments/:id", controller.GetBorrowEquipment)
-	r.POST("/borrow_equipments", controller.CreateBorrowEquipment)
-	r.PATCH("/borrow_equipments", controller.UpdateBorrowEquipment)
-	r.DELETE("/borrow_equipments/:id", controller.DeleteBorrowEquipment)
+	r.GET("/borrowEquipment", controller.GetAllBorrowEquipment)
+	r.GET("/borrowEquipment/:id", controller.GetBorrowEquipmentByID)
+	r.POST("/borrowEquipment", controller.CreateBorrowEquipment)
+	r.PATCH("/borrowEquipment", controller.UpdateBorrowEquipment)
+	r.DELETE("/borrowEquipment/:id", controller.DeleteBorrowEquipment)
 
 	// equipment status
 	r.GET("/equipment_statuses", controller.ListEquipmentStatuses)
@@ -87,11 +101,19 @@ func main() {
 	r.DELETE("/equipment_statuses/:id", controller.DeleteEquipmentStatus)
 
 	// ReturnEquipment
-	r.GET("/return_equipments", controller.ListReturnEquipments)
-	r.GET("/return_equipments/:id", controller.GetReturnEquipment)
-	r.POST("/return_equipments", controller.CreateReturnEquipment)
-	r.PATCH("/return_equipments", controller.UpdateReturnEquipment)
-	r.DELETE("/return_equipments/:id", controller.DeleteReturnEquipment)
+	r.GET("/returnEquipment", controller.GetAllReturnEquipment)
+	r.GET("/returnEquipment/:id", controller.GetReturnEquipmentByID)
+	r.POST("/returnEquipment", controller.CreateReturnEquipment)
+	r.PATCH("/returnEquipment", controller.UpdateReturnEquipment)
+	r.DELETE("/returnEquipment/:id", controller.DeleteReturnEquipment)
+
+	//BookCategory
+	r.GET("/bookCategory", controller.GetAllBookCategory)
+	r.GET("/bookCategory/:id", controller.GetBookCategoryByID)
+	r.POST("/bookCategory", controller.CreateBookCategory)
+	r.PATCH("/bookCategory", controller.UpdateBookCategory)
+	r.DELETE("/bookCategory/:id", controller.DeleteBookCategory)
+
 	//
 	// Run the server
 	r.Run()
