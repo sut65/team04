@@ -1,0 +1,22 @@
+import { BookCategoryInterface } from "./IbookCategory"
+import { LibrarianInterface } from "./ILibrarian"
+import { PublisherInterface } from "./IPublisher"
+
+export interface BookPurchasingInterface {
+
+    Id: number
+	Date:    Date
+    BookName: String
+    AuthorName: string
+	Amount: number
+
+    LibrarianID: number
+	Librarian:   LibrarianInterface 
+
+    BookCategoryID: number
+	BookCategory:   BookCategoryInterface
+
+    PublisherID: number
+	Publisher:   PublisherInterface 
+   
+   }
