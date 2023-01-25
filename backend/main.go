@@ -114,6 +114,27 @@ func main() {
 	r.PATCH("/bookCategory", controller.UpdateBookCategory)
 	r.DELETE("/bookCategory/:id", controller.DeleteBookCategory)
 
+	//--- Receiver ---
+	r.GET("/receiver", controller.GetAllReceiver)
+	r.GET("/receiver/:id", controller.GetReceiverByID)
+	r.POST("/receiver", controller.CreateReceiver)
+	r.PATCH("/receiver", controller.UpdateReceiver)
+	r.DELETE("/receiver/:id", controller.DeleteReceiver)
+
+	//--- Confirmation ---
+	r.GET("/confirmation", controller.ListConfirmations)
+	r.GET("/confirmation/:id", controller.GetConfirmation)
+	r.POST("/confirmation", controller.CreateConfirmation)
+	r.PATCH("/confirmation", controller.UpdateConfirmation)
+	r.DELETE("/confirmation/:id", controller.DeleteConfirmation)
+
+	//--- Preorder ---
+	r.GET("/preorder", controller.ListPreorders)
+	r.GET("/preorder/:id", controller.GetPreorder)
+	r.POST("/preorder", controller.CreatePreorder)
+	r.PATCH("/preorder", controller.UpdatePreorder)
+	r.DELETE("/preorder/:id", controller.DeletePreorder)
+
 	//
 	// Run the server
 	r.Run()
