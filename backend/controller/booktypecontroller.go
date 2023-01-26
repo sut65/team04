@@ -8,9 +8,9 @@ import (
 	"github.com/team04/entity"
 )
 
-// POST /bookType
 func CreateBookType(c *gin.Context) {
 	var bookType entity.BookType
+
 	if err := c.ShouldBindJSON(&bookType); err != nil { //การแปลงข้อมูลที่อยู่ในคอนเทคมาอยู่ในรูปแบบภาษาโก
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -36,7 +36,7 @@ func GetBookTypeByID(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": bookType})
 }
 
-// GET /bookTypes
+// GET /bookType
 func GetAllBookType(c *gin.Context) {
 	var bookType []entity.BookType
 	if err := entity.DB().Model(&entity.BookType{}).Scan(&bookType).Error; err != nil {
@@ -58,7 +58,7 @@ func DeleteBookType(c *gin.Context) {
 	c.JSON(http.StatusOK, fmt.Sprintf("bookTypeID :  %s deleted.", id))
 }
 
-// PATCH /bookTypes
+// PATCH /bookType
 func UpdateBookType(c *gin.Context) {
 	var bookType entity.BookType
 	if err := c.ShouldBindJSON(&bookType); err != nil {
