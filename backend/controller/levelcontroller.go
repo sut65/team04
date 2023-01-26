@@ -21,10 +21,10 @@ func GetAllLevel(c *gin.Context) {
 }
 
 // GET Level By ID
-func GetLevelID(c *gin.Context) {
+func GetLevelByID(c *gin.Context) {
 
 	var level entity.Level
-	
+
 	Id := c.Param("id") //id ที่เราตั้งไว้ใน main.go ที่อยู่หลัง : ตัวอย่าง >> /level/:id
 	if err := entity.DB().Model(&entity.Level{}).Where("ID = ?", Id).Scan(&level).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
