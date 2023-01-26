@@ -43,7 +43,6 @@ import Home from "./components/Home";
 // import Limits from "./components/Limits";
 // import LimitCreate from "./components/LimitCreate";
 import SignInLibrarian from "./components/SignInLibrarian";
-import { NutritionistsInterface } from "./models/INutritionist";
 import { LibrarianInterface } from "./models/ILibrarian";
 
 import AssignmentLateOutlinedIcon from "@mui/icons-material/AssignmentLateOutlined";
