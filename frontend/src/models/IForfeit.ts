@@ -3,7 +3,7 @@ import { PaymentInterface } from "./IPayment"
 import { LibrarianInterface } from "./ILibrarian"
 
 
-export interface BookTypeInterface{
+export interface ForfeitInterface{
     Pay: number
 	Pay_Date: Date
 	Note:     string

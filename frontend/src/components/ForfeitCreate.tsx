@@ -16,10 +16,10 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import MenuItem from "@mui/material/MenuItem";
-import { BookTypeInterface } from "../models/IBookType";
-import { ObjectiveInterface } from "../models/IObjective";
-import { UserInterface } from "../models/IUser";
-import { IntroduceInterface } from "../models/IIntroduce";
+import { ReturnBookInterface } from "../models/IReturnBook";
+import { PaymentInterface } from "../models/IPayment";
+import { LibrarianInterface } from "../models/ILibrarian";
+import { ForfeitInterface } from "../models/IForfeit";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -29,13 +29,13 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-function IntroduceCreate() {
+function ForfeitCreate() {
   //const classes = useStyles();
-  const [I_Date, setDate] = useState<Date | null>(null);
-  const [bookType, setBookType] = useState<BookTypeInterface[]>([]);
-  const [objective, setObjective] = useState<ObjectiveInterface[]>([]);
-  const [users, setUsers] = useState<UserInterface[]>([]);
-  const [introduce, setIntroduce] = useState<Partial<IntroduceInterface>>({}); //Partial ชิ้นส่วนเอาไว้เซทข้อมูลที่ละส่วน
+  const [Pay_Date, setDate] = useState<Date | null>(null);
+  const [returnBook, setReturnBook] = useState<ReturnBookInterface[]>([]);
+  const [payment, setPayment] = useState<PaymentInterface[]>([]);
+  const [librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
+  const [forfeit, setForfeit] = useState<Partial<ForfeitInterface>>({}); //Partial ชิ้นส่วนเอาไว้เซทข้อมูลที่ละส่วน
 
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
@@ -53,19 +53,19 @@ function IntroduceCreate() {
   const handleInputChange = (
     event: React.ChangeEvent<{ id?: string; value: any }>
   ) => {
-    const id = event.target.id as keyof typeof IntroduceCreate;
+    const id = event.target.id as keyof typeof ForfeitCreate;
 
     const { value } = event.target;
 
-    setIntroduce({ ...introduce, [id]: value });
+    setForfeit({ ...forfeit, [id]: value });
   };
 
   const handleChange = (
     event: React.ChangeEvent<{ name?: string; value: any }>
   ) => {
-    const name = event.target.name as keyof typeof introduce;
-    setIntroduce({
-      ...introduce,
+    const name = event.target.name as keyof typeof forfeit;
+    setForfeit({
+      ...forfeit,
       [name]: event.target.value,
     });
   };
@@ -77,20 +77,16 @@ function IntroduceCreate() {
 
   function submit() {
     let data = {
-      Title: introduce.Title ?? "",
-      Author: introduce.Author ?? "",
-      ISBN: introduce.ISBN ?? "",
-      Edition: introduce.Edition ?? "",
-      Pub_Name: introduce.Pub_Name ?? "",
-      Pub_Year: introduce.Pub_Year ?? "",
-      BookTypeID: convertType(introduce.BookTypeID),
-      ObjectiveID: convertType(introduce.ObjectiveID),
-      I_Date: I_Date,
-      UserID: Number(localStorage.getItem("uid")),
+      ReturnBookID: convertType(forfeit.ReturnBookID),
+      Pay: forfeit.Pay ?? "",
+      PaymentID: convertType(forfeit.PaymentID),
+      Pay_Date: Pay_Date,
+      Note: forfeit.Note ?? "",
+      LibrarianID: Number(localStorage.getItem("lid")),
     };
     console.log(data);
 
-    const apiUrl = "http://localhost:8080/introduce";
+    const apiUrl = "http://localhost:8080/forfeit";
     const requestOptionsPost = {
       method: "POST", //เอาข้อมูลไปเก็บไว้ในดาต้าเบส
       headers: {
@@ -120,8 +116,8 @@ function IntroduceCreate() {
     },
   };
 
-  const getUsers = async () => {
-    const apiUrl = "http://localhost:8080/users";
+  const getLibrarian = async () => {
+    const apiUrl = "http://localhost:8080/librarian";
 
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
@@ -129,15 +125,15 @@ function IntroduceCreate() {
       .then((res) => {
         console.log(res.data);
         if (res.data) {
-          setUsers(res.data);
+          setLibrarian(res.data);
         } else {
           console.log("else");
         }
       });
   };
 
-  const getBookType = async () => {
-    const apiUrl = "http://localhost:8080/bookType";
+  const getPayment = async () => {
+    const apiUrl = "http://localhost:8080/payment";
 
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
@@ -145,29 +141,28 @@ function IntroduceCreate() {
       .then((res) => {
         console.log(res.data);
         if (res.data) {
-          setBookType(res.data);
+          setPayment(res.data);
         }
       });
   };
 
-  const getObjective = async () => {
-    const apiUrl = "http://localhost:8080/objective";
+  const getReturnBook = async () => {
+    const apiUrl = `http://localhost:8080/return_books`; //เราจะใช้เอพีไอจากตารางแพลนนิ่งไอดีโดยจะอ้างอิงชื่อผู้ป่วยจากเพเชี่ยนไอดี
 
     fetch(apiUrl, requestOptions)
-      .then((response) => response.json())
-
+      .then((response) => response.json()) //เปลี่ยนจากเจสันเป็นจาว่าสคริปต์
       .then((res) => {
         console.log(res.data);
         if (res.data) {
-          setObjective(res.data);
+          setReturnBook(res.data);
         }
       });
   };
 
   useEffect(() => {
-    getBookType();
-    getObjective();
-    getUsers();
+    getLibrarian();
+    getPayment();
+    getReturnBook();
   }, []);
 
   return (
@@ -203,7 +198,7 @@ function IntroduceCreate() {
               color="primary"
               gutterBottom
             >
-              บันทึกการแนะนำหนังสือ
+              บันทึกการบันทึกค่าปรับ
             </Typography>
           </Box>
         </Box>
@@ -211,85 +206,100 @@ function IntroduceCreate() {
         <Divider />
         <Grid container spacing={3} sx={{ padding: 2 }}>
 
-          <Grid item xs={12}>
+          <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
-              <p>ชื่อเรื่อง</p>
-              <TextField
-                id="Title"
-                variant="standard"
-                type="string"
-                size="medium"
-                value={introduce.Title || ""}
-                onChange={handleInputChange}
-              />
+              <p>ชื่อผู้ยืมหนังสือ</p>
+
+              <Select
+                // id="PlanningID"
+                value={forfeit.ReturnBookID}
+                onChange={handleChange}
+                inputProps={{
+                  name: "ReturnBookID", //เอาไว้เข้าถึงข้อมูล ReturnBook ไอดี
+                }}
+              >
+                {returnBook.map(
+                  (
+                    item: ReturnBookInterface //map
+                  ) => (
+                    <MenuItem value={item.ID} key={item.ID}>
+                      {item.BorrowBook.User.Name} 
+                    </MenuItem> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
+                  )
+                )}
+              </Select>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={6}>
+            <FormControl fullWidth variant="outlined">
+              <p>ชื่อหนังสือ</p>
+              <Select
+                native
+                disabled
+                value={forfeit.ReturnBookID} //import Snackbar from "@material-ui/core/Snackbar";
+              >
+                <option aria-label="None" value=""></option>
+                {/* {returnBook.map((item: ReturnBookInterface) => (
+                  <option value={item.ID} key={item.ID}>
+                    {item.User.Allergy}
+                  </option>
+                ))} */}
+                {returnBook.map((item: ReturnBookInterface ) => (
+                    <option value={item.ID} key={item.ID}>
+                      {item.BorrowBook.BookPurchasing.BookName} 
+                    </option> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
+                  )
+                )}
+              </Select>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={6}>
+            <FormControl fullWidth variant="outlined">
+              <p>การทำหนังสือหาย</p>
+              <Select
+                native
+                disabled
+                value={forfeit.ReturnBookID} //import Snackbar from "@material-ui/core/Snackbar";
+              >
+                <option aria-label="None" value="" />
+                {returnBook.map((item: ReturnBookInterface) => (
+                  <option value={item.ID} key={item.ID}>
+                    {item.LostBook.Name}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={6}>
+            <FormControl fullWidth variant="outlined">
+              <p>จำนวนวันที่เกินกำหนดการคืน</p>
+              <Select
+                native
+                disabled
+                value={forfeit.ReturnBookID} //import Snackbar from "@material-ui/core/Snackbar";
+              >
+                <option aria-label="None" value="" />
+                {returnBook.map((item: ReturnBookInterface) => (
+                  <option value={item.ID} key={item.ID}>
+                    {item.Late_Number}
+                  </option>
+                ))}
+              </Select>
             </FormControl>
           </Grid>
 
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
-              <p>ชื่อผู้แต่ง</p>
+              <p>เงินค่าปรับ</p>
               <TextField
-                id="Author"
+                id="Pay"
                 variant="standard"
                 type="string"
                 size="medium"
-                value={introduce.Author || ""}
-                onChange={handleInputChange}
-              />
-            </FormControl>
-          </Grid>
-
-          <Grid item xs={6}>
-            <FormControl fullWidth variant="standard">
-              <p>ISBN</p>
-              <TextField
-                id="ISBN"
-                variant="standard"
-                type="string"
-                size="medium"
-                value={introduce.ISBN|| ""}
-                onChange={handleInputChange}
-              />
-            </FormControl>
-          </Grid>
-
-          <Grid item xs={6}>
-            <FormControl fullWidth variant="standard">
-              <p>ตีพิมพ์ครั้งที่</p>
-              <TextField
-                id="Edition"
-                variant="standard"
-                type="string"
-                size="medium"
-                value={introduce.Edition || ""}
-                onChange={handleInputChange}
-              />
-            </FormControl>
-          </Grid>
-
-          <Grid item xs={6}>
-            <FormControl fullWidth variant="standard">
-              <p>สำนักพิมพ์</p>
-              <TextField
-                id="Pub_Name"
-                variant="standard"
-                type="string"
-                size="medium"
-                value={introduce.Pub_Name || ""}
-                onChange={handleInputChange}
-              />
-            </FormControl>
-          </Grid>
-
-          <Grid item xs={6}>
-            <FormControl fullWidth variant="standard">
-              <p>ปีที่ตีพิมพ์</p>
-              <TextField
-                id="Pub_Year"
-                variant="standard"
-                type="string"
-                size="medium"
-                value={introduce.Pub_Year || ""}
+                value={forfeit.Pay || ""}
                 onChange={handleInputChange}
               />
             </FormControl>
@@ -297,19 +307,19 @@ function IntroduceCreate() {
 
           <Grid item xs={6}>
             <FormControl fullWidth variant="outlined">
-              <p>ประเภท</p>
+              <p>วิธีการชำระเงิน</p>
               <Select
                 native
-                value={introduce.BookTypeID}
+                value={forfeit.PaymentID}
                 onChange={handleChange}
                 inputProps={{
-                  name: "BookTypeID",
+                  name: "PaymentID",
                 }}
               >
                 <option aria-label="None" value="">
-                  กรุณาเลือกประเภท
+                  กรุณาเลือกวิธีการชำระเงิน
                 </option>
-                {bookType.map((item: BookTypeInterface) => (
+                {payment.map((item: PaymentInterface) => (
                   <option value={item.ID} key={item.ID}>
                     {item.Name}
                   </option>
@@ -319,42 +329,18 @@ function IntroduceCreate() {
           </Grid>
 
           <Grid item xs={6}>
-            <FormControl fullWidth variant="outlined">
-              <p>วัตถุประสงค์</p>
-              <Select
-                native
-                value={introduce.ObjectiveID + ""}
-                onChange={handleChange}
-                inputProps={{
-                  name: "ObjectiveID",
-                }}
-              >
-                <option aria-label="None" value="">
-                  กรุณาเลือกวัตถุประสงค์
-                </option>
-                {objective.map((item: ObjectiveInterface) => (
-                  <option value={item.ID} key={item.ID}>
-                    {item.Name}
-                  </option>
-                ))}
-              </Select>
+            <FormControl fullWidth variant="standard">
+              <p>หมายเหตุ</p>
+              <TextField
+                id="Note"
+                variant="standard"
+                type="string"
+                size="medium"
+                value={forfeit.Note || ""}
+                onChange={handleInputChange}
+              />
             </FormControl>
           </Grid>
-
-          {/* <Grid item xs={6}>
-            <FormControl fullWidth variant="standard">
-              <p>วันที่</p>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DatePicker
-                  value={PnDate}
-                  onChange={(newValue) => {
-                    setDate(newValue);
-                  }}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </LocalizationProvider>
-            </FormControl>
-          </Grid> */}
 
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
@@ -363,7 +349,7 @@ function IntroduceCreate() {
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DateTimePicker
                   disabled
-                  value={I_Date}
+                  value={Pay_Date}
                   onChange={(newValue) => {
                     setDate(newValue);
                   }}
@@ -375,7 +361,7 @@ function IntroduceCreate() {
 
           <Grid item xs={6}>
             <FormControl fullWidth variant="outlined">
-              <p>ผู้แนะนำหนังสือ</p>
+              <p>ผู้บันทึกข้อมูล</p>
               <Select
                 disabled={true}
                 value={localStorage.getItem("uid")}
@@ -384,9 +370,9 @@ function IntroduceCreate() {
                 //   name: "StaffID",
                 // }}
               >
-                {users.map(
+                {librarian.map(
                   (
-                    item: UserInterface //map
+                    item: LibrarianInterface //map
                   ) => (
                     <MenuItem value={item.ID} key={item.ID}>
                       {item.Name}
@@ -400,7 +386,7 @@ function IntroduceCreate() {
           <Grid item xs={12}>
             <Button
               component={RouterLink}
-              to="/introduce/info"
+              to="/forfeit/info"
               variant="contained"
               color="inherit"
             >
@@ -421,4 +407,4 @@ function IntroduceCreate() {
   );
 }
 
-export default IntroduceCreate;
+export default ForfeitCreate;
