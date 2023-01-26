@@ -10,7 +10,7 @@ import (
 
 func CreateBookRepair(c *gin.Context) { // c รับข้อมูลมาจาก api
 
-	var bookrepair entity.BookRepair //การประกาศตัวแปรให้เป็นไทป์ที่เราสร้างขึ้นเอง
+	var bookrepair entity.BookRepair
 	var bookpurchasing entity.BookPurchasing
 	var level entity.Level
 	var librarian entity.Librarian
@@ -29,13 +29,13 @@ func CreateBookRepair(c *gin.Context) { // c รับข้อมูลมา�
 
 	//10: ค้นหา bookpurchasing ด้วย id
 	if tx := entity.DB().Where("id = ?", bookrepair.BookPurchasingID).First(&bookpurchasing); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "librarian not found"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "bookpurchasing not found"})
 		return
 	}
 
 	//11: ค้นหา level ด้วย id
 	if tx := entity.DB().Where("id = ?", bookrepair.LevelID).First(&level); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "librarian not found"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "level not found"})
 		return
 	}
 
@@ -75,7 +75,7 @@ func GetBookRepairByID(c *gin.Context) {
 
 	Id := c.Param("id") //id ที่เราตั้งไว้ใน main.go ที่อยู่หลัง : ตัวอย่าง >> /bookRepair/:id
 	if err := entity.DB().Model(&entity.BookRepair{}).Where("ID = ?", Id).Preload("BookPurchasing").Preload("Level").Preload("Librarian").Find(&bookRepair); err.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("BookPurchasingID :  Id%s not found.", Id)})
+		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("BookRepairID :  Id%s not found.", Id)})
 		return
 	}
 

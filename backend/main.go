@@ -172,6 +172,31 @@ func main() {
 	r.PATCH("/introduce", controller.UpdateIntroduce)
 	r.DELETE("/introduce/:id", controller.DeleteIntroduce)
 
+	//--- ขนุน ----
+	//--- Level ---
+	r.GET("/level", controller.GetAllLevel)
+	r.GET("/level/:id", controller.GetLevelByID)
+	r.POST("/level", controller.CreateLevel)
+	r.PATCH("/level", controller.UpdateLevel)
+	r.DELETE("/level/:id", controller.DeleteLevel)
+
+	//--- ขนุน ----
+	//--- BookRepair ---
+	r.GET("/bookrepair", controller.GetAllBookRepair)
+	r.GET("/bookrepair/:id", controller.GetBookRepairByID)
+	r.POST("/bookrepair", controller.CreateBookRepair)
+	r.PATCH("/bookrepair", controller.UpdateBookRepair)
+	r.DELETE("/bookrepair/:id", controller.DeleteBookRepair)
+
+	//--- ขนุน ----
+	//--- EquipmentRepair ---
+	r.GET("/equipmentrepair", controller.GetAllEquipmentRepair)
+	r.GET("/equipmentrepair/:id", controller.GetEquipmentRepairByID)
+	r.POST("/equipmentrepair", controller.CreateEquipmentRepair)
+	r.PATCH("/equipmentrepair", controller.UpdateEquipmentRepair)
+	r.DELETE("/equipmentrepair/:id", controller.DeleteEquipmentRepair)
+
+
 	//
 	// Run the server
 	r.Run()
