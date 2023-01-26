@@ -6,10 +6,10 @@ import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import { DataGrid, GridRowsProp, GridColDef } from "@mui/x-data-grid";
 import { format } from "date-fns";
-import { IntroduceInterface } from "../models/IIntroduce";
+import { ForfeitInterface } from "../models/IForfeit";
 
-function Introduce() {
-  const [introduce, setIntroduce] = useState<IntroduceInterface[]>([]);
+function Forfeit() {
+  const [forfeit, setForfeit] = useState<ForfeitInterface[]>([]);
   const apiUrl = "http://localhost:8080";
 
   const requestOptions = {
@@ -20,13 +20,13 @@ function Introduce() {
     },
   };
 
-  const getIntroduce = async () => {
+  const getForfeit = async () => {
     fetch(`${apiUrl}/forfeit`, requestOptions)
       .then((response) => response.json())
       .then((res) => {
-        console.log("introduce", res.data);
+        console.log("forfeit", res.data);
         if (res.data) {
-          setIntroduce(res.data);
+          setForfeit(res.data);
         } else {
           console.log("else");
         }
@@ -34,54 +34,60 @@ function Introduce() {
   };
 
   const columns: GridColDef[] = [
-    { field: "ID", headerName: "ลำดับ", width: 50 },
-    { field: "Title", headerName: "ชื่อเรื่อง", width: 215 },
-    { field: "Author", headerName: "ชื่อผู้แต่ง", width: 215 },
-    { field: "ISBN", headerName: "ISBN", width: 215 },
-    { field: "Edition", headerName: "ตีพิมพ์ครั้งที่", width: 215 },
-    { field: "Pub_Name", headerName: "สำนักพิมพ์", width: 215 },
-    { field: "Pub_Year", headerName: "ปีที่พิมพ์", width: 215 },
     {
-      field: "BookType",
-      headerName: "ประเภท",
-      width: 80,
-      valueGetter: (params) => {
-        return params.getValue(params.id, "BookType").Name;
-      },
+        field: "UserName",
+        headerName: "ชื่อผู้ยืมหนังสือ",
+        width: 150,
+        valueGetter: (params) => {
+          return params.getValue(params.id, "ReturnBook").BorrowBook.User.Name;
+        },
     },
     {
-      field: "Objective",
-      headerName: "วัตถุประสงค์",
-      width: 150,
-      valueGetter: (params) => {
-        return params.getValue(params.id, "Objective").Name;
-      },
+        field: "BookName",
+        headerName: "ชื่อหนังสือ",
+        width: 150,
+        valueGetter: (params) => {
+          return params.getValue(params.id, "ReturnBook").BorrowBook.BookPurchasing.BookName;
+        },
     },
-    // {
-    //   field: "I_Date",
-    //   headerName: "วันที่",
-    //   width: 100,
-    //   valueFormatter: (params) => format(new Date(params?.value), "dd/MM/yyyy"),
-    // },
     {
-        field: "I_Date",
+        field: "LostBookName",
+        headerName: "การทำหนังสือหาย",
+        width: 150,
+        valueGetter: (params) => {
+          return params.getValue(params.id, "ReturnBook").LostBook.Name;
+        },
+    },
+    {
+        field: "LateNumber",
+        headerName: "จำนวนวันที่เกินกำหนดการคืน",
+        width: 150,
+        valueGetter: (params) => {
+          return params.getValue(params.id, "ReturnBook").Late_Number;
+        },
+    },
+    { field: "Pay", headerName: "เงินค่าปรับ", width: 215 },
+    { field: "Payment", headerName: "วิธีการชำระเงิน", width: 215 },
+    { field: "Note", headerName: "วิธีการชำระเงิน", width: 215 },
+    {
+        field: "Pay_Date",
         headerName: "วันที่และเวลา",
         width: 170,
         valueFormatter: (params) => format(new Date(params?.value), "P hh:mm a"),
         // moment(params?.value).format("DD/MM/YYYY hh:mm A"),
       },
     {
-      field: "User",
+      field: "Librarian",
       headerName: "ผู้แนะนำหนังสือ",
       width: 150,
       valueGetter: (params) => {
-        return params.getValue(params.id, "User").Name;
+        return params.getValue(params.id, "Librarian").Name;
       },
     },
   ];
 
   useEffect(() => {
-    getIntroduce();
+    getForfeit();
   }, []);
 
   return (
@@ -106,17 +112,17 @@ function Introduce() {
           <Box>
             <Button
               component={RouterLink}
-              to="/introduce/create"
+              to="/forfeit/create"
               variant="contained"
               color="primary"
             >
-              แนะนำหนังสือ
+              บันทึกค่าปรับ
             </Button>
           </Box>
         </Box>
         <div style={{ height: 400, width: "100%", marginTop: "20px" }}>
           <DataGrid
-            rows={introduce}
+            rows={forfeit}
             getRowId={(row) => row.ID}
             columns={columns}
             pageSize={5}
@@ -128,4 +134,4 @@ function Introduce() {
   );
 }
 
-export default Introduce;
+export default Forfeit;
