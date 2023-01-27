@@ -64,7 +64,7 @@ func CreateBorrowBook(c *gin.Context) {
 // GET /borrow_books
 func GetAllBorrowBook(c *gin.Context) {
 	var borrowbook []entity.BorrowBook
-	if err := entity.DB().Model(&entity.BorrowBook{}).Preload("User").Preload("BookPurchasing").Preload("Librarian").Find(&borrowbook).Error; err != nil {
+	if err := entity.DB().Model(&entity.BorrowBook{}).Preload("User").Preload("BookPurchasing").Preload("BookPurchasing.BookCategory").Preload("Librarian").Find(&borrowbook).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -75,7 +75,7 @@ func GetAllBorrowBook(c *gin.Context) {
 func GetBorrowBookByID(c *gin.Context) {
 	var borrowbook entity.BorrowBook
 	Id := c.Param("id") //id ที่เราตั้งไว้ใน main.go ที่อยู่หลัง : ตัวอย่าง >> /borrow_books/:id
-	if err := entity.DB().Model(&entity.BorrowBook{}).Where("ID = ?", Id).Preload("User").Preload("BookPurchasing").Preload("Librarian").Find(&borrowbook); err.RowsAffected == 0 {
+	if err := entity.DB().Model(&entity.BorrowBook{}).Where("ID = ?", Id).Preload("User").Preload("BookPurchasing").Preload("BookPurchasing.BookCategory").Preload("Librarian").Find(&borrowbook); err.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("BorrowBookID :  Id%s not found.", Id)})
 		return
 	}
