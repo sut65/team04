@@ -3,7 +3,7 @@ import { EquipmentStatusInterface } from "./IEquipmentStatus"
 import { BorrowEquipmentInterface } from "./IBorrowEquipment"
 
 
-export interface ReturnBookInterface {
+export interface ReturnEquipmentInterface {
     ID:              number,
     Return_Day:     Date,
 	Return_Detail:  string,
