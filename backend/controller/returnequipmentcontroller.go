@@ -63,7 +63,7 @@ func GetAllReturnEquipment(c *gin.Context) {
 
 	var returnequipment []entity.ReturnEquipment
 
-	if err := entity.DB().Model(&entity.ReturnEquipment{}).Preload("Librarian").Find(&returnequipment).Error; err != nil {
+	if err := entity.DB().Model(&entity.ReturnEquipment{}).Preload("BorrowEquipment.User").Preload("BorrowEquipment.EquipmentPurchasing").Preload("BorrowEquipment").Preload("EquipmentStatus").Preload("Librarian").Find(&returnequipment).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -77,7 +77,7 @@ func GetReturnEquipmentByID(c *gin.Context) {
 
 	var returnequipment entity.ReturnEquipment
 	Id := c.Param("id") //id ที่เราตั้งไว้ใน main.go ที่อยู่หลัง : ตัวอย่าง >> /returnequipment/:id
-	if err := entity.DB().Model(&entity.ReturnEquipment{}).Where("ID = ?", Id).Preload("Librarian").Find(&returnequipment); err.RowsAffected == 0 {
+	if err := entity.DB().Model(&entity.ReturnEquipment{}).Where("ID = ?", Id).Preload("BorrowEquipment.User").Preload("BorrowEquipment.EquipmentPurchasing").Preload("BorrowEquipment").Preload("EquipmentStatus").Preload("Librarian").Find(&returnequipment); err.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("ReturnEquipmentID :  Id%s not found.", Id)})
 		return
 	}
