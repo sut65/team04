@@ -4,7 +4,7 @@ import { PublisherInterface } from "./IPublisher"
 
 export interface BookPurchasingInterface {
 
-    Id: number
+    ID: number
 	Date:    Date
     BookName: String
     AuthorName: string
