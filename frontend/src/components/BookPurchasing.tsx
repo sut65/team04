@@ -41,24 +41,29 @@ function BookPurchasing() {
   const columns: GridColDef[] = [
     { field: "ID", headerName: "ลำดับ", width: 20 },
     {
-      field: "BookCategory",
+      field: "BookName",
+      headerName: "ชื่อหนังสือ",
+      width: 215,
+      editable: true,
+    },
+    {
+      field: "BookCategoryName", //getValue ชื่อห้ามซ้ำกัน
       headerName: "ประเภทหนังสือ",
       width: 215,
       valueGetter: (params) => {
         return params.getValue(params.id, "BookCategory").Name;
       },
     },
-    { field: "BookName", headerName: "ชื่อหนังสือ", width: 215 },
     { field: "AuthorName", headerName: "ผู้แต่งหนังสือ", width: 215 },
     {
-      field: "Publisher",
+      field: "PublisherName",
       headerName: "สำนักพิมพ์",
       width: 215,
       valueGetter: (params) => {
         return params.getValue(params.id, "Publisher").Name;
       },
     },
-    { field: "Amount", headerName: "จำนวน(เล่ม)", width: 215 },
+    { field: "Amount", headerName: "จำนวน(เล่ม)", width: 150 },
     {
       field: "LibrarianName",
       headerName: "ผู้บันทึกข้อมูล",
