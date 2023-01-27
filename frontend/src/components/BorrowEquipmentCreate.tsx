@@ -29,12 +29,15 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 });
 function BorrowEquipmentCreate() {
   const [BorrowEquipment_Day, setBorrowEquipment_Day] = useState<Date | null>();
-  const [Amount_BorrowEquipment, setAmount_BorrowEquipment] = useState<Date | null>();
-  const [borrowequipment, setBorrowEquipment] = useState<Partial<BorrowEquipmentInterface>>({}); //Partial ชิ้นส่วนเอาไว้เซทข้อมูลที่ละส่วน
+  const [borrowequipment, setBorrowEquipment] = useState<
+    Partial<BorrowEquipmentInterface>
+  >({}); //Partial ชิ้นส่วนเอาไว้เซทข้อมูลที่ละส่วน
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
-  const [equipmentpurchasing, setEquipmentPurchasing] = useState<EquipmentPurchasingInterface[]>([]);
-  const [user, setUser] = useState<UserInterface[]>([] );
+  const [equipmentpurchasing, setEquipmentPurchasing] = useState<
+    EquipmentPurchasingInterface[]
+  >([]);
+  const [user, setUser] = useState<UserInterface[]>([]);
   const [librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
   const handleClose = (
     event?: React.SyntheticEvent | Event,
@@ -76,10 +79,11 @@ function BorrowEquipmentCreate() {
   function submit() {
     let data = {
       //เก็บข้อมูลที่จะเอาไปเก็บในดาต้าเบส
-      BorrowEquipment_Day:       new Date(),
-      Amount_BorrowEquipment:        Number(borrowequipment.Amount_BorrowEquipment) ?? "",
-      UserID:            Number(borrowequipment.UserID),
-      EquipmentPurchasingID:  Number(borrowequipment.EquipmentPurchasingID),
+      BorrowEquipment_Day: new Date(),
+      Amount_BorrowEquipment:
+        Number(borrowequipment.Amount_BorrowEquipment) ?? "",
+      UserID: Number(borrowequipment.UserID),
+      EquipmentPurchasingID: Number(borrowequipment.EquipmentPurchasingID),
       LibrarianID: Number(localStorage.getItem("nid")),
     };
     console.log(data);
@@ -92,7 +96,7 @@ function BorrowEquipmentCreate() {
       },
       body: JSON.stringify(data),
     };
-    
+
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
       .then((res) => {
@@ -124,13 +128,13 @@ function BorrowEquipmentCreate() {
       });
   };
   const getEquipmentPurchasing = async () => {
-    const apiUrl = `http://localhost:8080/equipmentPurchasing`;
+    const apiUrl = "http://localhost:8080/equipmentPurchasing";
     fetch(apiUrl, requestOptions)
       .then((response) => response.json()) //เปลี่ยนจากเจสันเป็นจาว่าสคริปต์
       .then((res) => {
-        console.log("equipmentPurchasing", res.data);
+        console.log(res.data);
         if (res.data) {
-            setEquipmentPurchasing(res.data);
+          setEquipmentPurchasing(res.data);
         }
       });
   };
@@ -183,34 +187,34 @@ function BorrowEquipmentCreate() {
               color="primary"
               gutterBottom
             >
-            เก็บข้อมูลการยืมอุปกรณ์
+              เก็บข้อมูลการยืมอุปกรณ์
             </Typography>
           </Box>
         </Box>
         <Divider />
         <Grid container spacing={2} sx={{ padding: 1 }}>
-            <Grid item xs={6}>
-                <FormControl fullWidth variant="outlined">
-                <p>ชื่อ-นามสกุล สมาชิกห้องสมุด</p>
-                <Select
-                    native
-                    value={borrowequipment.UserID}
-                    onChange={handleChange}
-                    inputProps={{
-                    name: "UserID",
-                    }}
-                >
-                    <option aria-label="None" value="">
-                    กรุณาเลือกรายชื่อสมาชิก
-                    </option>
-                    {user.map((item: UserInterface) => (
-                    <option value={item.ID} key={item.ID}>
-                        {item.Name}
-                    </option>
-                    ))}
-                </Select>
-                </FormControl>
-            </Grid>
+          <Grid item xs={6}>
+            <FormControl fullWidth variant="outlined">
+              <p>ชื่อ-นามสกุล สมาชิกห้องสมุด</p>
+              <Select
+                native
+                value={borrowequipment.UserID}
+                onChange={handleChange}
+                inputProps={{
+                  name: "UserID",
+                }}
+              >
+                <option aria-label="None" value="">
+                  กรุณาเลือกรายชื่อสมาชิก
+                </option>
+                {user.map((item: UserInterface) => (
+                  <option value={item.ID} key={item.ID}>
+                    {item.Name}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
           <Grid item xs={6}>
             <FormControl fullWidth variant="outlined">
               <p>รายการอุปกรณ์</p>
@@ -225,11 +229,13 @@ function BorrowEquipmentCreate() {
                 <option aria-label="None" value="">
                   กรุณาเลือกรายการอุปกรณ์
                 </option>
-                {equipmentpurchasing.map((item: EquipmentPurchasingInterface) => (
-                  <option value={item.Id} key={item.Id}>
-                    {item.EquipmentName}
-                  </option>
-                ))}
+                {equipmentpurchasing.map(
+                  (item: EquipmentPurchasingInterface) => (
+                    <option value={item.ID} key={item.ID}>
+                      {item.EquipmentName}
+                    </option>
+                  )
+                )}
               </Select>
             </FormControl>
           </Grid>
@@ -251,7 +257,7 @@ function BorrowEquipmentCreate() {
               <p>วัน เวลา ที่ยืมอุปกรณ์</p>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DateTimePicker
-                disabled
+                  disabled
                   value={BorrowEquipment_Day}
                   onChange={(newValue) => {
                     setBorrowEquipment_Day(newValue);
@@ -285,7 +291,11 @@ function BorrowEquipmentCreate() {
             </FormControl>
           </Grid>
           <Grid item xs={12}>
-            <Button component={RouterLink} to="/borrowEquipment" variant="contained">
+            <Button
+              component={RouterLink}
+              to="/borrowEquipment"
+              variant="contained"
+            >
               กลับ
             </Button>
             <Button
