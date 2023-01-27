@@ -161,7 +161,7 @@ function BookPurchasing() {
     {
       field: "actions",
       headerName: "Actions",
-      width: 170,
+      width: 175,
       renderCell: () => (
         <div>
           <Button variant="outlined" size="small" startIcon={<EditIcon />}>
