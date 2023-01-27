@@ -161,12 +161,13 @@ function BookPurchasing() {
     {
       field: "actions",
       headerName: "Actions",
-      width: 180,
+      width: 170,
       renderCell: () => (
         <div>
           <Button variant="outlined" size="small" startIcon={<EditIcon />}>
             แก้ไข
           </Button>
+          &nbsp;&nbsp;&nbsp;
           <Button
             onClick={handleDelete}
             variant="outlined"
