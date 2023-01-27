@@ -67,11 +67,38 @@ func SetupDatabase() {
 		Email:    "mumana@gmail.com",
 		Password: string(password),
 	})
+	db.Model(&User{}).Create(&User{
+		Name:     "สวัสดี วันสงกรานต์",
+		Idcard:   "1234560890416",
+		Tel:      "085-6589421",
+		Email:    "Songkran@gmail.com",
+		Password: string(password),
+	})
+	db.Model(&User{}).Create(&User{
+		Name:     "จองกุก จอห์น",
+		Idcard:   "8236560890416",
+		Tel:      "085-6589421",
+		Email:    "Jungkook@gmail.com",
+		Password: string(password),
+	})
+	db.Model(&User{}).Create(&User{
+		Name:     "แบม แบม",
+		Idcard:   "8236560830417",
+		Tel:      "085-6589421",
+		Email:    "BamBam@gmail.com",
+		Password: string(password),
+	})
 
 	var montree User
 	var mumana User
+	var songkran User
+	var jungkook User
+	var bambam User
 	db.Raw("SELECT * FROM users WHERE email = ?", "montree@gmail.com").Scan(&montree)
 	db.Raw("SELECT * FROM users WHERE email = ?", "mumana@gmail.com").Scan(&mumana)
+	db.Raw("SELECT * FROM users WHERE email = ?", "Songkran@gmail.com").Scan(&songkran)
+	db.Raw("SELECT * FROM users WHERE email = ?", "Jungkook@gmail.com").Scan(&jungkook)
+	db.Raw("SELECT * FROM users WHERE email = ?", "BamBam@gmail.com").Scan(&bambam)
 
 	//
 	// Librarian Data บรรณารักษ์
