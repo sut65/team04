@@ -18,13 +18,9 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useEffect, useState } from "react";
 import { UserInterface } from "../models/IUser";
-import { BookPurchasingInterface } from "../models/IBookPurchasing";
 import { LibrarianInterface } from "../models/ILibrarian";
+import { BookPurchasingInterface } from "../models/IBookPurchasing";
 import { BorrowBookInterface } from "../models/IBorrowBook";
-import { ReturnBookInterface } from "../models/IReturnBook";
-import { LostBookInterface } from "../models/ILostBook";
-import ReturnBook from "./ReturnBook";
-import { get } from "https";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -34,14 +30,16 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-function ReturnBookCreate() {
-  const [current_day, setCurrent_Day] = useState<Date | null>();
-  const [late_number, setLate_Number] = useState<Date | null>();
-  const [returnbook, setReturnBook] = useState<Partial<ReturnBookInterface>>(
+function BorrowBookCreate() {
+  const [borb_day, setBorb_Day] = useState<Date | null>();
+  const [return_day, setReturn_Day] = useState<Date | null>();
+  const [borrowbook, setBorrowBook] = useState<Partial<BorrowBookInterface>>(
     {}
   ); //Partial ชิ้นส่วนเอาไว้เซทข้อมูลที่ละส่วน
-  const [borrowbook, setBorrowBook] = useState<BorrowBookInterface[]>([]);
-  const [lostbook, setLostBook] = useState<LostBookInterface[]>([]);
+  const [bookpurchasing, setBookPurchasing] = useState<
+    BookPurchasingInterface[]
+  >([]);
+  const [user, setUser] = useState<UserInterface[]>([]);
   const [librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
 
   const [success, setSuccess] = useState(false);
@@ -61,37 +59,40 @@ function ReturnBookCreate() {
   const handleInputChange = (
     event: React.ChangeEvent<{ id?: string; value: any }> //ชื่อคอมลัมน์คือ id และค่าที่จะเอามาใส่ไว้ในคอมลัมน์นั้นคือ value
   ) => {
-    const id = event.target.id as keyof typeof returnbook;
+    const id = event.target.id as keyof typeof borrowbook;
     console.log(event.target.id);
     console.log(event.target.value);
     const { value } = event.target;
-    setReturnBook({ ...returnbook, [id]: value });
+    setBorrowBook({ ...borrowbook, [id]: value });
   };
 
   const handleChange = (
     event: React.ChangeEvent<{ name?: string; value: any }> //ชื่อคอมลัมน์คือ id และค่าที่จะเอามาใส่ไว้ในคอมลัมน์นั้นคือ value
   ) => {
-    const name = event.target.name as keyof typeof returnbook; //
+    const name = event.target.name as keyof typeof borrowbook; //
     console.log(event.target.name);
     console.log(event.target.value);
 
     const { value } = event.target;
-    setReturnBook({ ...returnbook, [name]: value });
+
+    setBorrowBook({ ...borrowbook, [name]: value });
   };
 
   function submit() {
     let data = {
       //เก็บข้อมูลที่จะเอาไปเก็บในดาต้าเบส
-      Current_Day: new Date(),
-      Late_Number: Number(returnbook.Late_Number) ?? "",
-      Book_Condition: returnbook.Book_Condition ?? "",
-      LostBookID: Number(returnbook.LostBookID),
+      Borb_Day: new Date(),
+      Return_Day: new Date(),
+      Color_Bar: borrowbook.Color_Bar ?? "",
+      Borb_Frequency: Number(borrowbook.Borb_Frequency) ?? "",
+      // Borb_Frequency:   convertType(borrowbook.Borb_Frequency),
+      UserID: Number(borrowbook.UserID),
+      BookPurchasingID: Number(borrowbook.BookPurchasingID),
       LibrarianID: Number(localStorage.getItem("nid")),
-      BorrowBookID: Number(returnbook.BorrowBookID),
     };
     console.log(data);
 
-    const apiUrl = "http://localhost:8080/return_books";
+    const apiUrl = "http://localhost:8080/borrow_books";
     const requestOptions = {
       method: "POST", //เอาข้อมูลไปเก็บไว้ในดาต้าเบส
       headers: {
@@ -108,7 +109,7 @@ function ReturnBookCreate() {
         console.log(res);
         if (res.data) {
           setSuccess(true);
-          getBorrowBook();
+          getBookPurchasing();
         } else {
           setError(true);
         }
@@ -137,9 +138,9 @@ function ReturnBookCreate() {
       });
   };
 
-  // การยืมหนังสือ BorrowBook
-  const getBorrowBook = async () => {
-    const apiUrl = "http://localhost:8080/borrow_books";
+  // การจัดซื้อหนังสือ BookPurchasing
+  const getBookPurchasing = async () => {
+    const apiUrl = "http://localhost:8080/bookPurchasing";
 
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
@@ -147,14 +148,14 @@ function ReturnBookCreate() {
       .then((res) => {
         console.log(res.data);
         if (res.data) {
-          setBorrowBook(res.data);
+          setBookPurchasing(res.data);
         }
       });
   };
 
-  // การทำหนังสือหาย LostBook
-  const getLostBook = async () => {
-    const apiUrl = "http://localhost:8080/lost_books";
+  // สมาชิกห้องสมุด User
+  const getUser = async () => {
+    const apiUrl = "http://localhost:8080/users";
 
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
@@ -162,7 +163,7 @@ function ReturnBookCreate() {
       .then((res) => {
         console.log(res.data);
         if (res.data) {
-          setLostBook(res.data);
+          setUser(res.data);
         }
       });
   };
@@ -170,8 +171,8 @@ function ReturnBookCreate() {
   useEffect(() => {
     //ทำงานทุกครั้งที่เรารีเฟชหน้าจอ
     //ไม่ให้รันแบบอินฟินิตี้ลูป
-    getLostBook();
-    getBorrowBook();
+    getUser();
+    getBookPurchasing();
     getLibrarian();
   }, []);
 
@@ -208,7 +209,7 @@ function ReturnBookCreate() {
               color="primary"
               gutterBottom
             >
-              บันทึกการคืนหนังสือ
+              บันทึกการยืมหนังสือ
             </Typography>
           </Box>
         </Box>
@@ -217,26 +218,46 @@ function ReturnBookCreate() {
         <Grid container spacing={3} sx={{ padding: 2 }}>
           <Grid item xs={12}>
             <FormControl fullWidth variant="standard">
-              <p>ผู้ที่เคยยืมหนังสือ</p>
+              <p>ผู้ยืมหนังสือ</p>
               <Select
-                // id="BorrowBookID"
-                value={returnbook.BorrowBookID}
+                // id="UserID"
+                value={borrowbook.UserID}
                 onChange={handleChange}
                 inputProps={{
-                  name: "BorrowBookID", //เอาไว้เข้าถึงข้อมูล borrowbookไอดี
+                  name: "UserID", //เอาไว้เข้าถึงข้อมูลuserไอดี
                 }}
               >
-                {borrowbook.map(
+                {user.map(
                   (
-                    item: BorrowBookInterface //map
+                    item: UserInterface //map
                   ) => (
                     <MenuItem value={item.ID} key={item.ID}>
-                      ชื่อ: {item.User.Name} | เลขบัตรประชาชน:{" "}
-                      {item.User.Idcard} | ชื่อหนังสือ:{" "}
-                      {item.BookPurchasing.BookName} | หมวดหมู่:{" "}
-                      {item.BookPurchasing.BookCategory.Name} | เเถบสี:{" "}
-                      {item.Color_Bar}
-                      {/* วันกำหนดคืน: {item.Return_Day}  */}
+                      ชื่อ: {item.Name} | เลขบัตรประชาชน: {item.Idcard}
+                    </MenuItem> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
+                  )
+                )}
+              </Select>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={12}>
+            <FormControl fullWidth variant="standard">
+              <p>ชื่อเเละหมวดหมู่ของหนังสือที่ยืม</p>
+              <Select
+                // id="BookPurchasingID"
+                value={borrowbook.BookPurchasingID}
+                onChange={handleChange}
+                inputProps={{
+                  name: "BookPurchasingID", //เอาไว้เข้าถึงข้อมูล BookPurchasingID
+                }}
+              >
+                {bookpurchasing.map(
+                  (
+                    item: BookPurchasingInterface //map
+                  ) => (
+                    <MenuItem value={item.ID} key={item.ID}>
+                      {item.BookName} | หมวดหมู่หนังสือ:{" "}
+                      {item.BookCategory.Name}
                     </MenuItem> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
                   )
                 )}
@@ -246,12 +267,41 @@ function ReturnBookCreate() {
 
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
-              <p>วันที่คืนหนังสือ</p>
+              <p>เเถบสีหนังสือ</p>
+              <TextField
+                id="Color_Bar"
+                variant="standard"
+                type="string"
+                size="medium"
+                value={borrowbook.Color_Bar || ""}
+                onChange={handleInputChange}
+              />
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={6}>
+            <FormControl fullWidth variant="standard">
+              <p>จำนวนครั้งที่ยืมหนังสือ</p>
+              <TextField
+                id="Borb_Frequency"
+                variant="standard"
+                type="number"
+                size="medium"
+                value={borrowbook.Borb_Frequency || ""}
+                onChange={handleInputChange}
+              />
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={6}>
+            <FormControl fullWidth variant="standard">
+              <p>วันที่ยืมหนังสือ</p>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DateTimePicker
-                  value={current_day}
+                  disabled
+                  value={borb_day}
                   onChange={(newValue) => {
-                    setCurrent_Day(newValue);
+                    setBorb_Day(newValue);
                   }}
                   renderInput={(params) => <TextField {...params} />}
                 />
@@ -261,53 +311,16 @@ function ReturnBookCreate() {
 
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
-              <p>จำนวนวันเลยกำหนดคืน(วัน)</p>
-              <TextField
-                id="Late_Number"
-                variant="standard"
-                type="number"
-                size="medium"
-                value={returnbook.Late_Number || ""}
-                onChange={handleInputChange}
-              />
-            </FormControl>
-          </Grid>
-
-          <Grid item xs={6}>
-            <FormControl fullWidth variant="standard">
-              <p>หนังสือหาย(หาย/ไม่หาย)</p>
-              <Select
-                // id="LostBookID"
-                value={returnbook.LostBookID}
-                onChange={handleChange}
-                inputProps={{
-                  name: "LostBookID", //เอาไว้เข้าถึงข้อมูล LostBookID
-                }}
-              >
-                {lostbook.map(
-                  (
-                    item: LostBookInterface //map
-                  ) => (
-                    <MenuItem value={item.ID} key={item.ID}>
-                      {item.Name}
-                    </MenuItem> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
-                  )
-                )}
-              </Select>
-            </FormControl>
-          </Grid>
-
-          <Grid item xs={6}>
-            <FormControl fullWidth variant="standard">
-              <p>สภาพหนังสือ</p>
-              <TextField
-                id="Book_Condition"
-                variant="standard"
-                type="string"
-                size="medium"
-                value={returnbook.Book_Condition || ""}
-                onChange={handleInputChange}
-              />
+              <p>วันกำหนดคืนหนังสือ</p>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DateTimePicker
+                  value={return_day}
+                  onChange={(newValue) => {
+                    setReturn_Day(newValue);
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
             </FormControl>
           </Grid>
 
@@ -355,4 +368,4 @@ function ReturnBookCreate() {
   );
 }
 
-export default ReturnBookCreate;
+export default BorrowBookCreate;
