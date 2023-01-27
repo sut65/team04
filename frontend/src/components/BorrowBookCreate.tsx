@@ -84,10 +84,10 @@ function BorrowBookCreate() {
       Borb_Day: new Date(),
       Return_Day: new Date(),
       Color_Bar: borrowbook.Color_Bar ?? "",
-      Borb_Frequency: Number(borrowbook.Borb_Frequency) ?? "",
+      Borb_Frequency: borrowbook.Borb_Frequency ?? "",
       // Borb_Frequency:   convertType(borrowbook.Borb_Frequency),
-      UserID: Number(borrowbook.UserID),
-      BookPurchasingID: Number(borrowbook.BookPurchasingID),
+      UserID: borrowbook.UserID,
+      BookPurchasingID: borrowbook.BookPurchasingID,
       LibrarianID: Number(localStorage.getItem("nid")),
     };
     console.log(data);
