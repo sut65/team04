@@ -5,7 +5,7 @@ import { LibrarianInterface } from "./ILibrarian"
 
 export interface EquipmentPurchasingInterface {
 
-    Id: number
+    ID: number
 	Date:    Date
     EquipmentName: String
 	Amount: number
