@@ -22,7 +22,6 @@ import { LibrarianInterface } from "../models/ILibrarian";
 import { BookPurchasingInterface } from "../models/IBookPurchasing";
 import { BorrowBookInterface } from "../models/IBorrowBook";
 
-
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
 
@@ -32,16 +31,19 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 });
 
 function BorrowBookCreate() {
-  const [borb_day, setBorb_Day ] = useState<Date | null>();
+  const [borb_day, setBorb_Day] = useState<Date | null>();
   const [return_day, setReturn_Day] = useState<Date | null>();
-  const [borrowbook, setBorrowBook] = useState<Partial<BorrowBookInterface>>({}); //Partial ชิ้นส่วนเอาไว้เซทข้อมูลที่ละส่วน
-  const [bookpurchasing, setBookPurchasing] = useState<BookPurchasingInterface[]>([]);
+  const [borrowbook, setBorrowBook] = useState<Partial<BorrowBookInterface>>(
+    {}
+  ); //Partial ชิ้นส่วนเอาไว้เซทข้อมูลที่ละส่วน
+  const [bookpurchasing, setBookPurchasing] = useState<
+    BookPurchasingInterface[]
+  >([]);
   const [user, setUser] = useState<UserInterface[]>([]);
   const [librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
 
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
-
 
   const handleClose = (
     event?: React.SyntheticEvent | Event,
@@ -54,19 +56,15 @@ function BorrowBookCreate() {
     setError(false);
   };
 
-
-
   const handleInputChange = (
     event: React.ChangeEvent<{ id?: string; value: any }> //ชื่อคอมลัมน์คือ id และค่าที่จะเอามาใส่ไว้ในคอมลัมน์นั้นคือ value
   ) => {
-    const id = event.target.id as keyof typeof borrowbook; 
+    const id = event.target.id as keyof typeof borrowbook;
     console.log(event.target.id);
     console.log(event.target.value);
     const { value } = event.target;
     setBorrowBook({ ...borrowbook, [id]: value });
   };
-
-
 
   const handleChange = (
     event: React.ChangeEvent<{ name?: string; value: any }> //ชื่อคอมลัมน์คือ id และค่าที่จะเอามาใส่ไว้ในคอมลัมน์นั้นคือ value
@@ -80,22 +78,19 @@ function BorrowBookCreate() {
     setBorrowBook({ ...borrowbook, [name]: value });
   };
 
-
-
   function submit() {
     let data = {
       //เก็บข้อมูลที่จะเอาไปเก็บในดาต้าเบส
-      Borb_Day:         new Date(),
-      Return_Day:       new Date(),
-      Color_Bar:        borrowbook.Color_Bar ?? "",
-      Borb_Frequency:   borrowbook.Borb_Frequency ?? "",
+      Borb_Day: new Date(),
+      Return_Day: new Date(),
+      Color_Bar: borrowbook.Color_Bar ?? "",
+      Borb_Frequency: borrowbook.Borb_Frequency ?? "",
       // Borb_Frequency:   convertType(borrowbook.Borb_Frequency),
-      UserID:           borrowbook.UserID,
+      UserID: borrowbook.UserID,
       BookPurchasingID: borrowbook.BookPurchasingID,
-      LibrarianID:      Number(localStorage.getItem("nid")),
+      LibrarianID: Number(localStorage.getItem("nid")),
     };
     console.log(data);
-
 
     const apiUrl = "http://localhost:8080/borrow_books";
     const requestOptions = {
@@ -113,10 +108,10 @@ function BorrowBookCreate() {
       .then((res) => {
         console.log(res);
         if (res.data) {
-            setSuccess(true);
-            getBookPurchasing();
+          setSuccess(true);
+          getBookPurchasing();
         } else {
-            setError(true);
+          setError(true);
         }
       });
   }
@@ -128,8 +123,7 @@ function BorrowBookCreate() {
     },
   };
 
-
-// บรรณารักษ์ Librarian
+  // บรรณารักษ์ Librarian
   const getLibrarian = async () => {
     const apiUrl = "http://localhost:8080/librarian";
 
@@ -144,24 +138,22 @@ function BorrowBookCreate() {
       });
   };
 
+  // การจัดซื้อหนังสือ BookPurchasing
+  const getBookPurchasing = async () => {
+    const apiUrl = "http://localhost:8080/bookPurchasing";
 
-// การจัดซื้อหนังสือ BookPurchasing
-const getBookPurchasing = async () => {
-  const apiUrl = "http://localhost:8080/bookPurchasing";
+    fetch(apiUrl, requestOptions)
+      .then((response) => response.json())
 
-  fetch(apiUrl, requestOptions)
-    .then((response) => response.json())
+      .then((res) => {
+        console.log(res.data);
+        if (res.data) {
+          setBookPurchasing(res.data);
+        }
+      });
+  };
 
-    .then((res) => {
-      console.log(res.data);
-      if (res.data) {
-        setBookPurchasing(res.data);
-      }
-    });
-};
-
-  
-// สมาชิกห้องสมุด User
+  // สมาชิกห้องสมุด User
   const getUser = async () => {
     const apiUrl = "http://localhost:8080/users";
 
@@ -176,7 +168,6 @@ const getBookPurchasing = async () => {
       });
   };
 
-
   useEffect(() => {
     //ทำงานทุกครั้งที่เรารีเฟชหน้าจอ
     //ไม่ให้รันแบบอินฟินิตี้ลูป
@@ -184,7 +175,6 @@ const getBookPurchasing = async () => {
     getBookPurchasing();
     getLibrarian();
   }, []);
-
 
   return (
     <Container maxWidth="md">
@@ -226,7 +216,6 @@ const getBookPurchasing = async () => {
         <Divider />
 
         <Grid container spacing={3} sx={{ padding: 2 }}>
-
           <Grid item xs={12}>
             <FormControl fullWidth variant="standard">
               <p>ผู้ยืมหนังสือ</p>
@@ -243,15 +232,13 @@ const getBookPurchasing = async () => {
                     item: UserInterface //map
                   ) => (
                     <MenuItem value={item.ID} key={item.ID}>
-                      ชื่อ: {item.Name} | เลขบัตรประชาชน: {item.Idcard} 
+                      ชื่อ: {item.Name} | เลขบัตรประชาชน: {item.Idcard}
                     </MenuItem> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
                   )
                 )}
               </Select>
             </FormControl>
           </Grid>
-
-
 
           <Grid item xs={12}>
             <FormControl fullWidth variant="standard">
@@ -269,7 +256,8 @@ const getBookPurchasing = async () => {
                     item: BookPurchasingInterface //map
                   ) => (
                     <MenuItem value={item.ID} key={item.ID}>
-                      {item.BookName} | หมวดหมู่หนังสือ: {item.BookCategory.Name} 
+                      {item.BookName} | หมวดหมู่หนังสือ:{" "}
+                      {item.BookCategory.Name}
                     </MenuItem> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
                   )
                 )}
@@ -277,10 +265,8 @@ const getBookPurchasing = async () => {
             </FormControl>
           </Grid>
 
-
-
           <Grid item xs={6}>
-            <FormControl fullWidth variant="standard"> 
+            <FormControl fullWidth variant="standard">
               <p>เเถบสีหนังสือ</p>
               <TextField
                 id="Color_Bar"
@@ -292,8 +278,6 @@ const getBookPurchasing = async () => {
               />
             </FormControl>
           </Grid>
-
-
 
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
@@ -308,8 +292,6 @@ const getBookPurchasing = async () => {
               />
             </FormControl>
           </Grid>
-
-
 
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
@@ -327,8 +309,6 @@ const getBookPurchasing = async () => {
             </FormControl>
           </Grid>
 
-
-
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
               <p>วันกำหนดคืนหนังสือ</p>
@@ -343,8 +323,6 @@ const getBookPurchasing = async () => {
               </LocalizationProvider>
             </FormControl>
           </Grid>
-
-
 
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
@@ -370,8 +348,6 @@ const getBookPurchasing = async () => {
             </FormControl>
           </Grid>
 
-
-
           <Grid item xs={12}>
             <Button component={RouterLink} to="/borrowbook" variant="contained">
               กลับ
@@ -386,8 +362,6 @@ const getBookPurchasing = async () => {
               บันทึกข้อมูล
             </Button>
           </Grid>
-
-
         </Grid>
       </Paper>
     </Container>
@@ -395,4 +369,3 @@ const getBookPurchasing = async () => {
 }
 
 export default BorrowBookCreate;
-

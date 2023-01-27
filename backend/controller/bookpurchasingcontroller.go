@@ -115,5 +115,5 @@ func DeleteBookPurchasing(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, fmt.Sprintf("BookPurchasingID :  Id%s deleted.", Id))
+	c.JSON(http.StatusOK, gin.H{"data": fmt.Sprintf("BookPurchasingID :  Id%s deleted.", Id)})
 }

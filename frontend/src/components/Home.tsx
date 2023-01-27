@@ -22,9 +22,9 @@ function Home() {
   return (
     <div>
       <Container className={classes.container} maxWidth="md">
-        <h1 style={{ textAlign: "center" }}>ระบบโภชนาการ</h1>
+        <h1 style={{ textAlign: "center" }}>ระบบห้องสมุด</h1>
         <img
-          src="https://static01.nyt.com/images/2019/02/28/opinion/28yun/28yun-superJumbo.jpg?quality=75&auto=webp"
+          src="https://edu.suth.go.th/wp-content/uploads/2021/12/DSCF9682-1160x773.jpg"
           alt=""
           width="100%"
           height="100%"

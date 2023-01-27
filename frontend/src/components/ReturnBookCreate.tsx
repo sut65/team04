@@ -35,16 +35,17 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 });
 
 function ReturnBookCreate() {
-  const [current_day, setCurrent_Day ] = useState<Date | null>();
+  const [current_day, setCurrent_Day] = useState<Date | null>();
   const [late_number, setLate_Number] = useState<Date | null>();
-  const [returnbook, setReturnBook] = useState<Partial<ReturnBookInterface>>({}); //Partial ชิ้นส่วนเอาไว้เซทข้อมูลที่ละส่วน
+  const [returnbook, setReturnBook] = useState<Partial<ReturnBookInterface>>(
+    {}
+  ); //Partial ชิ้นส่วนเอาไว้เซทข้อมูลที่ละส่วน
   const [borrowbook, setBorrowBook] = useState<BorrowBookInterface[]>([]);
   const [lostbook, setLostBook] = useState<LostBookInterface[]>([]);
   const [librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
 
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
-
 
   const handleClose = (
     event?: React.SyntheticEvent | Event,
@@ -57,45 +58,38 @@ function ReturnBookCreate() {
     setError(false);
   };
 
-
-
   const handleInputChange = (
     event: React.ChangeEvent<{ id?: string; value: any }> //ชื่อคอมลัมน์คือ id และค่าที่จะเอามาใส่ไว้ในคอมลัมน์นั้นคือ value
   ) => {
-    const id = event.target.id as keyof typeof returnbook; 
-      console.log(event.target.id);
-      console.log(event.target.value);
+    const id = event.target.id as keyof typeof returnbook;
+    console.log(event.target.id);
+    console.log(event.target.value);
     const { value } = event.target;
-      setReturnBook({ ...returnbook, [id]: value });
+    setReturnBook({ ...returnbook, [id]: value });
   };
-
-
 
   const handleChange = (
     event: React.ChangeEvent<{ name?: string; value: any }> //ชื่อคอมลัมน์คือ id และค่าที่จะเอามาใส่ไว้ในคอมลัมน์นั้นคือ value
   ) => {
     const name = event.target.name as keyof typeof returnbook; //
-      console.log(event.target.name);
-      console.log(event.target.value);
+    console.log(event.target.name);
+    console.log(event.target.value);
 
     const { value } = event.target;
-      setReturnBook({ ...returnbook, [name]: value });
+    setReturnBook({ ...returnbook, [name]: value });
   };
-
-
 
   function submit() {
     let data = {
       //เก็บข้อมูลที่จะเอาไปเก็บในดาต้าเบส
-      Current_Day:     new Date(),
-	    Late_Number:     returnbook.Late_Number ?? "",
-	    Book_Condition:  returnbook.Book_Condition ?? "",
-      LostBookID:      returnbook.LostBookID,
-      LibrarianID:     Number(localStorage.getItem("nid")),
-      BorrowBookID:    returnbook.BorrowBookID,
+      Current_Day: new Date(),
+      Late_Number: Number(returnbook.Late_Number) ?? "",
+      Book_Condition: returnbook.Book_Condition ?? "",
+      LostBookID: Number(returnbook.LostBookID),
+      LibrarianID: Number(localStorage.getItem("nid")),
+      BorrowBookID: Number(returnbook.BorrowBookID),
     };
     console.log(data);
-
 
     const apiUrl = "http://localhost:8080/return_books";
     const requestOptions = {
@@ -113,10 +107,10 @@ function ReturnBookCreate() {
       .then((res) => {
         console.log(res);
         if (res.data) {
-            setSuccess(true);
-            getBorrowBook();
+          setSuccess(true);
+          getBorrowBook();
         } else {
-            setError(true);
+          setError(true);
         }
       });
   }
@@ -128,8 +122,7 @@ function ReturnBookCreate() {
     },
   };
 
-
-// บรรณารักษ์ Librarian
+  // บรรณารักษ์ Librarian
   const getLibrarian = async () => {
     const apiUrl = "http://localhost:8080/librarian";
 
@@ -144,24 +137,22 @@ function ReturnBookCreate() {
       });
   };
 
+  // การยืมหนังสือ BorrowBook
+  const getBorrowBook = async () => {
+    const apiUrl = "http://localhost:8080/borrow_books";
 
-// การยืมหนังสือ BorrowBook
-const getBorrowBook = async () => {
-  const apiUrl = "http://localhost:8080/borrow_books";
+    fetch(apiUrl, requestOptions)
+      .then((response) => response.json())
 
-  fetch(apiUrl, requestOptions)
-    .then((response) => response.json())
+      .then((res) => {
+        console.log(res.data);
+        if (res.data) {
+          setBorrowBook(res.data);
+        }
+      });
+  };
 
-    .then((res) => {
-      console.log(res.data);
-      if (res.data) {
-        setBorrowBook(res.data);
-      }
-    });
-};
-
-  
-// การทำหนังสือหาย LostBook
+  // การทำหนังสือหาย LostBook
   const getLostBook = async () => {
     const apiUrl = "http://localhost:8080/lost_books";
 
@@ -176,7 +167,6 @@ const getBorrowBook = async () => {
       });
   };
 
-
   useEffect(() => {
     //ทำงานทุกครั้งที่เรารีเฟชหน้าจอ
     //ไม่ให้รันแบบอินฟินิตี้ลูป
@@ -184,7 +174,6 @@ const getBorrowBook = async () => {
     getBorrowBook();
     getLibrarian();
   }, []);
-
 
   return (
     <Container maxWidth="md">
@@ -226,7 +215,6 @@ const getBorrowBook = async () => {
         <Divider />
 
         <Grid container spacing={3} sx={{ padding: 2 }}>
-
           <Grid item xs={12}>
             <FormControl fullWidth variant="standard">
               <p>ผู้ที่เคยยืมหนังสือ</p>
@@ -243,11 +231,11 @@ const getBorrowBook = async () => {
                     item: BorrowBookInterface //map
                   ) => (
                     <MenuItem value={item.ID} key={item.ID}>
-                      ชื่อ: {item.User.Name} | 
-                      เลขบัตรประชาชน: {item.User.Idcard} | 
-                      ชื่อหนังสือ: {item.BookPurchasing.BookName} | 
-                      หมวดหมู่: {item.BookPurchasing.BookCategory.Name} |
-                      เเถบสี: {item.Color_Bar} 
+                      ชื่อ: {item.User.Name} | เลขบัตรประชาชน:{" "}
+                      {item.User.Idcard} | ชื่อหนังสือ:{" "}
+                      {item.BookPurchasing.BookName} | หมวดหมู่:{" "}
+                      {item.BookPurchasing.BookCategory.Name} | เเถบสี:{" "}
+                      {item.Color_Bar}
                       {/* วันกำหนดคืน: {item.Return_Day}  */}
                     </MenuItem> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
                   )
@@ -255,8 +243,6 @@ const getBorrowBook = async () => {
               </Select>
             </FormControl>
           </Grid>
-
-
 
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
@@ -273,8 +259,6 @@ const getBorrowBook = async () => {
             </FormControl>
           </Grid>
 
-
-
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
               <p>จำนวนวันเลยกำหนดคืน(วัน)</p>
@@ -288,8 +272,6 @@ const getBorrowBook = async () => {
               />
             </FormControl>
           </Grid>
-
-
 
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
@@ -315,10 +297,8 @@ const getBorrowBook = async () => {
             </FormControl>
           </Grid>
 
-
-
           <Grid item xs={6}>
-            <FormControl fullWidth variant="standard"> 
+            <FormControl fullWidth variant="standard">
               <p>สภาพหนังสือ</p>
               <TextField
                 id="Book_Condition"
@@ -330,8 +310,6 @@ const getBorrowBook = async () => {
               />
             </FormControl>
           </Grid>
-
-
 
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
@@ -357,8 +335,6 @@ const getBorrowBook = async () => {
             </FormControl>
           </Grid>
 
-
-
           <Grid item xs={12}>
             <Button component={RouterLink} to="/borrowbook" variant="contained">
               กลับ
@@ -373,8 +349,6 @@ const getBorrowBook = async () => {
               บันทึกข้อมูล
             </Button>
           </Grid>
-
-
         </Grid>
       </Paper>
     </Container>

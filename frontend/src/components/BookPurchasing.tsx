@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import React from "react";
+import { useEffect, useState, useCallback } from "react";
 import { BookPurchasingInterface } from "../models/IBookPurchasing";
 import { DataGrid, GridRowsProp, GridColDef } from "@mui/x-data-grid";
 import { format } from "date-fns";
@@ -7,12 +8,91 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { Link as RouterLink } from "react-router-dom";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import { LibrarianInterface } from "../models/ILibrarian";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert, { AlertProps } from "@mui/material/Alert";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
+
+  ref
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 function BookPurchasing() {
   const [bookpurchasing, setBookPurchasing] = useState<
     BookPurchasingInterface[]
   >([]);
+  const [success, setSuccess] = useState(false); //จะยังไม่ให้แสดงบันทึกข้อมูล
+  const [error, setError] = useState(false);
+  const [opendelete, setOpenDelete] = useState(false);
+
+  const [selectcell, setSelectCell] = useState(Number);
+  const handleCellFocus = useCallback(
+    (event: React.FocusEvent<HTMLDivElement>) => {
+      const row = event.currentTarget.parentElement;
+      const id = row!.dataset.id!;
+      const field = event.currentTarget.dataset.field!;
+      setSelectCell(Number(id));
+    },
+    []
+  );
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+
+    reason?: string
+  ) => {
+    console.log(reason);
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setSuccess(false);
+
+    setError(false);
+  };
+  const handleClickDelete = () => {
+    // setSelectCell(selectcell);
+    DeleteBookPurchasing(selectcell);
+    setOpenDelete(false);
+  };
+  const handleDelete = () => {
+    setOpenDelete(true);
+  };
+
+  const handleDeleteClose = () => {
+    setOpenDelete(false);
+  };
+  const DeleteBookPurchasing = async (id: Number) => {
+    const apiUrl = `http://localhost:8080/bookPurchasing/${id}`;
+    const requestOptions = {
+      method: "DELETE",
+
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`, //การยืนยันตัวตน
+        "Content-Type": "application/json",
+      },
+    };
+
+    fetch(apiUrl, requestOptions)
+      .then((response) => response.json())
+
+      .then((res) => {
+        if (res.data) {
+          setSuccess(true);
+          window.location.reload();
+        } else {
+          setError(true);
+        }
+      });
+  };
 
   const GetAllBookPurchasing = async () => {
     const apiUrl = "http://localhost:8080/bookPurchasing";
@@ -78,6 +158,26 @@ function BookPurchasing() {
       width: 170,
       valueFormatter: (params) => format(new Date(params?.value), "P hh:mm a"),
     },
+    {
+      field: "actions",
+      headerName: "Actions",
+      width: 180,
+      renderCell: () => (
+        <div>
+          <Button variant="outlined" size="small" startIcon={<EditIcon />}>
+            แก้ไข
+          </Button>
+          <Button
+            onClick={handleDelete}
+            variant="outlined"
+            size="small"
+            startIcon={<DeleteIcon />}
+          >
+            ลบ
+          </Button>
+        </div>
+      ),
+    },
   ];
 
   useEffect(() => {
@@ -87,6 +187,39 @@ function BookPurchasing() {
   return (
     <div>
       <Container maxWidth="xl">
+        <Snackbar
+          open={success}
+          autoHideDuration={6000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        >
+          <Alert onClose={handleClose} severity="success">
+            ลบข้อมูลสำเร็จ
+          </Alert>
+        </Snackbar>
+
+        <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
+          <Alert onClose={handleClose} severity="error">
+            ลบข้อมูลไม่สำเร็จ
+          </Alert>
+        </Snackbar>
+        <Dialog
+          open={opendelete}
+          onClose={handleDeleteClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"คุณต้องการลบใช่หรือไม่?"}
+          </DialogTitle>
+
+          <DialogActions>
+            <Button onClick={handleDeleteClose}>ยกเลิก</Button>
+            <Button onClick={handleClickDelete} autoFocus>
+              ตกลง
+            </Button>
+          </DialogActions>
+        </Dialog>
         <Box
           display="flex"
           sx={{
@@ -122,6 +255,11 @@ function BookPurchasing() {
             getRowId={(row) => row.ID}
             columns={columns}
             pageSize={5}
+            componentsProps={{
+              cell: {
+                onFocus: handleCellFocus,
+              },
+            }}
             rowsPerPageOptions={[5]}
           />
         </div>

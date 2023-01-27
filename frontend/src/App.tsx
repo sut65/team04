@@ -36,25 +36,20 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import FoodBankIcon from "@mui/icons-material/FoodBank";
 import Home from "./components/Home";
-// import Nutritionists from "./components/Nutritionists";
-// import NutritionistCreate from "./components/NutritionistCreate";
-// import FoodInformations from "./components/FoodInformations";
-// import FoodInformationCreate from "./components/FoodInformationCreate";
-// import Limits from "./components/Limits";
-// import LimitCreate from "./components/LimitCreate";
 import SignInLibrarian from "./components/SignInLibrarian";
 import { LibrarianInterface } from "./models/ILibrarian";
-
-import AssignmentLateOutlinedIcon from "@mui/icons-material/AssignmentLateOutlined";
-import { AssignmentLateOutlined } from "@mui/icons-material";
-import PlaylistAddCheckCircleIcon from "@mui/icons-material/PlaylistAddCheckCircle";
-// import Tracking from "./components/Tracking";
-// import TrackingCreate from "./components/TrackingCreate";
-// import Patient from "./components/Patient";
-// import PatientCreate from "./components/PatientCreate";
-// import Plannings from "./components/Planning";
-// import FoodSickness from "./components/FoodSickness";
-// import FoodSicknessCreate from "./components/FoodSicknessCreate";
+import BookPurchasing from "./components/BookPurchasing";
+import BookPurchasingCreate from "./components/BookPurchasingCreate";
+import BorrowBook from "./components/BorrowBook";
+import ReturnBook from "./components/ReturnBook";
+import BorrowBookCreate from "./components/BorrowBookCreate";
+import ReturnBookCreate from "./components/ReturnBookCreate";
+import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
+import AssignmentReturnedIcon from "@mui/icons-material/AssignmentReturned"; //คืนหนังสืออออ
+import PunchClockIcon from "@mui/icons-material/PunchClock"; //ยืมมหนังสือ
+import DevicesOtherIcon from "@mui/icons-material/DevicesOther"; //ซื้ออุปกรณ์ฟ้า
+import EquipmentPurchasing from "./components/EquipmentPurchasing";
+import EquipmentPurchasingCreate from "./components/EquipmentPurchasingCreate";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
@@ -145,38 +140,29 @@ export default function MiniDrawer() {
   const menuLibrarian = [
     { name: "หน้าแรก", icon: <HomeIcon />, path: "/" },
     {
-      name: "ระบบบันทึกข้อมูลอาหาร",
-      icon: <MenuBookIcon />,
-      path: "/foodsicknesses",
+      name: "ระบบจัดซื้อหนังสือ",
+      icon: <LibraryBooksIcon />,
+      path: "/bookPurchasing",
     },
-    // {
-    //   name: "ระบบบันทึกสารอาหาร",
-    //   icon: <SaveIcon />,
-    //   path: "/food_informations",
-    // },
-    // {
-    //   name: "ระบบบันทึกข้อจำกัดการบริโภคอาหารของผู้ป่วย",
-    //   icon: <AssignmentLateOutlined />,
-    //   path: "/Limits",
-    // },
-    // {
-    //   name: "ระบบวางแผนรายการอาหาร",
-    //   icon: <FoodBankIcon />,
-    //   path: "/planning",
-    // },
-    // {
-    //   name: "ระบบประเมินภาวะโภชนาการหลังบริโภคอาหารของผู้ป่วย",
-    //   icon: <PlaylistAddCheckCircleIcon />,
-    //   path: "/tracking",
-    // },
+    {
+      name: "ระบบจัดซื้ออุปกรณ์",
+      icon: <DevicesOtherIcon />,
+      path: "/equipmentPurchasing",
+    },
+    {
+      name: "ระบบบันทึกการยืมหนังสือ",
+      icon: <PunchClockIcon />,
+      path: "/borrowbook",
+    },
+    {
+      name: "ระบบบันทึกการคืนหนังสือ",
+      icon: <AssignmentReturnedIcon />,
+      path: "/returnbook",
+    },
   ];
   const menuUser = [
     { name: "หน้าแรก", icon: <HomeIcon />, path: "/" },
-    // {
-    //   name: "ระบบบันทึกข้อมูลผู้ป่วย",
-    //   icon: <PeopleIcon />,
-    //   path: "/patients",
-    // },
+
     {
       name: "ระบบบันทึกข้อมูลนักโภชนาการ",
       icon: <AccountCircleIcon />,
@@ -194,7 +180,7 @@ export default function MiniDrawer() {
 
   const getLibrarians = async () => {
     let uid = localStorage.getItem("uid");
-    fetch(`${apiUrl}/librarians/${uid}`, requestOptions)
+    fetch(`${apiUrl}/librarian/${uid}`, requestOptions)
       .then((response) => response.json())
       .then((res) => {
         if (res.data) {
@@ -326,29 +312,23 @@ export default function MiniDrawer() {
           <div>
             <Routes>
               <Route path="/" element={<Home />} />
-              {/* <Route path="/nutritionists" element={<Nutritionists />} />
+              <Route path="/bookPurchasing" element={<BookPurchasing />} />
               <Route
-                path="/nutritionist/create"
-                element={<NutritionistCreate />}
-              /> */}
-              {/* <Route path="/patients" element={<Patient />} />
-              <Route path="/patients/create" element={<PatientCreate />} />
-              <Route path="/food_informations" element={<FoodInformations />} />
-              <Route
-                path="/food_information/create"
-                element={<FoodInformationCreate />}
+                path="/bookPurchasingCreate"
+                element={<BookPurchasingCreate />}
               />
-              <Route path="/foodsicknesses" element={<FoodSickness />} />
               <Route
-                path="/foodsicknesses/create"
-                element={<FoodSicknessCreate />}
+                path="/equipmentPurchasing"
+                element={<EquipmentPurchasing />}
               />
-              <Route path="/Limits" element={<Limits />} />
-              <Route path="/Limit/create" element={<LimitCreate />} />
-              <Route path="/planning" element={<Plannings />} />
-              <Route path="/planning/create" element={<PlanningCreate />} />
-              <Route path="/tracking" element={<Tracking />} />
-              <Route path="/trackingcreate" element={<TrackingCreate />} /> */}
+              <Route
+                path="/equipmentPurchasingCreate"
+                element={<EquipmentPurchasingCreate />}
+              />
+              <Route path="/borrowbook" element={<BorrowBook />} />
+              <Route path="/borrowbook/create" element={<BorrowBookCreate />} />
+              <Route path="/returnbook" element={<ReturnBook />} />
+              <Route path="/returnbook/create" element={<ReturnBookCreate />} />
             </Routes>
           </div>
         </main>

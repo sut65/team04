@@ -24,8 +24,8 @@ func main() {
 			protected.GET("/bookPurchasing", controller.GetAllBookPurchasing)
 			protected.GET("/bookPurchasing/:id", controller.GetBookPurchasingByID)
 			protected.POST("/bookPurchasingCreate", controller.CreateBookPurchasing)
-			protected.PATCH("/bookPurchasingUpdate", controller.UpdateBookPurchasing)
-			protected.DELETE("/bookPurchasingDelete/:id", controller.DeleteBookPurchasing)
+			protected.PATCH("/bookPurchasing", controller.UpdateBookPurchasing)
+			protected.DELETE("/bookPurchasing/:id", controller.DeleteBookPurchasing)
 			//publisher
 			protected.GET("/publisher", controller.GetAllPublisher)
 			protected.GET("/publisher/:id", controller.GetPublisherByID)
@@ -44,8 +44,8 @@ func main() {
 			protected.GET("/equipmentPurchasing", controller.GetAllEquipmentPurchasing)
 			protected.GET("/equipmentPurchasing/:id", controller.GetEquipmentPurchasingByID)
 			protected.POST("/equipmentPurchasingCreate", controller.CreateEquipmentPurchasing)
-			protected.PATCH("/equipmentPurchasingUpdate", controller.UpdateEquipmentPurchasing)
-			protected.DELETE("/equipmentPurchasingDelete/:id", controller.DeleteEquipmentPurchasing)
+			protected.PATCH("/equipmentPurchasing", controller.UpdateEquipmentPurchasing)
+			protected.DELETE("/equipmentPurchasing/:id", controller.DeleteEquipmentPurchasing)
 
 			//Company
 			protected.GET("/company", controller.GetAllCompany)
@@ -219,7 +219,7 @@ func CORSMiddleware() gin.HandlerFunc {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT,DELETE")
 
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)
