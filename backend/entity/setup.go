@@ -338,7 +338,7 @@ func SetupDatabase() {
 
 	//preorder
 	preorder1 := Preorder{
-		Owner:      mumana,
+		User:       mumana,
 		Name:       "Java",
 		Price:      150,
 		Author:     "ม.ม่วง",
@@ -353,7 +353,7 @@ func SetupDatabase() {
 	db.Model(&Preorder{}).Create(&preorder1)
 
 	preorder2 := Preorder{
-		Owner:      montree,
+		User:       montree,
 		Name:       "Chinese",
 		Price:      120,
 		Author:     "Xiao Lu",
