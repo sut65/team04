@@ -63,7 +63,7 @@ func CreateReturnBook(c *gin.Context) { // c รับข้อมูลมา�
 // GET /return_books
 func GetAllReturnBook(c *gin.Context) {
 	var returnbook []entity.ReturnBook
-	if err := entity.DB().Model(&entity.ReturnBook{}).Preload("BorrowBook.User").Preload("BorrowBook").Preload("LostBook").Preload("Librarian").Find(&returnbook).Error; err != nil {
+	if err := entity.DB().Model(&entity.ReturnBook{}).Preload("BorrowBook.User").Preload("BorrowBook").Preload("BorrowBook.BookPurchasing").Preload("BorrowBook.BookPurchasing.BookCategory").Preload("LostBook").Preload("Librarian").Find(&returnbook).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -74,7 +74,7 @@ func GetAllReturnBook(c *gin.Context) {
 func GetReturnBookByID(c *gin.Context) {
 	var returnbook entity.ReturnBook
 	Id := c.Param("id") //id ที่เราตั้งไว้ใน main.go ที่อยู่หลัง : ตัวอย่าง >> /return_books/:id
-	if err := entity.DB().Model(&entity.ReturnBook{}).Where("ID = ?", Id).Preload("BorrowBook.User").Preload("BorrowBook").Preload("LostBook").Preload("Librarian").Find(&returnbook); err.RowsAffected == 0 {
+	if err := entity.DB().Model(&entity.ReturnBook{}).Where("ID = ?", Id).Preload("BorrowBook.User").Preload("BorrowBook").Preload("BorrowBook.BookPurchasing").Preload("BorrowBook.BookPurchasing.BookCategory").Preload("LostBook").Preload("Librarian").Find(&returnbook); err.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("BookPurchasingID :  Id%s not found.", Id)})
 		return
 	}
