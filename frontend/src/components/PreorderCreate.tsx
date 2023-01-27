@@ -1,0 +1,449 @@
+import { useEffect, useState } from "react";
+import { Link as RouterLink } from "react-router-dom";
+import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import Button from "@mui/material/Button";
+import FormControl from "@mui/material/FormControl";
+import Container from "@mui/material/Container";
+import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material//Box";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
+import Snackbar from "@material-ui/core/Snackbar";
+import Select from "@material-ui/core/Select";
+import MuiAlert, { AlertProps } from "@mui/material/Alert";
+import TextField from "@mui/material/TextField";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+// import { UsersInterface } from "../models/IUser";
+// import { GendersInterface } from "../models/IGender";
+// import { NametitleInterface } from "../models/INametitle";
+// import { PatientsInterface } from "../models/IPatient";
+import React from "react";
+import MenuItem from "@material-ui/core/MenuItem";
+import { Dayjs } from "dayjs";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { NativeSelect } from "@mui/material";
+import { UserInterface } from "../models/IUser";
+import { PreorderInterface } from "../models/IPreorder";
+import { PaymentInterface } from "../models/IPayment";
+import { LibrarianInterface } from "../models/ILibrarian";
+
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
+
+  ref
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      flexGrow: 1,
+    },
+    container: {
+      marginTop: theme.spacing(2),
+    },
+    paper: {
+      padding: theme.spacing(2),
+      color: theme.palette.text.secondary,
+    },
+  })
+);
+
+function PreorderCreate() {
+  const classes = useStyles();
+//   const [Librarian, setLibrarian] = useState<Partial<LibrarianInterface>>({});
+  const [User, setUser] = useState<UserInterface[]>([]);
+  const [preorder, setPreorder] = useState<Partial<PreorderInterface>>({});
+  const [Payment, setPayment] = useState<PaymentInterface[]>([]);
+  const [Librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
+  const [datetime, setDatetime] = React.useState<Date | null>();
+
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
+
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSuccess(false);
+    setError(false);
+  };
+
+  const handleChange = (
+    event: React.ChangeEvent<{ name?: string; value: any }> //ชื่อคอมลัมน์คือ name และค่าที่จะเอามาใส่ไว้ในคอมลัมน์นั้นคือ value
+  ) => {
+    const name = event.target.name as keyof typeof preorder; 
+    // console.log(event.target.name);
+    // console.log(event.target.value);
+
+    const { value } = event.target;
+
+    setPreorder({ ...preorder, [name]: value });
+  };
+
+  const handleInputChange = (
+    event: React.ChangeEvent<{ id?: string; value: any }>
+  ) => {
+    const id = event.target.id as keyof typeof PreorderCreate;
+    const { value } = event.target;
+    setPreorder({ ...preorder, [id]: value });
+  };
+
+  const apiUrl = "http://localhost:8080";
+  const requestOptions = {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "Content-Type": "application/json",
+    },
+  }; 
+
+  //librarian
+  const getLibrarian = async () => {
+    const apiUrl = "http://localhost:8080/librarian";
+
+    fetch(apiUrl, requestOptions)
+      .then((response) => response.json())
+
+      .then((res) => {
+        console.log(res.data);
+        if (res.data) {
+          setLibrarian(res.data);
+        }
+      });
+  };
+
+
+  //payment
+  const getPayment = async () => {
+    fetch(`${apiUrl}/payment`, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        console.log(res.data);
+        if (res.data) {
+          setPayment(res.data);
+        } else {
+          console.log("else");
+        }
+      });
+  };
+
+  //user
+  const getUser = async () => {
+    fetch(`${apiUrl}/users`, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        console.log(res.data);
+        if (res.data) {
+          setUser(res.data);
+        } else {
+          console.log("else");
+        }
+      });
+  };
+
+  useEffect(() => {
+    //ทำงานทุกครั้งที่เรารีเฟชหน้าจอ
+    //ไม่ให้รันแบบอินฟินิตี้ลูป
+    getLibrarian();
+    getPayment();
+    getUser();
+  }, []);
+
+  const convertType = (data: string | number | undefined) => {
+    let val = typeof data === "string" ? parseInt(data) : data;
+    return val;
+  };
+
+  function submit() {
+    let data = {
+        OwnerID: convertType(preorder.OwnerID),
+        Name: preorder.Name,
+        Price: preorder.Price,
+        Author: preorder.Author,
+        Edition: preorder.Edition,
+        Year: preorder.Year,
+        Quantity: preorder.Quantity,
+        Totlaprice: preorder.Totalprice, 
+        PaymentID: convertType(preorder.PaymentID),
+        Datetime:  new Date(),
+        LibrarianID: Number(localStorage.getItem("nid")),
+    };
+
+    console.log(data);
+
+    const apiUrl = "http://localhost:8080/preorder";
+    const requestOptions = {
+      method: "POST",  
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    };
+
+    fetch(apiUrl, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        if (res.data) {
+          setSuccess(true);
+        } else {
+          setError(true);
+        }
+      });
+  }
+
+  return (
+    <Container maxWidth="md">
+      <Snackbar open={success} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success">
+          บันทึกข้อมูลสำเร็จ
+        </Alert>
+      </Snackbar>
+      <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error">
+          บันทึกข้อมูลไม่สำเร็จ
+        </Alert>
+      </Snackbar>
+      <Paper>
+        <Box
+          display="flex"
+          sx={{
+            marginTop: 2,
+          }}
+        >
+          <Box sx={{ paddingX: 2, paddingY: 1 }}>
+            <Typography
+              component="h2"
+              variant="h6"
+              color="primary"
+              gutterBottom
+            >
+              สร้างข้อมูลผู้ป่วย
+            </Typography>
+          </Box>
+        </Box>
+        <Divider />
+        <Grid container spacing={3} sx={{ padding: 2 }}>
+        
+        <Grid item xs={6}>
+            <FormControl variant="standard">
+            
+            <p>เลขบัตรประจำตัวประชาชน</p>
+
+                <NativeSelect
+                    value={preorder.OwnerID}
+                    
+                    onChange={handleChange}
+                    inputProps={{
+                        name: "OwnerID", //เอาไว้เข้าถึงข้อมูลแพลนนิ่งไอดี
+                    }}
+                    
+                    >
+                    <option aria-label="None" value="">
+                        กรุณาเลือกเลขบัตรประจำตัวประชาชน
+                    </option>
+                    {User.map((item: UserInterface) => (
+                        <option value={item.ID} key={item.ID}>
+                        {item.Idcard} 
+                        </option>
+                    ))}
+                
+                </NativeSelect>
+            </FormControl>
+          </Grid>
+            
+          <Grid item xs={6}>
+            <FormControl variant="standard">
+            <p>ชื่อสมาชิก</p>
+                <NativeSelect
+                    value={preorder.OwnerID}
+                    disabled
+                    onChange={handleChange}
+                    inputProps={{
+                        name: "UserName", //เอาไว้เข้าถึงข้อมูลแพลนนิ่งไอดี
+                    }}
+                    
+                    >
+                    <option aria-label="None" value="">
+                        {/* กรุณาเลือกเลขบัตรประจำตัวประชาชน */}
+                    </option>
+                    {User.map((item: UserInterface) => (
+                        <option value={item.ID} key={item.ID}>
+                        ชื่อ: {item.Name}
+                        </option>
+                    ))}
+                
+                </NativeSelect>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={6}>
+            <FormControl fullWidth variant="outlined">
+              <p>ชื่อหนังสือ</p>
+              <TextField
+                id="Name"
+                variant="outlined"
+                type="string"
+                size="medium"
+                placeholder="กรุณากรอกชื่อหนังสือ"
+                value={preorder.Name || ""}
+                onChange={handleInputChange}
+              />
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={6}>
+            <FormControl fullWidth variant="outlined">
+              <p>ราคา</p>
+              <TextField
+                id="Price"
+                variant="outlined"
+                InputProps={{ inputProps: { min: 0 } }}
+                type="number"
+                size="medium"
+                rows={2}
+                value={preorder.Price || ""}
+                onChange={handleInputChange}
+              />
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={6}>
+            <FormControl fullWidth variant="outlined">
+              <p>ชื่อผู้แต่ง</p>
+              <TextField
+                id="Author"
+                variant="outlined"
+                type="string"
+                size="medium"
+                placeholder="กรุณากรอกชื่อผู้แต่ง"
+                value={preorder.Author || ""}
+                onChange={handleInputChange}
+              />
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={6}>
+            <FormControl fullWidth variant="outlined">
+              <p>จำนวนเล่ม</p>
+              <TextField
+                id="Edition"
+                variant="outlined"
+                InputProps={{ inputProps: { min: 0 , max: 10} }}
+                type="number"
+                size="medium"
+                rows={2}
+                value={preorder.Edition || ""}
+                onChange={handleInputChange}
+              />
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={6}>
+            <FormControl fullWidth variant="outlined">
+              <p>ราคาทั้งหมด</p>
+              <TextField
+                id="Totalprice"
+                variant="outlined"
+                InputProps={{ inputProps: { min: 0} }}
+                type="number"
+                size="medium"
+                rows={2}
+                value={preorder.Totalprice || ""}
+                onChange={handleInputChange}
+              />
+            </FormControl>
+          </Grid>
+          <Grid item xs={6}>
+            <FormControl fullWidth variant="outlined">
+              <p>วิธีชำระเงิน</p>
+              <NativeSelect
+                id="Payment"
+                value={preorder.PaymentID}
+                onChange={handleChange}
+                inputProps={{
+                  name: "PaymentID",
+                }}
+              >
+                <option aria-label="None" value="">
+                  กรุณาเลือกวิธีชำระเงิน
+                </option>
+                {Payment.map((item: PaymentInterface) => (
+                  <option value={item.ID} key={item.ID}>
+                    {item.Name}
+                  </option>
+                ))}
+              </NativeSelect>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={6}>
+            <FormControl fullWidth variant="standard">
+              <p>วันที่เวลาที่ทำรายการ</p>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DateTimePicker
+                  disabled
+                  value={datetime}
+                  onChange={(newValue) => {
+                    setDatetime(newValue);
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={6}>
+            <FormControl fullWidth variant="standard">
+              <p>ผู้ทำรายการ</p>
+
+              <Select
+                disabled
+                value={localStorage.getItem("nid")}
+              >
+                {Librarian.map(
+                  (
+                    item: LibrarianInterface 
+                  ) =>                   (
+                    <MenuItem value={item.ID} key={item.ID}>
+                      {item.Name}
+                    </MenuItem> 
+                  )
+                )}
+              </Select>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Button
+              component={RouterLink}
+              to="/preorder"
+              variant="contained"
+              color="inherit"
+            >
+              ย้อนกลับ
+            </Button>
+            <Button
+              style={{ float: "right" }}
+              onClick={submit}
+              variant="contained"
+              color="primary"
+            >
+              บันทึกข้อมูล
+            </Button>
+          </Grid>
+        </Grid>
+      </Paper>
+    </Container>
+  );
+}
+
+export default PreorderCreate;
