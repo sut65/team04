@@ -30,8 +30,6 @@ import Loging from "./components/Login";
 import { Grid } from "@material-ui/core";
 import HomeIcon from "@mui/icons-material/Home";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import SaveIcon from "@mui/icons-material/Save";
-import MenuBookIcon from "@mui/icons-material/MenuBook";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import FoodBankIcon from "@mui/icons-material/FoodBank";
@@ -50,6 +48,12 @@ import PunchClockIcon from "@mui/icons-material/PunchClock"; //ยืมมห�
 import DevicesOtherIcon from "@mui/icons-material/DevicesOther"; //ซื้ออุปกรณ์ฟ้า
 import EquipmentPurchasing from "./components/EquipmentPurchasing";
 import EquipmentPurchasingCreate from "./components/EquipmentPurchasingCreate";
+import BorrowEquipment from "./components/BorrowEquipment";
+import BorrowEquipmentCreate from "./components/BorrowEquipmentCreate";
+import ReturnEquipment from "./components/ReturnEquipment";
+import ReturnEquipmentCreate from "./components/ReturnEquipmentCreate";
+import AddBoxIcon from "@mui/icons-material/AddBox"; ///add
+import InstallDesktopIcon from "@mui/icons-material/InstallDesktop";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
@@ -158,6 +162,16 @@ export default function MiniDrawer() {
       name: "ระบบบันทึกการคืนหนังสือ",
       icon: <AssignmentReturnedIcon />,
       path: "/returnbook",
+    },
+    {
+      name: "ระบบเก็บข้อมูลการยืมอุปกรณ์",
+      icon: <AddBoxIcon />,
+      path: "/borrowEquipment",
+    },
+    {
+      name: "ระบบเก็บข้อมูลการคืนอุปกรณ์",
+      icon: <InstallDesktopIcon />,
+      path: "/returnEquipment",
     },
   ];
   const menuUser = [
@@ -329,6 +343,16 @@ export default function MiniDrawer() {
               <Route path="/borrowbook/create" element={<BorrowBookCreate />} />
               <Route path="/returnbook" element={<ReturnBook />} />
               <Route path="/returnbook/create" element={<ReturnBookCreate />} />
+              <Route path="/borrowEquipment" element={<BorrowEquipment />} />
+              <Route
+                path="/borrowEquipment/create"
+                element={<BorrowEquipmentCreate />}
+              />
+              <Route path="/returnEquipment" element={<ReturnEquipment />} />
+              <Route
+                path="/returnEquipment/create"
+                element={<ReturnEquipmentCreate />}
+              />
             </Routes>
           </div>
         </main>
