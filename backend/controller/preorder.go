@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -33,14 +34,14 @@ func CreatePreorder(c *gin.Context) {
 	}
 
 	//  8: ค้นหา user ด้วย id
-	if tx := entity.DB().Where("id = ?", preorder.OwnerID).First(&user); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "ownwer not found"})
+	if tx := entity.DB().Where("id = ?", preorder.UserID).First(&user); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "user not found"})
 		return
 	}
 
 	// 11: สร้าง preorder
 	ps := entity.Preorder{ //object ที่จะเก็บข้อมูลของเรา
-		Owner:      user,                //โยงความสัมพันธ์กับ Entity user
+		User:       user,                //โยงความสัมพันธ์กับ Entity user
 		Name:       preorder.Name,       //ตั้งค่าฟิลด์ name
 		Price:      preorder.Price,      //ตั้งค่าฟิลด์ price
 		Author:     preorder.Author,     //ตั้งค่าฟิลด์ author
@@ -63,25 +64,25 @@ func CreatePreorder(c *gin.Context) {
 
 }
 
-// GET /preorder/:id
-func GetPreorder(c *gin.Context) { //get โดนส่งพารามิเตอร์
-	var preorder entity.Preorder
-	id := c.Param("id") //เรียกค่าจากตัวแปรที่อยู่แบบ object ซ้อน object ที่เป็น FK กัน
-	if err := entity.DB().Preload("Payment").Preload("User").Preload("Librarian").Raw("SELECT * FROM preorders WHERE id = ?", id).Find(&preorder).Error; err != nil {
+// GET /preorder
+func ListPreorders(c *gin.Context) {
+	var preorder []entity.Preorder
+	if err := entity.DB().Model(&entity.Preorder{}).Preload("User").Preload("Payment").Preload("Librarian").Find(&preorder).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": preorder})
 }
 
-// GET /preorder ไม่มีเงื่อนไข ส่งไปทุก object
-func ListPreorders(c *gin.Context) { //เอา object ไปเชื่อมกัน Preload คือ ดึง object ของ object
-	var preorders []entity.Preorder //ดึงมาทั้งหมด
-	if err := entity.DB().Preload("Payment").Preload("User").Preload("Librarian").Raw("SELECT * FROM preorders").Find(&preorders).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// GET /preorder/:id
+func GetPreorder(c *gin.Context) {
+	var preorder entity.Preorder
+	Id := c.Param("id") //id ที่เราตั้งไว้ใน main.go ที่อยู่หลัง : ตัวอย่าง >> /preorder/:id
+	if err := entity.DB().Model(&entity.Preorder{}).Where("ID = ?", Id).Preload("User").Preload("Payment").Preload("Librarian").Find(&preorder); err.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("PreorderID :  Id%s not found.", Id)})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": preorders})
+	c.JSON(http.StatusOK, gin.H{"data": preorder})
 }
 
 // DELETE /preorder/:id

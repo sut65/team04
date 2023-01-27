@@ -11,8 +11,8 @@ import (
 type Preorder struct {
 	gorm.Model
 
-	OwnerID *uint
-	Owner   User `gorm:"references:id;"`
+	UserID *uint
+	User   User `gorm:"references:id;"`
 
 	Name       string
 	Price      int
