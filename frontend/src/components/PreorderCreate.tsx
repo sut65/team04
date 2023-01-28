@@ -165,30 +165,17 @@ function PreorderCreate() {
 
   function submit() {
     let data = {
-        UserID: convertType(preorder.UserID),
-        Name: preorder.Name,
-        Price: preorder.Price,
-        Author: preorder.Author,
-        Edition: preorder.Edition,
-        Year: preorder.Year,
-        Quantity: preorder.Quantity,
-        Totalprice: preorder.Totalprice, 
-        PaymentID: convertType(preorder.PaymentID),
+        UserID: Number(preorder.UserID) ?? "",
+        Name: preorder.Name ?? "",
+        Price: Number(preorder.Price) ?? "",
+        Author: preorder.Author ?? "",
+        Edition: Number(preorder.Edition) ?? "",
+        Year: preorder.Year ?? "",
+        Quantity: Number(preorder.Quantity) ?? "",
+        Totalprice: Number(preorder.Totalprice) ?? "", 
+        PaymentID: Number(preorder.PaymentID) ?? "",
         Datetime:  new Date(),
         LibrarianID: Number(localStorage.getItem("nid")),
-
-        //test run
-        // UserID: Number(preorder.UserID) ?? "",
-        // Name: preorder.Name ?? "",
-        // Price: Number(preorder.Price) ?? "",
-        // Author: preorder.Author ?? "",
-        // Edition: Number(preorder.Edition) ?? "",
-        // Year: preorder.Year ?? "",
-        // Quantity: Number(preorder.Quantity) ?? "",
-        // Totalprice: Number(preorder.Totalprice) ?? "", 
-        // PaymentID: Number(preorder.PaymentID) ?? "",
-        // Datetime:  new Date(),
-        // LibrarianID: Number(localStorage.getItem("nid")),
     };
 
     console.log(data);
