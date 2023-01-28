@@ -54,6 +54,9 @@ import ReturnEquipment from "./components/ReturnEquipment";
 import ReturnEquipmentCreate from "./components/ReturnEquipmentCreate";
 import AddBoxIcon from "@mui/icons-material/AddBox"; ///add
 import InstallDesktopIcon from "@mui/icons-material/InstallDesktop";
+import Preorder from "./components/Preorder";
+import PreorderCreate from "./components/PreorderCreate";
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
@@ -172,6 +175,11 @@ export default function MiniDrawer() {
       name: "ระบบเก็บข้อมูลการคืนอุปกรณ์",
       icon: <InstallDesktopIcon />,
       path: "/returnEquipment",
+    },
+    {
+      name: "ระบบสั่งซื้อหนังสือ Pre-order",
+      icon: <ShoppingCartIcon />,
+      path: "/preorder",
     },
   ];
   const menuUser = [
@@ -353,6 +361,9 @@ export default function MiniDrawer() {
                 path="/returnEquipment/create"
                 element={<ReturnEquipmentCreate />}
               />
+
+               <Route path="/preorder" element={<Preorder />} />
+               <Route path="/preorder/create" element={<PreorderCreate />} />
             </Routes>
           </div>
         </main>
