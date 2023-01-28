@@ -56,7 +56,13 @@ import AddBoxIcon from "@mui/icons-material/AddBox"; ///add
 import InstallDesktopIcon from "@mui/icons-material/InstallDesktop";
 import Preorder from "./components/Preorder";
 import PreorderCreate from "./components/PreorderCreate";
+import Introduce from "./components/Introduce";
+import IntroduceCreate from "./components/IntroduceCreate";
+import Forfeit from "./components/Forfeit";
+import ForfeitCreate from "./components/ForfeitCreate";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import RecommendIcon from '@mui/icons-material/Recommend';
+import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
@@ -167,6 +173,11 @@ export default function MiniDrawer() {
       path: "/returnbook",
     },
     {
+      name: "ระบบบันทึกค่าปรับ",
+      icon: <LocalAtmIcon />,
+      path: "/forfeit/info",
+    },
+    {
       name: "ระบบเก็บข้อมูลการยืมอุปกรณ์",
       icon: <AddBoxIcon />,
       path: "/borrowEquipment",
@@ -189,6 +200,11 @@ export default function MiniDrawer() {
       name: "ระบบบันทึกข้อมูลนักโภชนาการ",
       icon: <AccountCircleIcon />,
       path: "/nutritionists",
+    },
+    {
+      name: "ระบบแนะนำหนังสือเข้าห้องสมุด",
+      icon: <RecommendIcon />,
+      path: "/introduce/info",
     },
   ];
   const apiUrl = "http://localhost:8080";
@@ -361,6 +377,11 @@ export default function MiniDrawer() {
                 path="/returnEquipment/create"
                 element={<ReturnEquipmentCreate />}
               />
+
+              <Route path="/introduce/info" element={<Introduce />} />
+              <Route path="/introduce/create" element={<IntroduceCreate />} />
+              <Route path="/forfeit/info" element={<Forfeit />} />
+              <Route path="/forfeit/create" element={<ForfeitCreate />} />
 
                <Route path="/preorder" element={<Preorder />} />
                <Route path="/preorder/create" element={<PreorderCreate />} />

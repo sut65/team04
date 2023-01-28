@@ -31,7 +31,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 
 function IntroduceCreate() {
   //const classes = useStyles();
-  const [I_Date, setDate] = useState<Date | null>(null);
+  const [I_Date, setI_Date] = useState<Date | null>(null);
   const [bookType, setBookType] = useState<BookTypeInterface[]>([]);
   const [objective, setObjective] = useState<ObjectiveInterface[]>([]);
   const [users, setUsers] = useState<UserInterface[]>([]);
@@ -79,13 +79,13 @@ function IntroduceCreate() {
     let data = {
       Title: introduce.Title ?? "",
       Author: introduce.Author ?? "",
-      ISBN: introduce.ISBN ?? "",
-      Edition: introduce.Edition ?? "",
+      ISBN: convertType(introduce.ISBN),
+      Edition: convertType(introduce.Edition),
       Pub_Name: introduce.Pub_Name ?? "",
       Pub_Year: introduce.Pub_Year ?? "",
       BookTypeID: convertType(introduce.BookTypeID),
       ObjectiveID: convertType(introduce.ObjectiveID),
-      I_Date: I_Date,
+      I_Date: new Date(),
       UserID: Number(localStorage.getItem("uid")),
     };
     console.log(data);
@@ -245,7 +245,7 @@ function IntroduceCreate() {
               <TextField
                 id="ISBN"
                 variant="standard"
-                type="string"
+                type="number"
                 size="medium"
                 value={introduce.ISBN|| ""}
                 onChange={handleInputChange}
@@ -259,7 +259,7 @@ function IntroduceCreate() {
               <TextField
                 id="Edition"
                 variant="standard"
-                type="string"
+                type="number"
                 size="medium"
                 value={introduce.Edition || ""}
                 onChange={handleInputChange}
@@ -359,13 +359,12 @@ function IntroduceCreate() {
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
               <p>วันที่และเวลาบันทึกข้อมูล</p>
-
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DateTimePicker
-                  disabled
+                  // disabled
                   value={I_Date}
                   onChange={(newValue) => {
-                    setDate(newValue);
+                    setI_Date(newValue);
                   }}
                   renderInput={(params) => <TextField {...params} />}
                 />
