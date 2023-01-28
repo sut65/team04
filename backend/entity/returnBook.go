@@ -28,5 +28,5 @@ type ReturnBook struct {
 	BorrowBookID *uint
 	BorrowBook   BorrowBook `gorm:"references:id;"`
 
-	Forfeits []Forfeit `gorm:"foreignKey:PaymentID"`
+	Forfeit []Forfeit `gorm:"foreignKey:PaymentID"`
 }
