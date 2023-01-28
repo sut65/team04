@@ -16,7 +16,7 @@ type User struct {
 
 	BorrowBooks      []BorrowBook      `gorm:"foreignKey:UserID"`
 	BorrowEquipments []BorrowEquipment `gorm:"foreignKey:UserID"`
-	Introduces       []Introduce       `gorm:"foreignKey:UserID"`
+	Introduce        []Introduce       `gorm:"foreignKey:UserID"`
 
 	Preorder []Preorder `gorm:"foreignKey:UserID"`
 }

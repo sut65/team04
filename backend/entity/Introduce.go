@@ -10,14 +10,14 @@ type BookType struct {
 	gorm.Model
 	Name string
 
-	Introduces []Introduce `gorm:"foreignKey:BookTypeID"`
+	Introduce []Introduce `gorm:"foreignKey:BookTypeID"`
 }
 
 type Objective struct {
 	gorm.Model
 	Name string
 
-	Introduces []Introduce `gorm:"foreignKey:ObjectiveID"`
+	Introduce []Introduce `gorm:"foreignKey:ObjectiveID"`
 }
 
 type Introduce struct {

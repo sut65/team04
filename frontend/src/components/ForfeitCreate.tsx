@@ -31,7 +31,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 
 function ForfeitCreate() {
   //const classes = useStyles();
-  const [Pay_Date, setPay_Date] = useState<Date | null>(null);
+  const [Pay_Date, setPay_Date] = useState<Date | null>();
   const [returnBook, setReturnBook] = useState<ReturnBookInterface[]>([]);
   const [payment, setPayment] = useState<PaymentInterface[]>([]);
   const [librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
@@ -205,13 +205,13 @@ function ForfeitCreate() {
 
         <Divider />
         <Grid container spacing={3} sx={{ padding: 2 }}>
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <FormControl fullWidth variant="standard">
               <Typography variant="inherit">
                 จำนวนรายการที่เหลือ {returnBook.length} รายการ
               </Typography>
             </FormControl>
-          </Grid>
+          </Grid> */}
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
               <p>ชื่อผู้ยืมหนังสือ</p>
