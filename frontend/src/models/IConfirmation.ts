@@ -3,7 +3,7 @@ import { PreorderInterface } from "./IPreorder"
 import { ReceiverInterface } from "./IReceiver"
 
 export interface ConfirmationInterface{
-    Id: number
+    ID: number
 
     PreorderID: number
     Preorder: PreorderInterface

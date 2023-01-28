@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// ระบบสั่งซื้อสินค้า pre order
+// ระบบยืนยันการรับหนังสือ
 
 type Receiver struct {
 	gorm.Model
