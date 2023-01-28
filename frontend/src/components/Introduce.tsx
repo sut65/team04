@@ -10,70 +10,63 @@ import { IntroduceInterface } from "../models/IIntroduce";
 
 function Introduce() {
   const [introduce, setIntroduce] = useState<IntroduceInterface[]>([]);
-  const apiUrl = "http://localhost:8080";
-
-  const requestOptions = {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-      "Content-Type": "application/json",
-    },
-  };
-
   const getIntroduce = async () => {
-    fetch(`${apiUrl}/forfeit`, requestOptions)
+    const apiUrl = "http://localhost:8080/introduce";
+
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`, //การยืนยันตัวตน
+        "Content-Type": "application/json",
+      },
+    };
+
+    fetch(apiUrl, requestOptions)
       .then((response) => response.json())
+
       .then((res) => {
-        console.log("introduce", res.data);
+        console.log(res.data);
+
         if (res.data) {
           setIntroduce(res.data);
-        } else {
-          console.log("else");
         }
       });
   };
 
   const columns: GridColDef[] = [
     { field: "ID", headerName: "ลำดับ", width: 50 },
-    { field: "Title", headerName: "ชื่อเรื่อง", width: 215 },
-    { field: "Author", headerName: "ชื่อผู้แต่ง", width: 215 },
-    { field: "ISBN", headerName: "ISBN", width: 215 },
-    { field: "Edition", headerName: "ตีพิมพ์ครั้งที่", width: 215 },
-    { field: "Pub_Name", headerName: "สำนักพิมพ์", width: 215 },
-    { field: "Pub_Year", headerName: "ปีที่พิมพ์", width: 215 },
+    { field: "Title", headerName: "ชื่อเรื่อง", width: 350 },
+    { field: "Author", headerName: "ชื่อผู้แต่ง", width: 250 },
+    { field: "ISBN", headerName: "ISBN", width: 150 },
+    { field: "Edition", headerName: "ตีพิมพ์ครั้งที่", width: 100 },
+    { field: "Pub_Name", headerName: "สำนักพิมพ์", width: 200 },
+    { field: "Pub_Year", headerName: "ปีที่พิมพ์", width: 80 },
     {
-      field: "BookType",
+      field: "BookTypeName",
       headerName: "ประเภท",
-      width: 80,
+      width: 150,
       valueGetter: (params) => {
         return params.getValue(params.id, "BookType").Name;
       },
     },
     {
-      field: "Objective",
+      field: "ObjectiveName",
       headerName: "วัตถุประสงค์",
       width: 150,
       valueGetter: (params) => {
         return params.getValue(params.id, "Objective").Name;
       },
     },
-    // {
-    //   field: "I_Date",
-    //   headerName: "วันที่",
-    //   width: 100,
-    //   valueFormatter: (params) => format(new Date(params?.value), "dd/MM/yyyy"),
-    // },
     {
-        field: "I_Date",
-        headerName: "วันที่และเวลา",
-        width: 170,
-        valueFormatter: (params) => format(new Date(params?.value), "P hh:mm a"),
-        // moment(params?.value).format("DD/MM/YYYY hh:mm A"),
-      },
+      field: "I_Date",
+      headerName: "วันที่แนะนำหนังสือ",
+      width: 200,
+      valueFormatter: (params) => format(new Date(params?.value), "P hh:mm a"),
+    },
     {
-      field: "User",
+      field: "UserName",
       headerName: "ผู้แนะนำหนังสือ",
-      width: 150,
+      width: 200,
       valueGetter: (params) => {
         return params.getValue(params.id, "User").Name;
       },
@@ -86,7 +79,7 @@ function Introduce() {
 
   return (
     <div>
-      <Container maxWidth="md">
+      <Container maxWidth="xl">
         <Box
           display="flex"
           sx={{
@@ -114,13 +107,13 @@ function Introduce() {
             </Button>
           </Box>
         </Box>
-        <div style={{ height: 400, width: "100%", marginTop: "20px" }}>
+        <div style={{ height: 600, width: "100%", marginTop: "20px" }}>
           <DataGrid
             rows={introduce}
             getRowId={(row) => row.ID}
             columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
+            pageSize={20}
+            rowsPerPageOptions={[40]}
           />
         </div>
       </Container>

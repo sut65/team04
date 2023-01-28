@@ -31,7 +31,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 
 function ForfeitCreate() {
   //const classes = useStyles();
-  const [Pay_Date, setDate] = useState<Date | null>(null);
+  const [Pay_Date, setPay_Date] = useState<Date | null>(null);
   const [returnBook, setReturnBook] = useState<ReturnBookInterface[]>([]);
   const [payment, setPayment] = useState<PaymentInterface[]>([]);
   const [librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
@@ -77,12 +77,12 @@ function ForfeitCreate() {
 
   function submit() {
     let data = {
-      ReturnBookID: convertType(forfeit.ReturnBookID),
-      Pay: forfeit.Pay ?? "",
+      ReturnBookID: forfeit.ReturnBookID,
+      Pay: convertType(forfeit.Pay),
       PaymentID: convertType(forfeit.PaymentID),
-      Pay_Date: Pay_Date,
+      Pay_Date: new Date(),
       Note: forfeit.Note ?? "",
-      LibrarianID: Number(localStorage.getItem("lid")),
+      LibrarianID: Number(localStorage.getItem("nid")),
     };
     console.log(data);
 
@@ -205,13 +205,19 @@ function ForfeitCreate() {
 
         <Divider />
         <Grid container spacing={3} sx={{ padding: 2 }}>
-
+          <Grid item xs={12}>
+            <FormControl fullWidth variant="standard">
+              <Typography variant="inherit">
+                จำนวนรายการที่เหลือ {returnBook.length} รายการ
+              </Typography>
+            </FormControl>
+          </Grid>
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
               <p>ชื่อผู้ยืมหนังสือ</p>
 
               <Select
-                // id="PlanningID"
+                // id="ReturnBookID"
                 value={forfeit.ReturnBookID}
                 onChange={handleChange}
                 inputProps={{
@@ -237,14 +243,9 @@ function ForfeitCreate() {
               <Select
                 native
                 disabled
-                value={forfeit.ReturnBookID} //import Snackbar from "@material-ui/core/Snackbar";
+                value={forfeit.ReturnBookID}
               >
                 <option aria-label="None" value=""></option>
-                {/* {returnBook.map((item: ReturnBookInterface) => (
-                  <option value={item.ID} key={item.ID}>
-                    {item.User.Allergy}
-                  </option>
-                ))} */}
                 {returnBook.map((item: ReturnBookInterface ) => (
                     <option value={item.ID} key={item.ID}>
                       {item.BorrowBook.BookPurchasing.BookName} 
@@ -297,7 +298,7 @@ function ForfeitCreate() {
               <TextField
                 id="Pay"
                 variant="standard"
-                type="string"
+                type="number"
                 size="medium"
                 value={forfeit.Pay || ""}
                 onChange={handleInputChange}
@@ -351,7 +352,7 @@ function ForfeitCreate() {
                   disabled
                   value={Pay_Date}
                   onChange={(newValue) => {
-                    setDate(newValue);
+                    setPay_Date(newValue);
                   }}
                   renderInput={(params) => <TextField {...params} />}
                 />
@@ -364,7 +365,7 @@ function ForfeitCreate() {
               <p>ผู้บันทึกข้อมูล</p>
               <Select
                 disabled={true}
-                value={localStorage.getItem("uid")}
+                value={localStorage.getItem("nid")}
                 // onChange={handleChange}
                 // inputProps={{
                 //   name: "StaffID",
