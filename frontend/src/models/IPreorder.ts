@@ -5,8 +5,8 @@ import { UserInterface } from "./IUser"
 export interface PreorderInterface {
     Id: number
 
-    OwnerID: number
-    Owner: UserInterface
+    UserID: number
+    User: UserInterface
 
     Name: string
     Price: number
