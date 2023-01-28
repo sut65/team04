@@ -137,14 +137,15 @@ function PreorderCreate() {
 
   //user
   const getUser = async () => {
-    fetch(`${apiUrl}/users`, requestOptions)
+    const apiUrl = "http://localhost:8080/users";
+
+    fetch(apiUrl, requestOptions)
       .then((response) => response.json())
+
       .then((res) => {
         console.log(res.data);
         if (res.data) {
           setUser(res.data);
-        } else {
-          console.log("else");
         }
       });
   };
@@ -164,17 +165,30 @@ function PreorderCreate() {
 
   function submit() {
     let data = {
-        OwnerID: convertType(preorder.OwnerID),
+        UserID: convertType(preorder.UserID),
         Name: preorder.Name,
         Price: preorder.Price,
         Author: preorder.Author,
         Edition: preorder.Edition,
         Year: preorder.Year,
         Quantity: preorder.Quantity,
-        Totlaprice: preorder.Totalprice, 
+        Totalprice: preorder.Totalprice, 
         PaymentID: convertType(preorder.PaymentID),
         Datetime:  new Date(),
         LibrarianID: Number(localStorage.getItem("nid")),
+
+        //test run
+        // UserID: Number(preorder.UserID) ?? "",
+        // Name: preorder.Name ?? "",
+        // Price: Number(preorder.Price) ?? "",
+        // Author: preorder.Author ?? "",
+        // Edition: Number(preorder.Edition) ?? "",
+        // Year: preorder.Year ?? "",
+        // Quantity: Number(preorder.Quantity) ?? "",
+        // Totalprice: Number(preorder.Totalprice) ?? "", 
+        // PaymentID: Number(preorder.PaymentID) ?? "",
+        // Datetime:  new Date(),
+        // LibrarianID: Number(localStorage.getItem("nid")),
     };
 
     console.log(data);
@@ -239,11 +253,11 @@ function PreorderCreate() {
             <p>เลขบัตรประจำตัวประชาชน</p>
 
                 <NativeSelect
-                    value={preorder.OwnerID}
+                    value={preorder.UserID}
                     
                     onChange={handleChange}
                     inputProps={{
-                        name: "OwnerID", //เอาไว้เข้าถึงข้อมูลแพลนนิ่งไอดี
+                        name: "UserID", //เอาไว้เข้าถึงข้อมูลแพลนนิ่งไอดี
                     }}
                     
                     >
@@ -262,9 +276,9 @@ function PreorderCreate() {
             
           <Grid item xs={6}>
             <FormControl variant="standard">
-            <p>ชื่อสมาชิก</p>
+            <p>ข้อมูลสมาชิก</p>
                 <NativeSelect
-                    value={preorder.OwnerID}
+                    value={preorder.UserID}
                     disabled
                     onChange={handleChange}
                     inputProps={{
@@ -277,7 +291,7 @@ function PreorderCreate() {
                     </option>
                     {User.map((item: UserInterface) => (
                         <option value={item.ID} key={item.ID}>
-                        ชื่อ: {item.Name}
+                        {item.Name} , {item.Tel} 
                         </option>
                     ))}
                 
@@ -302,15 +316,16 @@ function PreorderCreate() {
 
           <Grid item xs={6}>
             <FormControl fullWidth variant="outlined">
-              <p>ราคา</p>
+              <p>จำนวนเล่มที่จะซื้อ</p>
               <TextField
-                id="Price"
+                id="Quantity"
                 variant="outlined"
-                InputProps={{ inputProps: { min: 0 } }}
+                InputProps={{ inputProps: { min: 0 , max: 5} }}
                 type="number"
+                placeholder="กรุณากรอกจำนวนเล่มที่จะซื้อ"
                 size="medium"
                 rows={2}
-                value={preorder.Price || ""}
+                value={preorder.Quantity || ""}
                 onChange={handleInputChange}
               />
             </FormControl>
@@ -333,15 +348,48 @@ function PreorderCreate() {
 
           <Grid item xs={6}>
             <FormControl fullWidth variant="outlined">
-              <p>จำนวนเล่ม</p>
+              <p>พิมพ์ครั้งที่</p>
               <TextField
                 id="Edition"
                 variant="outlined"
-                InputProps={{ inputProps: { min: 0 , max: 10} }}
+                InputProps={{ inputProps: { min: 0  }}}
                 type="number"
+                placeholder="กรุณากรอกจำนวนครั้งที่พิมพ์"
                 size="medium"
                 rows={2}
                 value={preorder.Edition || ""}
+                onChange={handleInputChange}
+              />
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={6}>
+            <FormControl fullWidth variant="outlined">
+              <p>ปีที่พิมพ์</p>
+              <TextField
+                id="Year"
+                variant="outlined"
+                type="string"
+                size="medium"
+                placeholder="กรุณากรอกปีที่พิมพ์"
+                value={preorder.Year || ""}
+                onChange={handleInputChange}
+              />
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={6}>
+            <FormControl fullWidth variant="outlined">
+              <p>ราคา</p>
+              <TextField
+                id="Price"
+                variant="outlined"
+                InputProps={{ inputProps: { min: 0 } }}
+                type="number"
+                placeholder="กรุณากรอกราคา"
+                size="medium"
+                rows={2}
+                value={preorder.Price || ""}
                 onChange={handleInputChange}
               />
             </FormControl>
@@ -353,7 +401,7 @@ function PreorderCreate() {
               <TextField
                 id="Totalprice"
                 variant="outlined"
-                InputProps={{ inputProps: { min: 0} }}
+                // InputProps={{ inputProps: { min: 0} }}
                 type="number"
                 size="medium"
                 rows={2}
