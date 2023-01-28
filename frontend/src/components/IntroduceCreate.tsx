@@ -361,7 +361,7 @@ function IntroduceCreate() {
               <p>วันที่และเวลาบันทึกข้อมูล</p>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DateTimePicker
-                  // disabled
+                  disabled
                   value={I_Date}
                   onChange={(newValue) => {
                     setI_Date(newValue);
