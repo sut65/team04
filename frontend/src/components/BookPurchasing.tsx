@@ -164,15 +164,21 @@ function BookPurchasing() {
       width: 175,
       renderCell: () => (
         <div>
-          <Button variant="outlined" size="small" startIcon={<EditIcon />}>
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={<EditIcon />}
+            color="success"
+          >
             แก้ไข
           </Button>
           &nbsp;&nbsp;&nbsp;
           <Button
             onClick={handleDelete}
-            variant="outlined"
+            variant="contained"
             size="small"
             startIcon={<DeleteIcon />}
+            color="error"
           >
             ลบ
           </Button>
