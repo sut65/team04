@@ -63,6 +63,9 @@ import ForfeitCreate from "./components/ForfeitCreate";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import RecommendIcon from '@mui/icons-material/Recommend';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
+import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
+import Confirmation from "./components/Confirmation";
+import ConfirmationCreate from "./components/ConfirmationCreate";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
@@ -191,6 +194,11 @@ export default function MiniDrawer() {
       name: "ระบบสั่งซื้อหนังสือ Pre-order",
       icon: <ShoppingCartIcon />,
       path: "/preorder",
+    },
+    {
+      name: "ระบบยืนยันการรับหนังสือ",
+      icon: <ShoppingCartCheckoutIcon />,
+      path: "/confirmation",
     },
   ];
   const menuUser = [
@@ -385,6 +393,8 @@ export default function MiniDrawer() {
 
                <Route path="/preorder" element={<Preorder />} />
                <Route path="/preorder/create" element={<PreorderCreate />} />
+               <Route path="/confirmation" element={<Confirmation />} />
+               <Route path="/confirmation/create" element={<ConfirmationCreate />} />
             </Routes>
           </div>
         </main>

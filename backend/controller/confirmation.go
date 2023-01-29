@@ -14,7 +14,7 @@ func CreateConfirmation(c *gin.Context) {
 	var preorder entity.Preorder
 	var librarian entity.Librarian
 
-	// ผลลัพธ์ที่ได้จากขั้นตอนที่ 7 จะถูก bind เข้าตัวแปร preorder
+	// ผลลัพธ์ที่ได้จากขั้นตอนที่ 7 จะถูก bind เข้าตัวแปร confirmation
 	if err := c.ShouldBindJSON(&confirmation); err != nil { //เอาข้อมูลฝั่ง frontend มาเก็บไว้ที่ตัวแปรใน backend
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

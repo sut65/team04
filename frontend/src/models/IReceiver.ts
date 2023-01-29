@@ -1,4 +1,4 @@
 export interface ReceiverInterface{
-    Id: number
+    ID: number
     Type: string
 }

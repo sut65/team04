@@ -31,7 +31,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 
 function IntroduceCreate() {
   //const classes = useStyles();
-  const [I_Date, setI_Date] = useState<Date | null>(null);
+  const [I_Date, setI_Date] = useState<Date | null>();
   const [bookType, setBookType] = useState<BookTypeInterface[]>([]);
   const [objective, setObjective] = useState<ObjectiveInterface[]>([]);
   const [users, setUsers] = useState<UserInterface[]>([]);
@@ -361,7 +361,7 @@ function IntroduceCreate() {
               <p>วันที่และเวลาบันทึกข้อมูล</p>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DateTimePicker
-                  // disabled
+                  disabled
                   value={I_Date}
                   onChange={(newValue) => {
                     setI_Date(newValue);

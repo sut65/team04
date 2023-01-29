@@ -3,7 +3,7 @@ import { LibrarianInterface } from "./ILibrarian"
 import { UserInterface } from "./IUser"
 
 export interface PreorderInterface {
-    Id: number
+    ID: number
 
     UserID: number
     User: UserInterface

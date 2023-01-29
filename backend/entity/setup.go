@@ -45,6 +45,7 @@ func SetupDatabase() {
 		&Level{},
 		&EquipmentRepair{},
 		&BookRepair{},
+		&Receiver{},
 	)
 
 	db = database

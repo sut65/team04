@@ -45,7 +45,7 @@ func CreateForfeit(c *gin.Context) {
 	ff := entity.Forfeit{
 
 		Pay:        forfeit.Pay,      // ตั้งค่าฟิลด์ Pay
-		Pay_Date:   forfeit.Pay_Date, // ตั้งค่าฟิลด์ PnDate
+		Pay_Date:   forfeit.Pay_Date, // ตั้งค่าฟิลด์ Pay_Date
 		Note:       forfeit.Note,     // ตั้งค่าฟิลด์ Note
 		ReturnBook: returnBook,       // โยงความสัมพันธ์กับ Entity ReturnBook
 		Payment:    payment,          // โยงความสัมพันธ์กับ Entity Payment
@@ -65,7 +65,7 @@ func CreateForfeit(c *gin.Context) {
 func GetForfeit(c *gin.Context) {
 	var forfeit entity.Forfeit
 
-	if err := entity.DB().Model(&entity.Forfeit{}).Preload("ReturnBook.BorrowBook.BookPurchasing").Preload("ReturnBook.BorrowBook.User").Preload("ReturnBook.LostBook").Preload("Payment").Preload("Librarian").Find(&forfeit).Error; err != nil {
+	if err := entity.DB().Model(&entity.Forfeit{}).Preload("ReturnBook.BorrowBook.User").Preload("ReturnBook.BorrowBook.BookPurchasing").Preload("ReturnBook.LostBook").Preload("Payment").Preload("Librarian").Find(&forfeit).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -109,7 +109,7 @@ func UpdateForfeit(c *gin.Context) {
 func ListForfeits(c *gin.Context) { //เอา object ไปเชื่อมกัน Preload คือ ดึง object ของ object
 	var forfeit []entity.Forfeit //ดึงมาทั้งหมด
 
-	if err := entity.DB().Model(&entity.Forfeit{}).Preload("ReturnBook.BorrowBook.BookPurchasing").Preload("ReturnBook.BorrowBook.User").Preload("ReturnBook.LostBook").Preload("Payment").Preload("Librarian").Find(&forfeit).Error; err != nil {
+	if err := entity.DB().Model(&entity.Forfeit{}).Preload("ReturnBook.BorrowBook.User").Preload("ReturnBook.BorrowBook.BookPurchasing").Preload("ReturnBook.LostBook").Preload("Payment").Preload("Librarian").Find(&forfeit).Error; err != nil {
 		//Preload เหมือนจอยตาราง
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
