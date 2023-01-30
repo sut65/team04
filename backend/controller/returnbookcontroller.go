@@ -35,6 +35,12 @@ func CreateReturnBook(c *gin.Context) { // c รับข้อมูลมา�
 		return
 	}
 
+	// 11: อัพเดทคอลัมน์ TrackingCheck ว่าการคืนหนังสือถูกประเมินแล้ว
+	if tx := entity.DB().Model(&borrowbook).Update("TrackingCheck", true); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "borrowbook not found"})
+		return
+	}
+
 	// : ค้นหา librarian ด้วย id
 	if tx := entity.DB().Where("id = ?",
 		returnbook.LibrarianID).First(&librarian); tx.RowsAffected == 0 {
@@ -101,10 +107,10 @@ func UpdateReturnBook(c *gin.Context) {
 
 // DELETE /return_books/:id
 func DeleteReturnBook(c *gin.Context) {
-	Id := c.Param("id")
-	if tx := entity.DB().Delete(&entity.ReturnBook{}, Id); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "returnbook ID not found"})
+	id := c.Param("id")
+	if tx := entity.DB().Exec("DELETE FROM return_books WHERE id = ?", id); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "returnbook not found"})
 		return
 	}
-	c.JSON(http.StatusOK, fmt.Sprintf("ReturnBookID :  %s deleted.", Id))
+	c.JSON(http.StatusOK, gin.H{"data": id})
 }
