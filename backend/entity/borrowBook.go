@@ -27,6 +27,7 @@ type BorrowBook struct {
 	Return_Day     time.Time
 	Color_Bar      string
 	Borb_Frequency int
+	TrackingCheck  bool
 
 	LibrarianID *uint
 	Librarian   Librarian `gorm:"references:id;"`
