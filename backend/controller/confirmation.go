@@ -26,8 +26,14 @@ func CreateConfirmation(c *gin.Context) {
 		return
 	}
 
-	//  9: ค้นหา preorder ด้วย id
+	// 9: ค้นหา preorder ด้วย id
 	if tx := entity.DB().Where("id = ?", confirmation.PreorderID).First(&preorder); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "preorder not found"})
+		return
+	}
+
+	// 9.5: อัพเดทคอลัมน์ ConfirmationCheck ว่า preorder ถูกประเมินแล้ว
+	if tx := entity.DB().Model(&preorder).Update("ConfirmationCheck", true); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "preorder not found"})
 		return
 	}
