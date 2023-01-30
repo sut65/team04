@@ -75,6 +75,7 @@ func main() {
 			protected.POST("/borrow_books", controller.CreateBorrowBook)
 			protected.PATCH("/borrow_books", controller.UpdateBorrowBook)
 			protected.DELETE("/borrow_books/:id", controller.DeleteBorrowBook)
+			protected.GET("/BorrowBookForTrackingCheck", controller.ListBorrowBookForTrackingCheck) // เช็คการยืม
 
 			//
 			//------ ReturnBook System ------//
