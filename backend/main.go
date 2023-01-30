@@ -141,6 +141,7 @@ func main() {
 			protected.POST("/preorder", controller.CreatePreorder)
 			protected.PATCH("/preorder", controller.UpdatePreorder)
 			protected.DELETE("/preorder/:id", controller.DeletePreorder)
+			protected.GET("/preorderNoConfirmationCheck", controller.ListPreordersNoConfirmationCheck)
 
 			//------ Forfeit ------//
 			// Payment

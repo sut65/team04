@@ -408,25 +408,25 @@ func SetupDatabase() {
 
 	// --- ตารางหลัก Confirmation
 
-	confirmation1 := Confirmation{
-		Preorder:  preorder1,
-		Receiver:  receiver1,
-		NoteName:  "-",
-		NoteTel:   "-",
-		Datetime:  time.Now(),
-		Librarian: chanaporn,
-	}
-	db.Model(&Confirmation{}).Create(&confirmation1)
+	// confirmation1 := Confirmation{
+	// 	Preorder:  preorder1,
+	// 	Receiver:  receiver1,
+	// 	NoteName:  "-",
+	// 	NoteTel:   "-",
+	// 	Datetime:  time.Now(),
+	// 	Librarian: chanaporn,
+	// }
+	// db.Model(&Confirmation{}).Create(&confirmation1)
 
-	confirmation2 := Confirmation{
-		Preorder:  preorder2,
-		Receiver:  receiver2,
-		NoteName:  "สมชาย ใจดี",
-		NoteTel:   "0879456321",
-		Datetime:  time.Now(),
-		Librarian: chanaporn,
-	}
-	db.Model(&Confirmation{}).Create(&confirmation2)
+	// confirmation2 := Confirmation{
+	// 	Preorder:  preorder2,
+	// 	Receiver:  receiver2,
+	// 	NoteName:  "สมชาย ใจดี",
+	// 	NoteTel:   "0879456321",
+	// 	Datetime:  time.Now(),
+	// 	Librarian: chanaporn,
+	// }
+	// db.Model(&Confirmation{}).Create(&confirmation2)
 
 	//-----จำลองตาราง Forfeit ---จูเนียร์--
 	forfeit1 := Forfeit{

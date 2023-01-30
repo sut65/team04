@@ -31,4 +31,6 @@ type Preorder struct {
 	Librarian   Librarian `gorm:"references:id;"`
 
 	Confirmation []Confirmation `gorm:"foreignKey:PreorderID"`
+
+	ConfirmationCheck bool
 }
