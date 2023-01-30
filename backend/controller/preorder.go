@@ -41,17 +41,18 @@ func CreatePreorder(c *gin.Context) {
 
 	// 11: สร้าง preorder
 	ps := entity.Preorder{ //object ที่จะเก็บข้อมูลของเรา
-		User:       user,                //โยงความสัมพันธ์กับ Entity user
-		Name:       preorder.Name,       //ตั้งค่าฟิลด์ name
-		Price:      preorder.Price,      //ตั้งค่าฟิลด์ price
-		Author:     preorder.Author,     //ตั้งค่าฟิลด์ author
-		Edition:    preorder.Edition,    //ตั้งค่าฟิลด์ edition
-		Year:       preorder.Year,       //ตั้งค่าฟิลด์ year
-		Quantity:   preorder.Quantity,   //ตั้งค่าฟิลด์ quantity
-		Totalprice: preorder.Totalprice, //ตั้งค่าฟิลด์ totalprice
-		Payment:    payment,             //โยงความสัมพันธ์กับ Entity payment
-		Datetime:   preorder.Datetime,   //ตั้งค่าฟิลด์ datetime
-		Librarian:  librarian,           // โยงความสัมพันธ์กับ Entity librarian
+		User:              user,                //โยงความสัมพันธ์กับ Entity user
+		Name:              preorder.Name,       //ตั้งค่าฟิลด์ name
+		Price:             preorder.Price,      //ตั้งค่าฟิลด์ price
+		Author:            preorder.Author,     //ตั้งค่าฟิลด์ author
+		Edition:           preorder.Edition,    //ตั้งค่าฟิลด์ edition
+		Year:              preorder.Year,       //ตั้งค่าฟิลด์ year
+		Quantity:          preorder.Quantity,   //ตั้งค่าฟิลด์ quantity
+		Totalprice:        preorder.Totalprice, //ตั้งค่าฟิลด์ totalprice
+		Payment:           payment,             //โยงความสัมพันธ์กับ Entity payment
+		Datetime:          preorder.Datetime,   //ตั้งค่าฟิลด์ datetime
+		Librarian:         librarian,           // โยงความสัมพันธ์กับ Entity librarian
+		ConfirmationCheck: false,
 	}
 
 	//  12: บันทึก
@@ -111,4 +112,21 @@ func UpdatePreorder(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": preorder})
+}
+
+func ListPreordersNoConfirmationCheck(c *gin.Context) {
+
+	var preorder []entity.Preorder
+	Id := c.Param("id")
+
+	if err := entity.DB().Model(&entity.Preorder{}).Where("ID = ?", Id).Preload("User").Preload("Payment").Preload("Librarian").Raw("SELECT * FROM preorders where confirmation_check = false").Find(&preorder).Error; err != nil {
+
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		return
+
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": preorder})
+
 }
