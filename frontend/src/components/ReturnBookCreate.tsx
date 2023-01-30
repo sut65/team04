@@ -336,7 +336,7 @@ function ReturnBookCreate() {
           </Grid>
 
           <Grid item xs={12}>
-            <Button component={RouterLink} to="/borrowbook" variant="contained">
+            <Button component={RouterLink} to="/returnbook" variant="contained">
               กลับ
             </Button>
 
