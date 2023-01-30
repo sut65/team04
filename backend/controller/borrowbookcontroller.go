@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -42,6 +41,12 @@ func CreateBorrowBook(c *gin.Context) {
 		return
 	}
 
+	// // 11: อัพเดทคอลัมน์ TrackingCheck ว่าการคืนหนังสือถูกประเมินแล้ว
+	// if tx := entity.DB().Model(&borrowbook).Update("TrackingCheck", true); tx.RowsAffected == 0 {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "borrowbook not found"})
+	// 	return
+	// }
+
 	// : สร้าง BorrowBook
 	ps := entity.BorrowBook{
 		User:           user,                      // โยงความสัมพันธ์กับ Entity User
@@ -51,6 +56,7 @@ func CreateBorrowBook(c *gin.Context) {
 		Return_Day:     borrowbook.Return_Day,     // ตั้งค่าฟิลด์ Return_Day
 		Color_Bar:      borrowbook.Color_Bar,      // ตั้งค่าฟิลด์ Color_Bar
 		Borb_Frequency: borrowbook.Borb_Frequency, // ตั้งค่าฟิลด์ Borb_Frequency
+		TrackingCheck:  false,                     // สำหรับ returnbook system
 	}
 
 	// : บันทึก
@@ -73,10 +79,9 @@ func GetAllBorrowBook(c *gin.Context) {
 
 // GET /borrow_books/:id
 func GetBorrowBookByID(c *gin.Context) {
-	var borrowbook entity.BorrowBook
-	Id := c.Param("id") //id ที่เราตั้งไว้ใน main.go ที่อยู่หลัง : ตัวอย่าง >> /borrow_books/:id
-	if err := entity.DB().Model(&entity.BorrowBook{}).Where("ID = ?", Id).Preload("User").Preload("BookPurchasing").Preload("BookPurchasing.BookCategory").Preload("Librarian").Find(&borrowbook); err.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("BorrowBookID :  Id%s not found.", Id)})
+	var borrowbook []entity.BorrowBook
+	if err := entity.DB().Model(&entity.BorrowBook{}).Preload("User").Preload("BookPurchasing").Preload("BookPurchasing.BookCategory").Preload("Librarian").Find(&borrowbook).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": borrowbook})
@@ -102,10 +107,19 @@ func UpdateBorrowBook(c *gin.Context) {
 
 // DELETE /borrow_books/:id
 func DeleteBorrowBook(c *gin.Context) {
-	Id := c.Param("id")
-	if tx := entity.DB().Delete(&entity.BorrowBook{}, Id); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "borrowbook ID not found"})
+	id := c.Param("id")
+	if tx := entity.DB().Exec("DELETE FROM borrow_books WHERE id = ?", id); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "borrowbook not found"})
 		return
 	}
-	c.JSON(http.StatusOK, fmt.Sprintf("BorrowBookID :  %s deleted.", Id))
+	c.JSON(http.StatusOK, gin.H{"data": id})
+}
+
+func ListBorrowBookForTrackingCheck(c *gin.Context) {
+	var borrowbook []entity.BorrowBook
+	if err := entity.DB().Model(&entity.BorrowBook{}).Preload("User").Preload("BookPurchasing").Preload("BookPurchasing.BookCategory").Preload("Librarian").Raw("SELECT * FROM borrow_books where tracking_check = false").Find(&borrowbook).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": borrowbook})
 }
