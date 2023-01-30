@@ -139,19 +139,33 @@ function ConfirmationCreate() {
   };
 
   //user
+  // const getPreorder = async () => {
+  //   const apiUrl = "http://localhost:8080/preorder";
+
+  //   fetch(apiUrl, requestOptions)
+  //     .then((response) => response.json())
+
+  //     .then((res) => {
+  //       console.log(res.data);
+  //       if (res.data) {
+  //         setPreorder(res.data);
+  //       }
+  //     });
+  // };
+
   const getPreorder = async () => {
-    const apiUrl = "http://localhost:8080/preorder";
+    const apiUrl = `http://localhost:8080/preorderNoConfirmationCheck`;
 
     fetch(apiUrl, requestOptions)
-      .then((response) => response.json())
-
+      .then((response) => response.json()) //เปลี่ยนจากเจสันเป็นจาว่าสคริปต์
       .then((res) => {
-        console.log(res.data);
+        console.log("Preorder", res.data);
         if (res.data) {
           setPreorder(res.data);
         }
       });
   };
+
 
   useEffect(() => {
     //ทำงานทุกครั้งที่เรารีเฟชหน้าจอ
@@ -196,10 +210,16 @@ function ConfirmationCreate() {
       .then((res) => {
         if (res.data) {
           setSuccess(true);
+          getPreorder();
         } else {
           setError(true);
         }
       });
+  }
+
+  const DateFormat = (datetime : any) => {
+    let dateStyle = new Date(datetime)
+    return `${dateStyle.toLocaleDateString("enn-US")}`
   }
 
   return (
@@ -234,7 +254,13 @@ function ConfirmationCreate() {
         </Box>
         <Divider />
         <Grid container spacing={3} sx={{ padding: 2 }}>
-        
+        <Grid item xs={12}>
+            <FormControl fullWidth variant="outlined">
+              <Typography>
+                จำนวนรายการที่เหลือ {preorder.length} รายการ
+              </Typography>
+            </FormControl>
+          </Grid>
         <Grid item xs={6}>
             <FormControl variant="standard">
             
@@ -287,7 +313,7 @@ function ConfirmationCreate() {
             </FormControl>
           </Grid>
             
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <FormControl variant="standard">
             <p>ชื่อหนังสือ</p>
                 <NativeSelect
@@ -312,7 +338,7 @@ function ConfirmationCreate() {
             </FormControl>
           </Grid>
 
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <FormControl variant="standard">
             <p>จำนวน</p>
                 <NativeSelect
@@ -337,7 +363,7 @@ function ConfirmationCreate() {
             </FormControl>
           </Grid>
 
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <FormControl variant="standard">
             <p>ราคาทั้งหมด</p>
                 <NativeSelect
@@ -355,6 +381,31 @@ function ConfirmationCreate() {
                     {preorder.map((item: PreorderInterface) => (
                         <option value={item.ID} key={item.ID}>
                         {item.Totalprice}
+                        </option>
+                    ))}
+                
+                </NativeSelect>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={3}>
+            <FormControl variant="standard">
+            <p>วันเวลาที่สั่งซื้อ</p>
+                <NativeSelect
+                    value={confirmation.PreorderID}
+                    disabled
+                    onChange={handleChange}
+                    inputProps={{
+                        name: "ProderDatetime", //เอาไว้เข้าถึงข้อมูลแพลนนิ่งไอดี
+                    }}
+                    
+                    >
+                    <option aria-label="None" value="">
+                        {/* กรุณาเลือกเลขบัตรประจำตัวประชาชน */}
+                    </option>
+                    {preorder.map((item: PreorderInterface) => (
+                        <option value={item.ID} key={item.ID}>
+                        {DateFormat(item.Datetime)}
                         </option>
                     ))}
                 
