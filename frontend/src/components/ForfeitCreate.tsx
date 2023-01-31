@@ -147,7 +147,7 @@ function ForfeitCreate() {
   };
 
   const getReturnBook = async () => {
-    const apiUrl = `http://localhost:8080/return_books`; //เราจะใช้เอพีไอจากตารางแพลนนิ่งไอดีโดยจะอ้างอิงชื่อผู้ป่วยจากเพเชี่ยนไอดี
+    const apiUrl = `http://localhost:8080/returnBookNoForfeitCheck`; //เราจะใช้เอพีไอจากตาราง returnBook ไอดีโดยจะอ้างอิงชื่อผู้ยืมหนังสือจาก BookPurchasingCreate ไอดี
 
     fetch(apiUrl, requestOptions)
       .then((response) => response.json()) //เปลี่ยนจากเจสันเป็นจาว่าสคริปต์
@@ -188,10 +188,10 @@ function ForfeitCreate() {
         <Box
           display="flex"
           sx={{
-            marginTop: 2,
+            marginTop: 2
           }}
         >
-          <Box sx={{ paddingX: 2, paddingY: 1 }}>
+          <Box sx={{ paddingX: 3, paddingY: 1 }}>
             <Typography
               component="h2"
               variant="h6"
@@ -204,14 +204,29 @@ function ForfeitCreate() {
         </Box>
 
         <Divider />
+        
+        <Paper sx={{bgcolor: "#F0F8FF", spacing: 5, padding: 4, marginBottom: 1}}>
+          
+          ห้องสมุดได้คิดอัตราค่าปรับไว้ดังนี้ <br />
+          &emsp;  - หนังสือทั่วไป ปรับวันละ 5 บาท ต่อเล่ม/วัน <br />
+          &emsp;  - หนังสือหนังสือสำรอง ปรับวันละ 10 บาท ต่อเล่ม/วัน <br />
+          <br />
+          <b>ในกรณีที่ทำหนังสือสูญหาย</b><br />
+          &emsp;  - <b>กรณีที่ 1</b> หากผู้เข้าใช้ห้องสมุด หาซื้อหนังสือมาคืนห้องสมุด จะคิดแค่ค่าดำเนินการ 100 บาท  <br />
+          &emsp;&emsp;   * หนังสือที่ซื้อมาคืนต้องพิมพ์ครั้งเดียวกันหรือใหม่กว่า * <br />
+          &emsp;  - <b>กรณีที่ 2</b> หากหาซื้อคืนไม่ได้ ปรับเป็น 2 เท่าของราคาหนังสือ + ค่าดำเนินการ 100 บาท <br />
+          <br />
+          / กรณี หนังสือที่ไม่ทราบราคา คิดค่าปรับ 300 บาท + ค่าดำเนินการ 100 บาท /
+          
+        </Paper>
         <Grid container spacing={3} sx={{ padding: 2 }}>
-          {/* <Grid item xs={12}>
+          <Grid item xs={12}>
             <FormControl fullWidth variant="standard">
               <Typography variant="inherit">
                 จำนวนรายการที่เหลือ {returnBook.length} รายการ
               </Typography>
             </FormControl>
-          </Grid> */}
+          </Grid>
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
               <p>ชื่อผู้ยืมหนังสือ</p>

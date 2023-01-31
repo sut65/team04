@@ -91,6 +91,7 @@ func main() {
 			protected.POST("/return_books", controller.CreateReturnBook)
 			protected.PATCH("/return_books", controller.UpdateReturnBook)
 			protected.DELETE("/return_books/:id", controller.DeleteReturnBook)
+			protected.GET("/returnBookNoForfeitCheck", controller.ListReturnBookNoForfeitCheck)
 
 			//----------Borrow & Return Equipment & equipment status----
 			// BorrowEquipment

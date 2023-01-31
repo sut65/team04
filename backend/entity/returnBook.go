@@ -18,6 +18,7 @@ type ReturnBook struct {
 	Current_Day    time.Time
 	Late_Number    int
 	Book_Condition string
+	ForfeitCheck   bool
 
 	LostBookID *uint
 	LostBook   LostBook `gorm:"references:id;"`

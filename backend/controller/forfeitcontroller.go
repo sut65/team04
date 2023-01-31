@@ -29,6 +29,12 @@ func CreateForfeit(c *gin.Context) {
 		return
 	}
 
+	//อัพเดทคอลัมน์ ForfeitCheck ว่า returnBook ถูกประเมินแล้ว
+	if tx := entity.DB().Model(&returnBook).Update("ForfeitCheck", true); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "returnBook not found"})
+		return
+	}
+
 	// 11: ค้นหา payment ด้วย id
 	if tx := entity.DB().Where("id = ?", forfeit.PaymentID).First(&payment); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "payment not found"})
