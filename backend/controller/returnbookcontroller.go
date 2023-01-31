@@ -35,12 +35,6 @@ func CreateReturnBook(c *gin.Context) { // c รับข้อมูลมา�
 		return
 	}
 
-	// 11: อัพเดทคอลัมน์ TrackingCheck ว่าการคืนหนังสือถูกประเมินแล้ว
-	if tx := entity.DB().Model(&borrowbook).Update("TrackingCheck", true); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "borrowbook not found"})
-		return
-	}
-
 	// : ค้นหา librarian ด้วย id
 	if tx := entity.DB().Where("id = ?",
 		returnbook.LibrarianID).First(&librarian); tx.RowsAffected == 0 {
@@ -56,6 +50,7 @@ func CreateReturnBook(c *gin.Context) { // c รับข้อมูลมา�
 		Current_Day:    returnbook.Current_Day,    // ตั้งค่าฟิลด์ Current_Day
 		Late_Number:    returnbook.Late_Number,    // ตั้งค่าฟิลด์ Late_Number
 		Book_Condition: returnbook.Book_Condition, // ตั้งค่าฟิลด์ Book_Condition
+		ForfeitCheck:   false,
 	}
 
 	// : บันทึก
@@ -107,10 +102,27 @@ func UpdateReturnBook(c *gin.Context) {
 
 // DELETE /return_books/:id
 func DeleteReturnBook(c *gin.Context) {
-	id := c.Param("id")
-	if tx := entity.DB().Exec("DELETE FROM return_books WHERE id = ?", id); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "returnbook not found"})
+	Id := c.Param("id")
+	if tx := entity.DB().Delete(&entity.ReturnBook{}, Id); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "returnbook ID not found"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": id})
+	c.JSON(http.StatusOK, fmt.Sprintf("ReturnBookID :  %s deleted.", Id))
+}
+
+func ListReturnBookNoForfeitCheck(c *gin.Context) {
+
+	var returnBook []entity.ReturnBook
+	Id := c.Param("id")
+	if err := entity.DB().Model(&entity.ReturnBook{}).Where("ID = ?", Id).Preload("BorrowBook.User").Preload("BorrowBook").Preload("BorrowBook.BookPurchasing").Preload("BorrowBook.BookPurchasing.BookCategory").Preload("LostBook").Preload("Librarian").Raw("SELECT * FROM return_books where forfeit_check = false").Find(&returnBook).Error; err != nil {
+
+		//Preload เหมือนจอยตาราง จอยตารางpatient
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		return
+
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": returnBook})
+
 }

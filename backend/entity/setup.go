@@ -429,25 +429,25 @@ func SetupDatabase() {
 	// db.Model(&Confirmation{}).Create(&confirmation2)
 
 	//-----จำลองตาราง Forfeit ---จูเนียร์--
-	forfeit1 := Forfeit{
-		ReturnBook: returnBook1,
-		Pay:        25,
-		Payment:    pay1,
-		Pay_Date:   time.Now(),
-		Note:       "ไม่มี",
-		Librarian:  chanaporn,
-	}
-	db.Model(&Forfeit{}).Create(&forfeit1)
+	// forfeit1 := Forfeit{
+	// 	ReturnBook: returnBook1,
+	// 	Pay:        25,
+	// 	Payment:    pay1,
+	// 	Pay_Date:   time.Now(),
+	// 	Note:       "ไม่มี",
+	// 	Librarian:  chanaporn,
+	// }
+	// db.Model(&Forfeit{}).Create(&forfeit1)
 
-	forfeit2 := Forfeit{
-		ReturnBook: returnBook2,
-		Pay:        10,
-		Payment:    pay3,
-		Pay_Date:   time.Now(),
-		Note:       "ไม่มี",
-		Librarian:  chanaporn,
-	}
-	db.Model(&Forfeit{}).Create(&forfeit2)
+	// forfeit2 := Forfeit{
+	// 	ReturnBook: returnBook2,
+	// 	Pay:        10,
+	// 	Payment:    pay3,
+	// 	Pay_Date:   time.Now(),
+	// 	Note:       "ไม่มี",
+	// 	Librarian:  chanaporn,
+	// }
+	// db.Model(&Forfeit{}).Create(&forfeit2)
 
 	//-----จำลอง BookType
 	bookType1 := BookType{
