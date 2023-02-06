@@ -128,7 +128,7 @@ func TestPreorderEditionNotZero(t *testing.T) {
 }
 
 // ตรวจสอบปีที่พิมพ์ต้องไม่เป็นค่าว่าง - ถ้าไม่ตรงจะ error
-func TestPreorderYearNotString(t *testing.T) {
+func TestPreorderYearNotBlank(t *testing.T) {
 	g := NewGomegaWithT(t)
 
 	pr := Preorder{
@@ -152,4 +152,37 @@ func TestPreorderYearNotString(t *testing.T) {
 
 	// err.Error ต้องมี error message แสดงออกมา
 	g.Expect(err.Error()).To(Equal("year cannot be blank"))
+}
+
+// ตรวจสอบจำนวนเล่ม ต้องเป็นตัวเลข มากกว่า 0 น้อยกว่า 5 - ถ้าไม่ตรงจะ error
+func TestPreorderQuantity(t *testing.T) {
+	g := NewGomegaWithT(t)
+
+	fixture := []int{
+		0, 6, 51}
+
+	for _, quantity := range fixture {
+		pr := Preorder{
+			Name:       "Css",
+			Price:      150,
+			Author:     "maprang",
+			Edition:    1,
+			Year:       "2010",
+			Quantity:   quantity, //ผิด
+			Totalprice: 150,
+		}
+
+		//ตรวจสอบด้วย govalidator
+		ok, err := govalidator.ValidateStruct(pr)
+
+		//ok ต้องไม่เป็นค่า true แปลว่าต้องจับ err ได้
+		g.Expect(ok).ToNot(BeTrue())
+
+		// err ต้องไม่เป็นค่า nil แปลว่าต้องจับ error ได้
+		g.Expect(err).ToNot(BeNil())
+
+		// err.Error ต้องมี error message แสดงออกมา
+		g.Expect(err.Error()).To(Equal("quantity must be 1-5"))
+
+	}
 }
