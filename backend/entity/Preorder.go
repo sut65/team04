@@ -15,7 +15,7 @@ type Preorder struct {
 	User   User `gorm:"references:id;"`
 
 	Name       string `valid:"required~Name cannot be blank"`
-	Price      int
+	Price      int    `valid:"required~Price must greater than zero, range(1|9999)~Price must greater than zero,"`
 	Author     string
 	Edition    int
 	Year       string
