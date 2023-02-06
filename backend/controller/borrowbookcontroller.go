@@ -3,6 +3,7 @@ package controller
 import (
 	"net/http"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 	"github.com/team04/entity"
 )
@@ -41,12 +42,6 @@ func CreateBorrowBook(c *gin.Context) {
 		return
 	}
 
-	// // 11: อัพเดทคอลัมน์ TrackingCheck ว่าการคืนหนังสือถูกประเมินแล้ว
-	// if tx := entity.DB().Model(&borrowbook).Update("TrackingCheck", true); tx.RowsAffected == 0 {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "borrowbook not found"})
-	// 	return
-	// }
-
 	// : สร้าง BorrowBook
 	ps := entity.BorrowBook{
 		User:           user,                      // โยงความสัมพันธ์กับ Entity User
@@ -57,6 +52,11 @@ func CreateBorrowBook(c *gin.Context) {
 		Color_Bar:      borrowbook.Color_Bar,      // ตั้งค่าฟิลด์ Color_Bar
 		Borb_Frequency: borrowbook.Borb_Frequency, // ตั้งค่าฟิลด์ Borb_Frequency
 		TrackingCheck:  false,                     // สำหรับ returnbook system
+	}
+
+	if _, err := govalidator.ValidateStruct(borrowbook); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	// : บันทึก
