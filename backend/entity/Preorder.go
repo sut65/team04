@@ -16,7 +16,7 @@ type Preorder struct {
 
 	Name       string `valid:"required~Name cannot be blank"`
 	Price      int    `valid:"required~Price must greater than zero, range(1|9999)~Price must greater than zero,"`
-	Author     string
+	Author     string `valid:"required~Author cannot be blank"`
 	Edition    int
 	Year       string
 	Quantity   int
