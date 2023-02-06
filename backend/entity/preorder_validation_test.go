@@ -33,3 +33,36 @@ func TestPreorderNameNotBlank(t *testing.T) {
 	// err.Error ต้องมี error message แสดงออกมา
 	g.Expect(err.Error()).To(Equal("Name cannot be blank"))
 }
+
+// ตรวจสอบราคาหนังสือ ต้องเป็นตัวเลขมากกว่า 0 - ถ้าไม่ตรงจะ error
+func TestPreorderPriceNotZero(t *testing.T) {
+	g := NewGomegaWithT(t)
+
+	fixture := []int{
+		-1, 0, 10000}
+
+	for _, price := range fixture {
+		pr := Preorder{
+			Name:       "Css",
+			Price:      price, //ผิด
+			Author:     "maprang",
+			Edition:    1,
+			Year:       "2010",
+			Quantity:   1,
+			Totalprice: 150,
+		}
+
+		//ตรวจสอบด้วย govalidator
+		ok, err := govalidator.ValidateStruct(pr)
+
+		//ok ต้องไม่เป็นค่า true แปลว่าต้องจับ err ได้
+		g.Expect(ok).ToNot(BeTrue())
+
+		// err ต้องไม่เป็นค่า nil แปลว่าต้องจับ error ได้
+		g.Expect(err).ToNot(BeNil())
+
+		// err.Error ต้องมี error message แสดงออกมา
+		g.Expect(err.Error()).To(Equal("Price must greater than zero"))
+
+	}
+}
