@@ -52,11 +52,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function ConfirmationCreate() {
   const classes = useStyles();
-//   const [Librarian, setLibrarian] = useState<Partial<LibrarianInterface>>({});
-//   const [User, setUser] = useState<UserInterface[]>([]);
-//   const [preorder, setPreorder] = useState<Partial<PreorderInterface>>({});
-//   const [Payment, setPayment] = useState<PaymentInterface[]>([]);
-
   const [preorder, setPreorder] = useState<PreorderInterface[]>([]);
   const [receiver, setReceiver] = useState<ReceiverInterface[]>([]);
   const [confirmation, setConfirmation] = useState<Partial<ConfirmationInterface>>({});
@@ -66,6 +61,8 @@ function ConfirmationCreate() {
 
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
+
+  const [errorMessage, setErrorMessage] = useState("");
 
 
   const handleClose = (
@@ -138,20 +135,6 @@ function ConfirmationCreate() {
       });
   };
 
-  //user
-  // const getPreorder = async () => {
-  //   const apiUrl = "http://localhost:8080/preorder";
-
-  //   fetch(apiUrl, requestOptions)
-  //     .then((response) => response.json())
-
-  //     .then((res) => {
-  //       console.log(res.data);
-  //       if (res.data) {
-  //         setPreorder(res.data);
-  //       }
-  //     });
-  // };
 
   const getPreorder = async () => {
     const apiUrl = `http://localhost:8080/preorderNoConfirmationCheck`;
@@ -208,11 +191,16 @@ function ConfirmationCreate() {
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
       .then((res) => {
+        console.log(res);
         if (res.data) {
+          console.log("บันทึกได้")
           setSuccess(true);
           getPreorder();
+          setErrorMessage("")
         } else {
+          console.log("บันทึกไม่ได้")
           setError(true);
+          setErrorMessage(res.error)
         }
       });
   }
@@ -224,15 +212,26 @@ function ConfirmationCreate() {
 
   return (
     <Container maxWidth="md">
-      <Snackbar open={success} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="success">
-          บันทึกข้อมูลสำเร็จ
-        </Alert>
+      <Snackbar
+          id="success"
+          open={success}
+          autoHideDuration={6000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+          <Alert onClose={handleClose} severity="success">
+              บันทึกสำเร็จ
+          </Alert>
       </Snackbar>
-      <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error">
-          บันทึกข้อมูลไม่สำเร็จ
-        </Alert>
+      <Snackbar 
+          id="error"
+          open={error} 
+          autoHideDuration={6000} 
+          onClose={handleClose}
+      >
+          <Alert onClose={handleClose} severity="error">
+            บันทึกไม่สำเร็จ: {errorMessage}
+          </Alert>
       </Snackbar>
       <Paper>
         <Box
