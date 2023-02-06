@@ -54,3 +54,33 @@ func TestNoteTelMustBeInValidPattern(t *testing.T) {
 		g.Expect(err.Error()).To(Equal("NoteTel invalid"))
 	}
 }
+
+// ตรวจสอบวันเวลาที่รับหนังสือต้องเป็นปัจจุบัน
+func TestDateTimeMustBePresent(t *testing.T) {
+	g := NewGomegaWithT(t)
+
+	fixtures := []time.Time{
+		time.Now().Add(24 * time.Hour),
+		time.Now().Add(24 - time.Hour),
+	}
+
+	for _, fixture := range fixtures {
+
+		confirm := Confirmation{
+			NoteName: "Maprang Saengarun",
+			NoteTel:  "0987456321",
+			Datetime: fixture, //ผิด
+		}
+
+		ok, err := govalidator.ValidateStruct(confirm)
+
+		// ok ต้องไม่เป็นค่า true แปลว่าต้องจับ error ได้
+		g.Expect(ok).ToNot(BeTrue())
+
+		// err ต้องไม่เป็นค่า nil แปลว่าต้องจับ error ได้
+		g.Expect(err).ToNot(BeNil())
+
+		// err.Error ต้องมี error message แสดงออกมา
+		g.Expect(err.Error()).To(Equal("DateTime Must Be Present"))
+	}
+}
