@@ -105,3 +105,33 @@ func TestReturn_DayMustNotBePast(t *testing.T) {
 	g.Expect(err.Error()).To(Equal("วันกำหนดคืนหนังสือต้องไม่เป็นวันในอดีต"))
 
 }
+
+// ตรวจสอบต้องเป็นตัวเลข 1-100
+func TestBorb_Frequency(t *testing.T) {
+	g := NewGomegaWithT(t)
+
+	fixture := []int{
+		-2, -1, 0, 101}
+
+	for _, borbFrequency := range fixture {
+		borrowbook := BorrowBook{
+			Borb_Day:       time.Now(),
+			Return_Day:     time.Now(),
+			Color_Bar:      "สีเเดง",
+			Borb_Frequency: borbFrequency, //ผิด
+		}
+
+		//ตรวจสอบด้วย govalidator
+		ok, err := govalidator.ValidateStruct(borrowbook)
+
+		//ok ต้องไม่เป็นค่า true แปลว่าต้องจับ err ได้
+		g.Expect(ok).ToNot(BeTrue())
+
+		// err ต้องไม่เป็นค่า nil แปลว่าต้องจับ error ได้
+		g.Expect(err).ToNot(BeNil())
+
+		// err.Error ต้องมี error message แสดงออกมา
+		g.Expect(err.Error()).To(Equal("จำนวนครั้งที่ยืมหนังสือ must be 1-100"))
+
+	}
+}
