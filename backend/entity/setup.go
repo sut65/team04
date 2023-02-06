@@ -488,7 +488,7 @@ func SetupDatabase() {
 	introduce1 := Introduce{
 		Title:     "แคลคูลัส 1 สำหรับวิศวกร",
 		Author:    "รศ. ดร.ธีระศักดิ์ อุรัจนานนท์",
-		ISBN:      9786162139130,
+		ISBN:      "9786162139130",
 		Edition:   1,
 		Pub_Name:  "สกายบุ๊กส์ บ.จ.ก.",
 		Pub_Year:  "2012",
@@ -502,7 +502,7 @@ func SetupDatabase() {
 	introduce2 := Introduce{
 		Title:     "คัมภีร์ Python",
 		Author:    "อรพิน ประวัติบริสุทธิ์",
-		ISBN:      9786162047930,
+		ISBN:      "9786162047930",
 		Edition:   1,
 		Pub_Name:  "Provision",
 		Pub_Year:  "2021",
@@ -516,7 +516,7 @@ func SetupDatabase() {
 	introduce3 := Introduce{
 		Title:     "เพียงชั่วเวลากาแฟยังอุ่น ตราบชั่วเวลาของคำโกหก",
 		Author:    "คาวางุจิ โทชิคาซึ",
-		ISBN:      9786161848330,
+		ISBN:      "9786161848330",
 		Edition:   1,
 		Pub_Name:  "แพรว ส.น.พ.",
 		Pub_Year:  "2022",
