@@ -1,11 +1,35 @@
 package entity
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/asaskevich/govalidator"
 	. "github.com/onsi/gomega"
 )
+
+// ค่าที่ถูกต้องทั้งหมด
+func TestCorrectPreorder(t *testing.T) {
+	g := NewGomegaWithT(t)
+
+	t.Run("Check format", func(t *testing.T) {
+		pr := Preorder{
+			Name:       "CSS & JAVA",
+			Price:      150,
+			Author:     "J.Sonar",
+			Edition:    1,
+			Year:       "2022",
+			Quantity:   1,
+			Totalprice: 150,
+		}
+		ok, err := govalidator.ValidateStruct(pr)
+
+		g.Expect(ok).To(BeTrue())
+		g.Expect(err).To((BeNil()))
+
+		fmt.Println(err)
+	})
+}
 
 // ตรวจสอบชื่อหนังสือไม่เป็นค่าว่าง - ถ้าไม่ตรงจะ error
 func TestPreorderNameNotBlank(t *testing.T) {
