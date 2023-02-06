@@ -21,6 +21,8 @@ import { UserInterface } from "../models/IUser";
 import { LibrarianInterface } from "../models/ILibrarian";
 import { BookPurchasingInterface } from "../models/IBookPurchasing";
 import { BorrowBookInterface } from "../models/IBorrowBook";
+import { DatePicker } from "@mui/x-date-pickers";
+
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -33,18 +35,16 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 function BorrowBookCreate() {
   const [borb_day, setBorb_Day] = useState<Date | null>();
   const [return_day, setReturn_Day] = useState<Date | null>();
-  const [borrowbook, setBorrowBook] = useState<Partial<BorrowBookInterface>>(
-    {}
-  ); //Partial ชิ้นส่วนเอาไว้เซทข้อมูลที่ละส่วน
-  const [bookpurchasing, setBookPurchasing] = useState<
-    BookPurchasingInterface[]
-  >([]);
+  const [borrowbook, setBorrowBook] = useState<Partial<BorrowBookInterface>>({}); //Partial ชิ้นส่วนเอาไว้เซทข้อมูลที่ละส่วน
+  const [bookpurchasing, setBookPurchasing] = useState<BookPurchasingInterface[]>([]);
   const [user, setUser] = useState<UserInterface[]>([]);
   const [librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
-
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
+
+  
   const handleClose = (
     event?: React.SyntheticEvent | Event,
     reason?: string
@@ -56,41 +56,45 @@ function BorrowBookCreate() {
     setError(false);
   };
 
+
+
   const handleInputChange = (
     event: React.ChangeEvent<{ id?: string; value: any }> //ชื่อคอมลัมน์คือ id และค่าที่จะเอามาใส่ไว้ในคอมลัมน์นั้นคือ value
   ) => {
     const id = event.target.id as keyof typeof borrowbook;
-    console.log(event.target.id);
-    console.log(event.target.value);
+      console.log(event.target.id);
+      console.log(event.target.value);
     const { value } = event.target;
-    setBorrowBook({ ...borrowbook, [id]: value });
+      setBorrowBook({ ...borrowbook, [id]: value });
   };
+
+
 
   const handleChange = (
     event: React.ChangeEvent<{ name?: string; value: any }> //ชื่อคอมลัมน์คือ id และค่าที่จะเอามาใส่ไว้ในคอมลัมน์นั้นคือ value
   ) => {
     const name = event.target.name as keyof typeof borrowbook; //
-    console.log(event.target.name);
-    console.log(event.target.value);
-
+      console.log(event.target.name);
+      console.log(event.target.value);
     const { value } = event.target;
-
-    setBorrowBook({ ...borrowbook, [name]: value });
+      setBorrowBook({ ...borrowbook, [name]: value });
   };
+
+
 
   function submit() {
     let data = {
       //เก็บข้อมูลที่จะเอาไปเก็บในดาต้าเบส
-      Borb_Day: new Date(),
-      Return_Day: new Date(),
+      Borb_Day: borb_day,
+      Return_Day: return_day,
       Color_Bar: borrowbook.Color_Bar ?? "",
       Borb_Frequency: Number(borrowbook.Borb_Frequency) ?? "",
-      // Borb_Frequency:   convertType(borrowbook.Borb_Frequency),
       UserID: Number(borrowbook.UserID),
       BookPurchasingID: Number(borrowbook.BookPurchasingID),
       LibrarianID: Number(localStorage.getItem("nid")),
     };
     console.log(data);
+
 
     const apiUrl = "http://localhost:8080/borrow_books";
     const requestOptions = {
@@ -104,17 +108,21 @@ function BorrowBookCreate() {
 
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
-
       .then((res) => {
         console.log(res);
         if (res.data) {
+          console.log("บันทึกได้")
           setSuccess(true);
+          setErrorMessage("")
           getBookPurchasing();
         } else {
+          console.log("บันทึกไม่ได้")
           setError(true);
+          setErrorMessage(res.error)
         }
       });
   }
+
   const requestOptions = {
     method: "GET",
     headers: {
@@ -123,13 +131,14 @@ function BorrowBookCreate() {
     },
   };
 
+
+
   // บรรณารักษ์ Librarian
   const getLibrarian = async () => {
     const apiUrl = "http://localhost:8080/librarian";
 
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
-
       .then((res) => {
         console.log(res.data);
         if (res.data) {
@@ -138,13 +147,14 @@ function BorrowBookCreate() {
       });
   };
 
+
+
   // การจัดซื้อหนังสือ BookPurchasing
   const getBookPurchasing = async () => {
     const apiUrl = "http://localhost:8080/bookPurchasing";
 
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
-
       .then((res) => {
         console.log(res.data);
         if (res.data) {
@@ -153,13 +163,14 @@ function BorrowBookCreate() {
       });
   };
 
+
+  
   // สมาชิกห้องสมุด User
   const getUser = async () => {
     const apiUrl = "http://localhost:8080/users";
 
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
-
       .then((res) => {
         console.log(res.data);
         if (res.data) {
@@ -167,6 +178,7 @@ function BorrowBookCreate() {
         }
       });
   };
+
 
   useEffect(() => {
     //ทำงานทุกครั้งที่เรารีเฟชหน้าจอ
@@ -179,19 +191,25 @@ function BorrowBookCreate() {
   return (
     <Container maxWidth="md">
       <Snackbar
+        id="success"
         open={success}
         autoHideDuration={6000}
         onClose={handleClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert onClose={handleClose} severity="success">
-          บันทึกข้อมูลสำเร็จ
+        บันทึกสำเร็จ
         </Alert>
       </Snackbar>
 
-      <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
+      <Snackbar 
+        id="error"
+        open={error} 
+        autoHideDuration={6000} 
+        onClose={handleClose}>
         <Alert onClose={handleClose} severity="error">
-          บันทึกข้อมูลไม่สำเร็จ
+        บันทึกไม่สำเร็จ: {errorMessage}
+
         </Alert>
       </Snackbar>
 
@@ -202,72 +220,84 @@ function BorrowBookCreate() {
             marginTop: 2,
           }}
         >
-          <Box sx={{ paddingX: 2, paddingY: 1 }}>
+          <Box sx={{ bgcolor: 'text.primary' }} flexGrow={1}>
             <Typography
-              component="h1"
-              variant="h6"
-              color="primary"
+              component="h3"
+              variant="h5"
+              color="white"
               gutterBottom
             >
-              บันทึกการยืมหนังสือ
+              <br/>
+             &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+             &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+             บันทึกการยืมหนังสือ
+              <br/><br/>
             </Typography>
           </Box>
         </Box>
         <Divider />
 
-        <Grid container spacing={3} sx={{ padding: 2 }}>
+
+        <Box sx={{ bgcolor: '#F0FFFF' }} flexGrow={1}>
+        <Grid container spacing={2} sx={{ padding: 1 }}>
+          
           <Grid item xs={12}>
-            <FormControl fullWidth variant="standard">
-              <p>ผู้ยืมหนังสือ</p>
+            <FormControl fullWidth variant="outlined">
+            <b><p>ผู้ยืมหนังสือ</p></b>
               <Select
-                // id="UserID"
+                native
                 value={borrowbook.UserID}
                 onChange={handleChange}
                 inputProps={{
                   name: "UserID", //เอาไว้เข้าถึงข้อมูลuserไอดี
                 }}
               >
-                {user.map(
-                  (
-                    item: UserInterface //map
-                  ) => (
-                    <MenuItem value={item.ID} key={item.ID}>
+                <option aria-label="None" value="">
+                    กรุณาเลือกรายชื่อสมาชิกห้องสมุด
+                </option>
+                {user.map((item: UserInterface) => (
+                    <option value={item.ID} key={item.ID}>
                       ชื่อ: {item.Name} | เลขบัตรประชาชน: {item.Idcard}
-                    </MenuItem> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
+                    </option> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
                   )
                 )}
               </Select>
             </FormControl>
           </Grid>
 
+
+
           <Grid item xs={12}>
-            <FormControl fullWidth variant="standard">
-              <p>ชื่อเเละหมวดหมู่ของหนังสือที่ยืม</p>
+            <FormControl fullWidth variant="outlined">
+            <b><p>ชื่อเเละหมวดหมู่ของหนังสือที่ยืม</p></b>
               <Select
                 // id="BookPurchasingID"
+                native
                 value={borrowbook.BookPurchasingID}
                 onChange={handleChange}
                 inputProps={{
                   name: "BookPurchasingID", //เอาไว้เข้าถึงข้อมูล BookPurchasingID
                 }}
               >
-                {bookpurchasing.map(
-                  (
-                    item: BookPurchasingInterface //map
-                  ) => (
-                    <MenuItem value={item.ID} key={item.ID}>
+                <option aria-label="None" value="">
+                    กรุณาเลือกชื่อเเละหมวดหมู่หนังสือที่ยืม
+                </option>
+                {bookpurchasing.map((item: BookPurchasingInterface) => (
+                    <option value={item.ID} key={item.ID}>
                       {item.BookName} | หมวดหมู่หนังสือ:{" "}
                       {item.BookCategory.Name}
-                    </MenuItem> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
+                    </option> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
                   )
                 )}
               </Select>
             </FormControl>
           </Grid>
 
+
+
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
-              <p>เเถบสีหนังสือ</p>
+            <b><p>เเถบสีหนังสือ</p></b>
               <TextField
                 id="Color_Bar"
                 variant="standard"
@@ -279,9 +309,11 @@ function BorrowBookCreate() {
             </FormControl>
           </Grid>
 
+
+
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
-              <p>จำนวนครั้งที่ยืมหนังสือ</p>
+            <b><p>จำนวนครั้งที่ยืมหนังสือ</p></b>
               <TextField
                 id="Borb_Frequency"
                 variant="standard"
@@ -293,12 +325,13 @@ function BorrowBookCreate() {
             </FormControl>
           </Grid>
 
+
+
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
-              <p>วันที่ยืมหนังสือ</p>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DateTimePicker
-                  disabled
+            <b><p>วันที่ยืมหนังสือ</p></b>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DatePicker
                   value={borb_day}
                   onChange={(newValue) => {
                     setBorb_Day(newValue);
@@ -309,11 +342,13 @@ function BorrowBookCreate() {
             </FormControl>
           </Grid>
 
+
+
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
-              <p>วันกำหนดคืนหนังสือ</p>
+            <b><p>วันกำหนดคืนหนังสือ</p></b>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DateTimePicker
+                <DatePicker
                   value={return_day}
                   onChange={(newValue) => {
                     setReturn_Day(newValue);
@@ -324,29 +359,29 @@ function BorrowBookCreate() {
             </FormControl>
           </Grid>
 
+
+
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
-              <p>บรรณารักษ์ผู้บันทึกข้อมูล</p>
+            <b><p>บรรณารักษ์ผู้บันทึกข้อมูล</p></b>
               <Select
-                // defaultOpen={true}
                 disabled={true} //เป็นจางๆไม่ให้เปลี่ยน
-                // labelId="เลขบัตรประชาชน"
-                // id="เลขบัตรประชาชน"
                 value={localStorage.getItem("nid")}
-                // label="Name"
               >
                 {librarian.map(
                   (
                     item: LibrarianInterface //map
                   ) => (
-                    <MenuItem value={item.ID} key={item.ID}>
+                    <option value={item.ID} key={item.ID}>
                       {item.Name}
-                    </MenuItem> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
+                    </option> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
                   )
                 )}
               </Select>
             </FormControl>
           </Grid>
+
+
 
           <Grid item xs={12}>
             <Button component={RouterLink} to="/borrowbook" variant="contained">
@@ -357,12 +392,13 @@ function BorrowBookCreate() {
               style={{ float: "right" }}
               onClick={submit}
               variant="contained"
-              color="success"
+              color="warning"
             >
               บันทึกข้อมูล
             </Button>
           </Grid>
         </Grid>
+       </Box>
       </Paper>
     </Container>
   );
