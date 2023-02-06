@@ -3,6 +3,7 @@ package controller
 import (
 	"net/http"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 	"github.com/team04/entity"
 )
@@ -54,6 +55,11 @@ func CreateConfirmation(c *gin.Context) {
 		Datetime:  confirmation.Datetime, //ตั้งค่าฟิลด์ datetime
 		Librarian: librarian,             // โยงความสัมพันธ์กับ Entity librarian
 
+	}
+
+	if _, err := govalidator.ValidateStruct(confirmation); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	//  12: บันทึก
