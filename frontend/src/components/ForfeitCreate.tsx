@@ -39,6 +39,7 @@ function ForfeitCreate() {
 
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === "clickaway") {
@@ -69,44 +70,6 @@ function ForfeitCreate() {
       [name]: event.target.value,
     });
   };
-
-  const convertType = (data: string | number | undefined) => {
-    let val = typeof data === "string" ? parseInt(data) : data;
-    return val;
-  };
-
-  function submit() {
-    let data = {
-      ReturnBookID: forfeit.ReturnBookID,
-      Pay: convertType(forfeit.Pay),
-      PaymentID: convertType(forfeit.PaymentID),
-      Pay_Date: new Date(),
-      Note: forfeit.Note ?? "",
-      LibrarianID: Number(localStorage.getItem("nid")),
-    };
-    console.log(data);
-
-    const apiUrl = "http://localhost:8080/forfeit";
-    const requestOptionsPost = {
-      method: "POST", //เอาข้อมูลไปเก็บไว้ในดาต้าเบส
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        "Content-Type": "application/json",
-      },
-
-      body: JSON.stringify(data),
-    };
-
-    fetch(apiUrl, requestOptionsPost)
-      .then((response) => response.json())
-      .then((res) => {
-        if (res.data) {
-          setSuccess(true);
-        } else {
-          setError(true);
-        }
-      });
-  }
 
   const requestOptions = {
     method: "GET",
@@ -159,15 +122,62 @@ function ForfeitCreate() {
       });
   };
 
+  //ทำงานทุกครั้งที่เรารีเฟชหน้าจอ
+  //ไม่ให้รันแบบอินฟินิตี้ลูป
   useEffect(() => {
     getLibrarian();
     getPayment();
     getReturnBook();
   }, []);
 
+  const convertType = (data: string | number | undefined) => {
+    let val = typeof data === "string" ? parseInt(data) : data;
+    return val;
+  };
+
+  function submit() {
+    let data = {
+      ReturnBookID: forfeit.ReturnBookID,
+      Pay: convertType(forfeit.Pay),
+      PaymentID: convertType(forfeit.PaymentID),
+      Pay_Date: new Date(),
+      Note: forfeit.Note ?? "",
+      ModulateNote: forfeit.ModulateNote ?? "",
+      LibrarianID: Number(localStorage.getItem("nid")),
+    };
+    console.log(data);
+
+    const apiUrl = "http://localhost:8080/forfeit";
+    const requestOptionsPost = {
+      method: "POST", //เอาข้อมูลไปเก็บไว้ในดาต้าเบส
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify(data),
+    };
+
+    fetch(apiUrl, requestOptionsPost)
+      .then((response) => response.json())
+      .then((res) => {
+        console.log(res);
+        if (res.data) {
+          console.log("บันทึกได้")
+          setSuccess(true);
+          setErrorMessage("")
+        } else {
+          console.log("บันทึกไม่ได้")
+          setError(true);
+          setErrorMessage(res.error)
+        }
+      });
+  }
+
   return (
     <Container maxWidth="md">
       <Snackbar
+        id="success"
         open={success}
         autoHideDuration={6000}
         onClose={handleClose}
@@ -178,9 +188,15 @@ function ForfeitCreate() {
         </Alert>
       </Snackbar>
 
-      <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
+      <Snackbar 
+        id="error"
+        open={error} 
+        autoHideDuration={6000} 
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        >
         <Alert onClose={handleClose} severity="error">
-          บันทึกข้อมูลไม่สำเร็จ
+          บันทึกข้อมูลไม่สำเร็จ : {errorMessage}
         </Alert>
       </Snackbar>
 
@@ -273,6 +289,25 @@ function ForfeitCreate() {
 
           <Grid item xs={6}>
             <FormControl fullWidth variant="outlined">
+              <p>ราคาหนังสือ</p>
+              <Select
+                native
+                disabled
+                value={forfeit.ReturnBookID}
+              >
+                <option aria-label="None" value=""></option>
+                {returnBook.map((item: ReturnBookInterface ) => (
+                    <option value={item.ID} key={item.ID}>
+                      {item.BorrowBook.BookPurchasing.Amount} 
+                    </option> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
+                  )
+                )}
+              </Select>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={6}>
+            <FormControl fullWidth variant="outlined">
               <p>การทำหนังสือหาย</p>
               <Select
                 native
@@ -346,13 +381,27 @@ function ForfeitCreate() {
 
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
-              <p>หมายเหตุ</p>
+              <p>การหาหนังสือมาคืน ในกรณีที่ทำหนังสือสูญหาย</p>
               <TextField
                 id="Note"
                 variant="standard"
                 type="string"
                 size="medium"
                 value={forfeit.Note || ""}
+                onChange={handleInputChange}
+              />
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={6}>
+            <FormControl fullWidth variant="standard">
+              <p>การขอลดหย่อน</p>
+              <TextField
+                id="ModulateNote"
+                variant="standard"
+                type="string"
+                size="medium"
+                value={forfeit.ModulateNote || ""}
                 onChange={handleInputChange}
               />
             </FormControl>
