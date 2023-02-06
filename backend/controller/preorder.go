@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 	"github.com/team04/entity"
 )
@@ -53,6 +54,11 @@ func CreatePreorder(c *gin.Context) {
 		Datetime:          preorder.Datetime,   //ตั้งค่าฟิลด์ datetime
 		Librarian:         librarian,           // โยงความสัมพันธ์กับ Entity librarian
 		ConfirmationCheck: false,
+	}
+
+	if _, err := govalidator.ValidateStruct(preorder); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	//  12: บันทึก
