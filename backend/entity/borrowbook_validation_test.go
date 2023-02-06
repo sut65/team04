@@ -32,3 +32,27 @@ func TestBorrowBookCorrect(t *testing.T) {
 		fmt.Println(err)
 	})
 }
+
+// ตรวจสอบค่าว่างของเเถบสีแล้วต้องเจอ Error
+func TestColor_BarNotBlank(t *testing.T) {
+	g := NewGomegaWithT(t)
+
+	borrowbook := BorrowBook{
+		Borb_Day:       time.Now(),
+		Return_Day:     time.Now(),
+		Color_Bar:      "", //ผิด
+		Borb_Frequency: 1,
+	}
+
+	// ตรวจสอบด้วย govalidator
+	ok, err := govalidator.ValidateStruct(borrowbook)
+
+	// ok ต้องไม่เป็นค่า true แปลว่าต้องจับ error ได้
+	g.Expect(ok).ToNot(BeTrue())
+
+	// err ต้องไม่เป็นค่า nil แปลว่าต้องจับ error ได้
+	g.Expect(err).ToNot(BeNil())
+
+	// err.Error ต้องมี error message แสดงออกมา
+	g.Expect(err.Error()).To(Equal("เเถบสีหนังสือต้องไม่เป็นค่าว่าง"))
+}
