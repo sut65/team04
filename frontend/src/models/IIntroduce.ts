@@ -5,7 +5,7 @@ import { UserInterface } from "./IUser"
 export interface IntroduceInterface{
     Title:    string
 	Author:   string
-	ISBN:     number
+	ISBN:     string
 	Edition:  number
 	Pub_Name: string
 	Pub_Year: string
