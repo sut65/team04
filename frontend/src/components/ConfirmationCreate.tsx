@@ -171,7 +171,7 @@ function ConfirmationCreate() {
 
         NoteName: confirmation.NoteName,
         NoteTel: confirmation.NoteTel,
-        Datetime: new Date(),
+        Datetime: datetime,
         
         LibrarianID: Number(localStorage.getItem("nid")),
     };
