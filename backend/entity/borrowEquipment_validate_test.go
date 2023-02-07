@@ -80,7 +80,7 @@ func TestBorrowEquipmentMustNotBePast(t *testing.T) {
 	g.Expect(err.Error()).To(Equal("วันที่และเวลาต้องไม่เป็นอดีต"))
 }
 
-// // ตรวจสอบวันเวลาที่บันทึกต้องไม่เป็นเวลาในอนาคต
+// ตรวจสอบวันเวลาที่บันทึกต้องไม่เป็นเวลาในอนาคต
 func TestBorrowEquipmenttNotBeFuture(t *testing.T) {
 	g := NewGomegaWithT(t)
 
