@@ -81,20 +81,6 @@ func GetBorrowEquipmentByID(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": borrowequipment})
 }
 
-// // GET borrowequipment By ID
-// func GetBorrowEquipmentByID(c *gin.Context) {
-
-// 	var borrowequipment entity.BorrowEquipment
-// 	Id := c.Param("id") //id ที่เราตั้งไว้ใน main.go ที่อยู่หลัง : ตัวอย่าง >> /borrowequipment/:id
-// 	if err := entity.DB().Model(&entity.BorrowEquipment{}).Where("ID = ?", Id).Preload("Librarian").Find(&borrowequipment); err.RowsAffected == 0 {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("BorrowEquipmentID :  Id%s not found.", Id)})
-// 		return
-// 	}
-
-// 	c.JSON(http.StatusOK, gin.H{"data": borrowequipment})
-
-// }
-
 // PATCH /borrowequipment
 func UpdateBorrowEquipment(c *gin.Context) {
 	var borrowequipment entity.BorrowEquipment
