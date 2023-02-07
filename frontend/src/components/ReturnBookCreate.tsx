@@ -17,14 +17,12 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useEffect, useState } from "react";
-import { UserInterface } from "../models/IUser";
-import { BookPurchasingInterface } from "../models/IBookPurchasing";
 import { LibrarianInterface } from "../models/ILibrarian";
 import { BorrowBookInterface } from "../models/IBorrowBook";
 import { ReturnBookInterface } from "../models/IReturnBook";
 import { LostBookInterface } from "../models/ILostBook";
 import ReturnBook from "./ReturnBook";
-import { get } from "https";
+import { DatePicker } from "@mui/x-date-pickers";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -36,16 +34,14 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 
 function ReturnBookCreate() {
   const [current_day, setCurrent_Day] = useState<Date | null>();
-  const [late_number, setLate_Number] = useState<Date | null>();
-  const [returnbook, setReturnBook] = useState<Partial<ReturnBookInterface>>(
-    {}
-  ); //Partial ชิ้นส่วนเอาไว้เซทข้อมูลที่ละส่วน
+  const [returnbook, setReturnBook] = useState<Partial<ReturnBookInterface>>({}); //Partial ชิ้นส่วนเอาไว้เซทข้อมูลที่ละส่วน
   const [borrowbook, setBorrowBook] = useState<BorrowBookInterface[]>([]);
   const [lostbook, setLostBook] = useState<LostBookInterface[]>([]);
   const [librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
-
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
 
   const handleClose = (
     event?: React.SyntheticEvent | Event,
@@ -58,6 +54,8 @@ function ReturnBookCreate() {
     setError(false);
   };
 
+
+
   const handleInputChange = (
     event: React.ChangeEvent<{ id?: string; value: any }> //ชื่อคอมลัมน์คือ id และค่าที่จะเอามาใส่ไว้ในคอมลัมน์นั้นคือ value
   ) => {
@@ -67,6 +65,8 @@ function ReturnBookCreate() {
     const { value } = event.target;
     setReturnBook({ ...returnbook, [id]: value });
   };
+
+
 
   const handleChange = (
     event: React.ChangeEvent<{ name?: string; value: any }> //ชื่อคอมลัมน์คือ id และค่าที่จะเอามาใส่ไว้ในคอมลัมน์นั้นคือ value
@@ -79,10 +79,12 @@ function ReturnBookCreate() {
     setReturnBook({ ...returnbook, [name]: value });
   };
 
+
+
   function submit() {
     let data = {
       //เก็บข้อมูลที่จะเอาไปเก็บในดาต้าเบส
-      Current_Day: new Date(),
+      Current_Day: current_day,
       Late_Number: Number(returnbook.Late_Number) ?? "",
       Book_Condition: returnbook.Book_Condition ?? "",
       LostBookID: Number(returnbook.LostBookID),
@@ -90,6 +92,8 @@ function ReturnBookCreate() {
       BorrowBookID: Number(returnbook.BorrowBookID),
     };
     console.log(data);
+
+
 
     const apiUrl = "http://localhost:8080/return_books";
     const requestOptions = {
@@ -103,17 +107,22 @@ function ReturnBookCreate() {
 
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
-
       .then((res) => {
         console.log(res);
         if (res.data) {
+          console.log("บันทึกได้")
           setSuccess(true);
+          setErrorMessage("")
           getBorrowBook();
         } else {
+          console.log("บันทึกไม่ได้")
           setError(true);
+          setErrorMessage(res.error)
         }
       });
   }
+
+
   const requestOptions = {
     method: "GET",
     headers: {
@@ -122,13 +131,14 @@ function ReturnBookCreate() {
     },
   };
 
+
+
   // บรรณารักษ์ Librarian
   const getLibrarian = async () => {
     const apiUrl = "http://localhost:8080/librarian";
 
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
-
       .then((res) => {
         console.log(res.data);
         if (res.data) {
@@ -137,20 +147,23 @@ function ReturnBookCreate() {
       });
   };
 
+
+
   // การยืมหนังสือ BorrowBook
   const getBorrowBook = async () => {
-    const apiUrl = "http://localhost:8080/borrow_books";
+    const apiUrl = "http://localhost:8080/BorrowBookForTrackingCheck";
 
     fetch(apiUrl, requestOptions)
-      .then((response) => response.json())
+    .then((response) => response.json()) //เปลี่ยนจากเจสันเป็นจาว่าสคริปต์
+    .then((res) => {
+      console.log("borrowbook", res.data);
+      if (res.data) {
+        setBorrowBook(res.data);
+      }
+    });
+};
 
-      .then((res) => {
-        console.log(res.data);
-        if (res.data) {
-          setBorrowBook(res.data);
-        }
-      });
-  };
+
 
   // การทำหนังสือหาย LostBook
   const getLostBook = async () => {
@@ -158,7 +171,6 @@ function ReturnBookCreate() {
 
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
-
       .then((res) => {
         console.log(res.data);
         if (res.data) {
@@ -166,6 +178,14 @@ function ReturnBookCreate() {
         }
       });
   };
+
+
+  // จัดรูปเเเบบวันที่
+  const DateFormat = (date : any) => {
+    let dateStyle = new Date(date)
+    return `${dateStyle.toLocaleDateString("en-US")}`
+  }
+
 
   useEffect(() => {
     //ทำงานทุกครั้งที่เรารีเฟชหน้าจอ
@@ -178,19 +198,25 @@ function ReturnBookCreate() {
   return (
     <Container maxWidth="md">
       <Snackbar
+        id="success"
         open={success}
         autoHideDuration={6000}
         onClose={handleClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert onClose={handleClose} severity="success">
-          บันทึกข้อมูลสำเร็จ
+        บันทึกสำเร็จ
         </Alert>
       </Snackbar>
-
-      <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
+      
+      <Snackbar 
+        id="error"
+        open={error} 
+        autoHideDuration={6000} 
+        onClose={handleClose}>
         <Alert onClose={handleClose} severity="error">
-          บันทึกข้อมูลไม่สำเร็จ
+        บันทึกไม่สำเร็จ: {errorMessage}
+
         </Alert>
       </Snackbar>
 
@@ -201,67 +227,74 @@ function ReturnBookCreate() {
             marginTop: 2,
           }}
         >
-          <Box sx={{ paddingX: 2, paddingY: 1 }}>
+          <Box sx={{ bgcolor: 'text.primary' }} flexGrow={1}>
             <Typography
-              component="h1"
-              variant="h6"
-              color="primary"
+              component="h3"
+              variant="h5"
+              color="white"
               gutterBottom
             >
-              บันทึกการคืนหนังสือ
+              <br/>
+             &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+             &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+             บันทึกการคืนหนังสือ
+              <br/><br/>
             </Typography>
           </Box>
         </Box>
         <Divider />
 
+
+        <Box sx={{ bgcolor: '#FFF0F5' }} flexGrow={1}>
         <Grid container spacing={3} sx={{ padding: 2 }}>
+          
+        <Grid item xs={12}>
+            <FormControl fullWidth variant="standard">
+              <Typography variant="inherit">
+              <Paper sx={{bgcolor: "#FFFFCC",  spacing: 3, padding: 2}}>
+              <b>จำนวนรายการที่เหลือ {borrowbook.length} รายการ</b>
+              </Paper>
+              </Typography>
+            </FormControl>
+          </Grid>
+
+
+
           <Grid item xs={12}>
             <FormControl fullWidth variant="standard">
-              <p>ผู้ที่เคยยืมหนังสือ</p>
+              <b><p>ผู้ที่เคยยืมหนังสือ</p></b>
               <Select
                 // id="BorrowBookID"
+                native
                 value={returnbook.BorrowBookID}
                 onChange={handleChange}
                 inputProps={{
                   name: "BorrowBookID", //เอาไว้เข้าถึงข้อมูล borrowbookไอดี
                 }}
               >
-                {borrowbook.map(
-                  (
-                    item: BorrowBookInterface //map
-                  ) => (
-                    <MenuItem value={item.ID} key={item.ID}>
-                      ชื่อ: {item.User.Name} | เลขบัตรประชาชน:{" "}
-                      {item.User.Idcard} | ชื่อหนังสือ:{" "}
-                      {item.BookPurchasing.BookName} | หมวดหมู่:{" "}
-                      {item.BookPurchasing.BookCategory.Name} | เเถบสี:{" "}
-                      {item.Color_Bar}
-                      {/* วันกำหนดคืน: {item.Return_Day}  */}
-                    </MenuItem> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
+                <option aria-label="None" value="">
+                    กรุณาเลือกข้อมูลประวัติผู้ที่เคยยืมหนังสือ
+                </option>
+                {borrowbook.map((item: BorrowBookInterface) => (
+                    <option value={item.ID} key={item.ID}>
+                      ชื่อ: {item.User.Name} | 
+                      เลขบัตรประชาชน: {item.User.Idcard} | 
+                      ชื่อหนังสือ: {item.BookPurchasing.BookName} | 
+                      หมวดหมู่: {item.BookPurchasing.BookCategory.Name} | 
+                      เเถบสี: {item.Color_Bar} |
+                      วันกำหนดคืน: {DateFormat(item.Return_Day)}
+                    </option>  //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
                   )
                 )}
               </Select>
             </FormControl>
           </Grid>
 
-          <Grid item xs={6}>
-            <FormControl fullWidth variant="standard">
-              <p>วันที่คืนหนังสือ</p>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DateTimePicker
-                  value={current_day}
-                  onChange={(newValue) => {
-                    setCurrent_Day(newValue);
-                  }}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </LocalizationProvider>
-            </FormControl>
-          </Grid>
+
 
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
-              <p>จำนวนวันเลยกำหนดคืน(วัน)</p>
+              <b><p>จำนวนวันเลยกำหนดคืน(วัน)</p></b>
               <TextField
                 id="Late_Number"
                 variant="standard"
@@ -273,33 +306,38 @@ function ReturnBookCreate() {
             </FormControl>
           </Grid>
 
+
+
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
-              <p>หนังสือหาย(หาย/ไม่หาย)</p>
+              <b><p>หนังสือหาย(หาย/ไม่หาย)</p></b>
               <Select
                 // id="LostBookID"
+                native
                 value={returnbook.LostBookID}
                 onChange={handleChange}
                 inputProps={{
                   name: "LostBookID", //เอาไว้เข้าถึงข้อมูล LostBookID
                 }}
               >
-                {lostbook.map(
-                  (
-                    item: LostBookInterface //map
-                  ) => (
-                    <MenuItem value={item.ID} key={item.ID}>
+                <option aria-label="None" value="">
+                    กรุณาเลือกหนังสือหายหรือไม่
+                </option>
+                {lostbook.map((item: LostBookInterface) => (
+                    <option value={item.ID} key={item.ID}>
                       {item.Name}
-                    </MenuItem> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
+                    </option> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
                   )
                 )}
               </Select>
             </FormControl>
           </Grid>
 
+
+
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
-              <p>สภาพหนังสือ</p>
+              <b><p>สภาพหนังสือ</p></b>
               <TextField
                 id="Book_Condition"
                 variant="standard"
@@ -311,29 +349,43 @@ function ReturnBookCreate() {
             </FormControl>
           </Grid>
 
+
+
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
-              <p>บรรณารักษ์ผู้บันทึกข้อมูล</p>
+              <b><p>วันที่คืนหนังสือ</p></b>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DatePicker
+                  value={current_day}
+                  onChange={(newValue) => {
+                    setCurrent_Day(newValue);
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+            </FormControl>
+          </Grid>
+
+
+
+          <Grid item xs={6}>
+            <FormControl fullWidth variant="standard">
+              <b><p>บรรณารักษ์ผู้บันทึกข้อมูล</p></b>
               <Select
-                // defaultOpen={true}
                 disabled={true} //เป็นจางๆไม่ให้เปลี่ยน
-                // labelId="เลขบัตรประชาชน"
-                // id="เลขบัตรประชาชน"
                 value={localStorage.getItem("nid")}
-                // label="Name"
               >
-                {librarian.map(
-                  (
-                    item: LibrarianInterface //map
-                  ) => (
-                    <MenuItem value={item.ID} key={item.ID}>
+                {librarian.map((item: LibrarianInterface) => (
+                    <option value={item.ID} key={item.ID}>
                       {item.Name}
-                    </MenuItem> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
+                    </option> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
                   )
                 )}
               </Select>
             </FormControl>
           </Grid>
+
+
 
           <Grid item xs={12}>
             <Button component={RouterLink} to="/returnbook" variant="contained">
@@ -344,12 +396,13 @@ function ReturnBookCreate() {
               style={{ float: "right" }}
               onClick={submit}
               variant="contained"
-              color="success"
+              color="warning"
             >
               บันทึกข้อมูล
             </Button>
           </Grid>
         </Grid>
+        </Box>
       </Paper>
     </Container>
   );
