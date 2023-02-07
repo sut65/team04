@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import React from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -6,20 +7,82 @@ import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { format } from "date-fns";
+import DialogTitle from "@mui/material/DialogTitle";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert, { AlertProps } from "@mui/material/Alert";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever'; // Icon ลบ
+import EditIcon from "@mui/icons-material/Edit";     // Icon เเก้ไข
 import { LibrarianInterface } from "../models/ILibrarian";
 import { BorrowBookInterface } from "../models/IBorrowBook";
 import { ReturnBookInterface } from "../models/IReturnBook";
 import { LostBookInterface } from "../models/ILostBook";
 
 
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
+
+  ref
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
+
 function ReturnBook() {
-  const [returnbook, setReturnBook] = useState<ReturnBookInterface[]>([]);
+    const [returnbook, setReturnBook] = useState<ReturnBookInterface[]>([]);
+    const [success, setSuccess] = useState(false); //จะยังไม่ให้แสดงบันทึกข้อมูล
+    const [error, setError] = useState(false);
+    const [opendelete, setOpenDelete] = useState(false);
 
-  const getReturnBook = async () => {
-    const apiUrl = "http://localhost:8080/return_books";
+    const [selectcell, setSelectCell] = useState(Number);
+    const handleCellFocus = useCallback(
+      (event: React.FocusEvent<HTMLDivElement>) => {
+        const row = event.currentTarget.parentElement;
+        const id = row!.dataset.id!;
+        const field = event.currentTarget.dataset.field!;
+          setSelectCell(Number(id));
+    },
+    []
+  );
 
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+
+    reason?: string
+  ) => {
+    console.log(reason);
+    if (reason === "clickaway") {
+      return;
+    }
+    setSuccess(false);
+    setError(false);
+  };
+
+
+  const handleClickDelete = () => {
+      // setSelectCell(selectcell);
+      DeleteReturnBook(selectcell);
+      setOpenDelete(false);
+  };
+
+
+  const handleDelete = () => {
+      setOpenDelete(true);
+  };
+
+
+  const handleDeleteClose = () => {
+      setOpenDelete(false);
+  };
+
+
+  const DeleteReturnBook = async (id: Number) => {
+    const apiUrl = `http://localhost:8080/return_books/${id}`;
     const requestOptions = {
-      method: "GET",
+      method: "DELETE",
+
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`, //การยืนยันตัวตน
         "Content-Type": "application/json",
@@ -30,6 +93,30 @@ function ReturnBook() {
       .then((response) => response.json())
 
       .then((res) => {
+        if (res.data) {
+          setSuccess(true);
+          window.location.reload();
+        } else {
+          setError(true);
+        }
+      });
+  };
+
+
+  const GetAllReturnBook = async () => {
+    const apiUrl = "http://localhost:8080/return_books";
+    const requestOptions = {
+      method: "GET",
+
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`, //การยืนยันตัวตน
+        "Content-Type": "application/json",
+      },
+    };
+
+    fetch(apiUrl, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
         console.log(res.data);
 
         if (res.data) {
@@ -38,12 +125,44 @@ function ReturnBook() {
       });
   };
 
+
   const columns: GridColDef[] = [
-    { field: "ID", headerName: "ลำดับ", width: 20 },
+    { field: "ID", headerName: "ลำดับ", width: 20 ,align: "center", headerAlign: "center",},
+    {
+      field: "จัดการข้อมูล",
+      headerName: "จัดการข้อมูล",
+      align: "center",
+      headerAlign: "center",
+      width: 175,
+      renderCell: () => (
+        <div>
+            &nbsp;
+          <Button 
+            variant="contained" 
+            size="small" 
+            startIcon={<EditIcon />}
+            color="success"
+          > 
+              แก้ไข
+          </Button>
+              &nbsp;&nbsp;&nbsp;
+          <Button
+            onClick={handleDelete}
+            variant="contained"
+            size="small"
+            startIcon={<DeleteForeverIcon />}
+            color="error"
+          >
+              ลบ 
+          </Button>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+        </div>
+      ),
+    },
     {
       field: "ReturnBookName",
       headerName: "ชื่อผู้ที่เคยยืมหนังสือ",
-      width: 120,
+      width: 180,
       valueGetter: (params) => {
         return params.getValue(params.id, "BorrowBook").User.Name;
       },
@@ -51,9 +170,25 @@ function ReturnBook() {
     {
       field: "Idcard",
       headerName: "เลขบัตรประชาชน",
-      width: 140,
+      width: 160,
       valueGetter: (params) => {
         return params.getValue(params.id, "BorrowBook").User.Idcard;
+      },
+    },
+    {
+      field: "BookName",
+      headerName: "ชื่อหนังสือที่ยืม",
+      width: 210,
+      valueGetter: (params) => {
+        return params.getValue(params.id, "BorrowBook").BookPurchasing.BookName;
+      },
+    },
+    {
+      field: "BookCategory",
+      headerName: "หมวดหมู่หนังสือ",
+      width: 190,
+      valueGetter: (params) => {
+        return params.getValue(params.id, "BorrowBook").BookPurchasing.BookCategory.Name;
       },
     },
     {
@@ -65,44 +200,37 @@ function ReturnBook() {
       },
     },
     {
-      field: "BookName",
-      headerName: "ชื่อหนังสือ",
-      width: 200,
+      field: "Return_Day",
+      headerName: "วันกำหนดคืน",
+      width: 140,
+      align: "center",
+      headerAlign: "center",
       valueGetter: (params) => {
-        return params.getValue(params.id, "BorrowBook").BookPurchasing.BookName;
+        return params.getValue(params.id, "BorrowBook").Return_Day;
       },
+      valueFormatter: (params) => format(new Date(params?.value), "dd/MM/yyyy"),
     },
-    {
-      field: "BookCategory",
-      headerName: "หมวดหมู่หนังสือ",
-      width: 200,
-      valueGetter: (params) => {
-        return params.getValue(params.id, "BorrowBook").BookPurchasing.BookCategory.Name;
-      },
-    },
-    // {
-    //   field: "Return_Day",
-    //   headerName: "วันกำหนดคืน",
-    //   width: 200,
-    //   valueGetter: (params) => {
-    //     return params.getValue(params.id, "BorrowBook").Return_Day;
-    //   },
-    // },
     {
       field: "Current_Day",
       headerName: "วันที่คืนหนังสือ",
       width: 200,
-      valueFormatter: (params) => format(new Date(params?.value), "P hh:mm a"),
+      align: "center",
+      headerAlign: "center",
+      valueFormatter: (params) => format(new Date(params?.value), "dd/MM/yyyy"),
     },
     { 
       field: "Late_Number",
       headerName: "จำนวนวันเลยกำหนดคืน(วัน)",
+      align: "center",
+      headerAlign: "center",
       width: 200,
     },
     {
       field: "LostBookName",
       headerName: "หนังสือหาย(หาย/ไม่หาย)",
       width: 200,
+      align: "center",
+      headerAlign: "center",
       valueGetter: (params) => {
         return params.getValue(params.id, "LostBook").Name;
       },
@@ -110,7 +238,7 @@ function ReturnBook() {
     { 
       field: "Book_Condition",
       headerName: "สภาพหนังสือ",
-      width: 200,
+      width: 210,
     },
     {
       field: "LibrarianName",
@@ -124,27 +252,61 @@ function ReturnBook() {
 
 
   useEffect(() => {
-    getReturnBook();
-
+    GetAllReturnBook();
   }, []);
 
   return (
     <div>
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
+        <Snackbar
+          open={success}
+          autoHideDuration={6000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        >
+          <Alert onClose={handleClose} severity="success">
+            ลบข้อมูลสำเร็จ
+          </Alert>
+        </Snackbar>
+
+        <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
+          <Alert onClose={handleClose} severity="error">
+            ลบข้อมูลไม่สำเร็จ
+          </Alert>
+        </Snackbar>
+        <Dialog
+          open={opendelete}
+          onClose={handleDeleteClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"คุณต้องการลบข้อมูลใช่หรือไม่?"}
+          </DialogTitle>
+
+          <DialogActions>
+            <Button onClick={handleDeleteClose}>
+              ยกเลิก
+            </Button>
+            <Button onClick={handleClickDelete} autoFocus>
+              ตกลง
+            </Button>
+          </DialogActions>
+        </Dialog>
         <Box
           display="flex"
           sx={{
             marginTop: 2,
           }}
         >
-          <Box flexGrow={1}>
+          <Box sx={{ bgcolor: 'text.primary' }} flexGrow={1}>
             <Typography
               component="h1"
               variant="h6"
-              color="primary"
+              color="white"
               gutterBottom
             >
-              รายการ-การคืนหนังสือของสมาชิกห้องสมุด
+              &nbsp;&nbsp;&nbsp;  รายการ-การคืนหนังสือ
             </Typography>
           </Box>
 
@@ -160,13 +322,18 @@ function ReturnBook() {
           </Box>
         </Box>
 
-        <div style={{ height: 500, width: "100%", marginTop: "20px" }}>
+        <div style={{ height: 600, width: "100%", marginTop: "20px" }}>
           <DataGrid
             rows={returnbook}
             getRowId={(row) => row.ID}
             columns={columns}
-            pageSize={20}
-            rowsPerPageOptions={[40]}
+            pageSize={15}
+            componentsProps={{
+              cell: {
+                onFocus: handleCellFocus,
+              },
+            }}
+            rowsPerPageOptions={[5]}
           />
         </div>
       </Container>
