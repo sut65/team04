@@ -39,6 +39,9 @@ function BorrowEquipmentCreate() {
   >([]);
   const [user, setUser] = useState<UserInterface[]>([]);
   const [librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
+  const [errorMessage, setErrorMessage] = useState("");
+
+
   const handleClose = (
     event?: React.SyntheticEvent | Event,
     reason?: string
@@ -79,7 +82,7 @@ function BorrowEquipmentCreate() {
   function submit() {
     let data = {
       //เก็บข้อมูลที่จะเอาไปเก็บในดาต้าเบส
-      BorrowEquipment_Day: new Date(),
+      BorrowEquipment_Day: BorrowEquipment_Day,
       Amount_BorrowEquipment:
         Number(borrowequipment.Amount_BorrowEquipment) ?? "",
       UserID: Number(borrowequipment.UserID),
@@ -97,15 +100,30 @@ function BorrowEquipmentCreate() {
       body: JSON.stringify(data),
     };
 
+    // fetch(`${apiUrl}/examschedules`, requestOptionsPost)
+    // .then((response) => response.json())
+    // .then((res) => {
+    //   if (res.data) {
+    //     setSuccess(true);
+    //     setErrorMessage("");
+    //   } else {
+    //     setError(true);
+    //     setErrorMessage(res.error);
+    //   }
+    // });
+
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
       .then((res) => {
         console.log(res);
         if (res.data) {
+          console.log("บันทึกได้")
           setSuccess(true);
-          getEquipmentPurchasing();
+          setErrorMessage("")
         } else {
+          console.log("บันทึกไม่ได้")
           setError(true);
+          setErrorMessage(res.error)
         }
       });
   }
@@ -158,19 +176,39 @@ function BorrowEquipmentCreate() {
   }, []);
   return (
     <Container maxWidth="md">
+      {/* <Snackbar 
+        open={success} 
+        autoHideDuration={6000} 
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }} >
+          <Alert onClose={handleClose} severity="success">
+            บันทึกสำเร็จ
+          </Alert>
+        </Snackbar>
+        <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
+          <Alert onClose={handleClose} severity="error">
+            บันทึกไม่สำเร็จ: {errorMessage}
+          </Alert>
+        </Snackbar> */}
       <Snackbar
+        id="success"
         open={success}
         autoHideDuration={6000}
         onClose={handleClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert onClose={handleClose} severity="success">
-          บันทึกข้อมูลสำเร็จ
+        บันทึกสำเร็จ
         </Alert>
       </Snackbar>
-      <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
+      <Snackbar 
+        id="error"
+        open={error} 
+        autoHideDuration={6000} 
+        onClose={handleClose}>
         <Alert onClose={handleClose} severity="error">
-          บันทึกข้อมูลไม่สำเร็จ
+        บันทึกไม่สำเร็จ: {errorMessage}
+
         </Alert>
       </Snackbar>
       <Paper>
@@ -257,7 +295,7 @@ function BorrowEquipmentCreate() {
               <p>วัน เวลา ที่ยืมอุปกรณ์</p>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DateTimePicker
-                  disabled
+                  
                   value={BorrowEquipment_Day}
                   onChange={(newValue) => {
                     setBorrowEquipment_Day(newValue);
