@@ -69,6 +69,9 @@ import ConfirmationCreate from "./components/ConfirmationCreate";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import BookRepair from "./components/BookRepair";
 import BookRepairCreate from "./components/BookRepairCreate";
+import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
+import EquipmentRepair from "./components/EquipmentRepair";
+import EquipmentRepairCreate from "./components/EquipmentRepairCreate";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
@@ -207,6 +210,11 @@ export default function MiniDrawer() {
       name: "ระบบการแจ้งซ่อมหนังสือ",
       icon: <MenuBookIcon />,
       path: "/bookrepair",
+    },
+    {
+      name: "ระบบการแจ้งซ่อมอุปกรณ์",
+      icon: <HomeRepairServiceIcon />,
+      path: "/equipmentrepair",
     },
   ];
   const menuUser = [
@@ -406,6 +414,8 @@ export default function MiniDrawer() {
 
                <Route path="/bookrepair" element={<BookRepair />} />
                <Route path="/bookrepair/create" element={<BookRepairCreate />} />
+               <Route path="/equipmentrepair" element={<EquipmentRepair />} />
+               <Route path="/equipmentrepair/create" element={<EquipmentRepairCreate />} />
             </Routes>
           </div>
         </main>

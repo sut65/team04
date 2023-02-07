@@ -59,7 +59,7 @@ func CreateEquipmentRepair(c *gin.Context) { // c รับข้อมูลม
 // GET bookRepair
 func GetAllEquipmentRepair(c *gin.Context) {
 
-	var equipmentrepair []entity.BookRepair
+	var equipmentrepair []entity.EquipmentRepair
 
 	if err := entity.DB().Model(&entity.EquipmentRepair{}).Preload("EquipmentPurchasing").Preload("Level").Preload("Librarian").Find(&equipmentrepair).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -72,7 +72,7 @@ func GetAllEquipmentRepair(c *gin.Context) {
 // GET equipmentRepair By ID
 func GetEquipmentRepairByID(c *gin.Context) {
 
-	var equipmentrepair entity.BookRepair
+	var equipmentrepair entity.EquipmentRepair
 
 	Id := c.Param("id") //id ที่เราตั้งไว้ใน main.go ที่อยู่หลัง : ตัวอย่าง >> /equipmentRepair/:id
 	if err := entity.DB().Model(&entity.EquipmentRepair{}).Where("ID = ?", Id).Preload("EquipmentPurchasing").Preload("Level").Preload("Librarian").Find(&equipmentrepair); err.RowsAffected == 0 {
