@@ -24,10 +24,10 @@ type User struct {
 
 type BorrowBook struct {
 	gorm.Model
-	Borb_Day       time.Time `valid:"Past~วันที่ยืมหนังสือต้องไม่เป็นวันในอดีต"`
-	Return_Day     time.Time `valid:"Past~วันกำหนดคืนหนังสือต้องไม่เป็นวันในอดีต"`
-	Color_Bar      string    `valid:"required~เเถบสีหนังสือต้องไม่เป็นค่าว่าง"`
-	Borb_Frequency int       `valid:"required~จำนวนครั้งที่ยืมหนังสือ must be 1-100, range(1|100)~จำนวนครั้งที่ยืมหนังสือ must be 1-100"`
+	Borb_Day       time.Time `valid:"Present~วันที่ยืมหนังสือต้องเป็นปัจจุบัน กรุณาลองใหม่อีกครั้ง"`
+	Return_Day     time.Time `valid:"Past~วันกำหนดคืนหนังสือต้องไม่เป็นวันในอดีต กรุณาลองใหม่อีกครั้ง"`
+	Color_Bar      string    `valid:"required~กรุณากรอกเเถบสีหนังสือที่เเบ่งตามหมวดหมู่"`
+	Borb_Frequency int       `valid:"required~จำนวนครั้งที่ยืมหนังสือต้องเป็นตัวเลขระหว่าง 1-1000, range(1|1000)~จำนวนครั้งที่ยืมหนังสือต้องเป็นตัวเลขระหว่าง 1-1000"`
 	TrackingCheck  bool
 
 	LibrarianID *uint
@@ -47,13 +47,11 @@ func init() {
 	govalidator.CustomTypeTagMap.Set("Past", func(i interface{}, context interface{}) bool {
 		t := i.(time.Time)
 		return t.After(time.Now().Add(time.Minute*-2)) || t.Equal(time.Now())
-		//return t.Before(time.Now())
 	})
 
-	govalidator.CustomTypeTagMap.Set("Future", func(i interface{}, context interface{}) bool {
+	govalidator.CustomTypeTagMap.Set("Present", func(i interface{}, context interface{}) bool {
 		t := i.(time.Time)
-		now := time.Now()
-		return now.Before(time.Time(t))
+		return t.After(time.Now().Add(2-time.Minute)) && t.Before(time.Now().Add(2+time.Minute))
 	})
 
 }
