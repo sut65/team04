@@ -3,6 +3,7 @@ package entity
 import (
 	"time"
 
+	"github.com/asaskevich/govalidator"
 	"gorm.io/gorm"
 )
 
@@ -15,19 +16,37 @@ type LostBook struct {
 
 type ReturnBook struct {
 	gorm.Model
-	Current_Day    time.Time
-	Late_Number    int
-	Book_Condition string
+	Current_Day    time.Time `valid:"present~วันที่คืนหนังสือต้องเป็นปัจจุบัน กรุณาลองใหม่อีกครั้ง"`
+	Late_Number    int       `valid:"MoreThanEqualZero~จำนวนวันเลยกำหนดคืนต้องเป็นตัวเลขมากกว่าหรือเท่ากับ 0"`
+	Book_Condition string    `valid:"required~กรุณากรอกข้อมูลสภาพหนังสือ"`
 	ForfeitCheck   bool
 
 	LostBookID *uint
-	LostBook   LostBook `gorm:"references:id;"`
+	LostBook   LostBook `gorm:"references:id" valid:"-"`
 
 	LibrarianID *uint
-	Librarian   Librarian `gorm:"references:id;"`
+	Librarian   Librarian `gorm:"references:id" valid:"-"`
 
 	BorrowBookID *uint
-	BorrowBook   BorrowBook `gorm:"references:id;"`
+	BorrowBook   BorrowBook `gorm:"references:id" valid:"-"`
 
 	Forfeit []Forfeit `gorm:"foreignKey:PaymentID"`
+}
+
+// ฟังก์ชันที่จะใช่ในการ validation EntryTime
+func init() {
+	govalidator.CustomTypeTagMap.Set("present", func(i interface{}, context interface{}) bool {
+		t := i.(time.Time)
+		return t.After(time.Now().Add(2-time.Minute)) && t.Before(time.Now().Add(2+time.Minute))
+	})
+
+	govalidator.CustomTypeTagMap.Set("MoreThanEqualZero", func(i interface{}, context interface{}) bool {
+		t := i.(int)
+		if t < 0 {
+			return false
+		} else {
+			return true
+		}
+	})
+
 }
