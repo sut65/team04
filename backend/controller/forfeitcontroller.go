@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 	"github.com/team04/entity"
 )
@@ -50,13 +51,20 @@ func CreateForfeit(c *gin.Context) {
 	// 13: สร้าง Forfeit
 	ff := entity.Forfeit{
 
-		Pay:        forfeit.Pay,      // ตั้งค่าฟิลด์ Pay
-		Pay_Date:   forfeit.Pay_Date, // ตั้งค่าฟิลด์ Pay_Date
-		Note:       forfeit.Note,     // ตั้งค่าฟิลด์ Note
-		ReturnBook: returnBook,       // โยงความสัมพันธ์กับ Entity ReturnBook
-		Payment:    payment,          // โยงความสัมพันธ์กับ Entity Payment
-		Librarian:  librarian,        // โยงความสัมพันธ์กับ Entity Librarian
+		Pay:          forfeit.Pay,          // ตั้งค่าฟิลด์ Pay
+		Pay_Date:     forfeit.Pay_Date,     // ตั้งค่าฟิลด์ Pay_Date
+		Note:         forfeit.Note,         // ตั้งค่าฟิลด์ Note
+		ModulateNote: forfeit.ModulateNote, // ตั้งค่าฟิลด์ Note
+		ReturnBook:   returnBook,           // โยงความสัมพันธ์กับ Entity ReturnBook
+		Payment:      payment,              // โยงความสัมพันธ์กับ Entity Payment
+		Librarian:    librarian,            // โยงความสัมพันธ์กับ Entity Librarian
 
+	}
+
+	// การ validate
+	if _, err := govalidator.ValidateStruct(forfeit); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	// 14: บันทึก

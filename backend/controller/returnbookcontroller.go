@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 	"github.com/team04/entity"
 )
@@ -35,6 +36,12 @@ func CreateReturnBook(c *gin.Context) { // c รับข้อมูลมา�
 		return
 	}
 
+	// 11: อัพเดทคอลัมน์ TrackingCheck ว่าการคืนหนังสือถูกประเมินแล้ว
+	if tx := entity.DB().Model(&borrowbook).Update("TrackingCheck", true); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "borrowbook not found"})
+		return
+	}
+
 	// : ค้นหา librarian ด้วย id
 	if tx := entity.DB().Where("id = ?",
 		returnbook.LibrarianID).First(&librarian); tx.RowsAffected == 0 {
@@ -51,6 +58,11 @@ func CreateReturnBook(c *gin.Context) { // c รับข้อมูลมา�
 		Late_Number:    returnbook.Late_Number,    // ตั้งค่าฟิลด์ Late_Number
 		Book_Condition: returnbook.Book_Condition, // ตั้งค่าฟิลด์ Book_Condition
 		ForfeitCheck:   false,
+	}
+
+	if _, err := govalidator.ValidateStruct(returnbook); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	// : บันทึก
@@ -102,12 +114,12 @@ func UpdateReturnBook(c *gin.Context) {
 
 // DELETE /return_books/:id
 func DeleteReturnBook(c *gin.Context) {
-	Id := c.Param("id")
-	if tx := entity.DB().Delete(&entity.ReturnBook{}, Id); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "returnbook ID not found"})
+	id := c.Param("id")
+	if tx := entity.DB().Exec("DELETE FROM return_books WHERE id = ?", id); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "returnbook not found"})
 		return
 	}
-	c.JSON(http.StatusOK, fmt.Sprintf("ReturnBookID :  %s deleted.", Id))
+	c.JSON(http.StatusOK, gin.H{"data": id})
 }
 
 func ListReturnBookNoForfeitCheck(c *gin.Context) {
@@ -118,11 +130,7 @@ func ListReturnBookNoForfeitCheck(c *gin.Context) {
 
 		//Preload เหมือนจอยตาราง จอยตารางpatient
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-
 		return
-
 	}
-
 	c.JSON(http.StatusOK, gin.H{"data": returnBook})
-
 }

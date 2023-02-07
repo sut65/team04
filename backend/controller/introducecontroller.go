@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 	"github.com/team04/entity"
 )
@@ -55,6 +56,12 @@ func CreateIntroduce(c *gin.Context) {
 		Objective: objective,          // โยงความสัมพันธ์กับ Entity Objective
 		User:      user,               // โยงความสัมพันธ์กับ Entity User
 
+	}
+
+	// การ validate
+	if _, err := govalidator.ValidateStruct(introduce); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	// 13: บันทึก

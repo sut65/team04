@@ -19,6 +19,8 @@ type Librarian struct {
 	Forfeit          []Forfeit         `gorm:"foreignKey:PaymentID"`
 	BorrowEquipments []BorrowEquipment `gorm:"foreignKey:LibrarianID"`
 	ReturnEquipments []ReturnEquipment `gorm:"foreignKey:LibrarianID"`
+	BookRepair		 []BookRepair      `gorm:"foreignKey:LibrarianID"`
+	EquipmentRepair	 []EquipmentRepair      `gorm:"foreignKey:LibrarianID"`
 
 	Preorder     []Preorder     `gorm:"foreignKey:LibrarianID"`
 	Confirmation []Confirmation `gorm:"foreignKey:LibrarianID"`
@@ -55,5 +57,5 @@ type BookPurchasing struct {
 	Publisher   Publisher `gorm:"references:id;"`
 
 	BorrowBooks []BorrowBook `gorm:"foreignKey:BookPurchasingID"`
-	BookRepairs []BookRepair `gorm:"foreignKey:BookPurchasingID"`
+	BookRepair []BookRepair `gorm:"foreignKey:BookPurchasingID"`
 }

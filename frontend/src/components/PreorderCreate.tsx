@@ -15,10 +15,6 @@ import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import TextField from "@mui/material/TextField";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-// import { UsersInterface } from "../models/IUser";
-// import { GendersInterface } from "../models/IGender";
-// import { NametitleInterface } from "../models/INametitle";
-// import { PatientsInterface } from "../models/IPatient";
 import React from "react";
 import MenuItem from "@material-ui/core/MenuItem";
 import { Dayjs } from "dayjs";
@@ -63,6 +59,7 @@ function PreorderCreate() {
 
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
 
   const handleClose = (
@@ -193,24 +190,40 @@ function PreorderCreate() {
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
       .then((res) => {
+        console.log(res);
         if (res.data) {
+          console.log("บันทึกได้")
           setSuccess(true);
+          setErrorMessage("")
         } else {
+          console.log("บันทึกไม่ได้")
           setError(true);
+          setErrorMessage(res.error)
         }
       });
   }
 
   return (
     <Container maxWidth="md">
-      <Snackbar open={success} autoHideDuration={6000} onClose={handleClose}>
+      <Snackbar
+        id="success"
+        open={success}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
         <Alert onClose={handleClose} severity="success">
-          บันทึกข้อมูลสำเร็จ
+        บันทึกสำเร็จ
         </Alert>
       </Snackbar>
-      <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
+      <Snackbar 
+        id="error"
+        open={error} 
+        autoHideDuration={6000} 
+        onClose={handleClose}>
         <Alert onClose={handleClose} severity="error">
-          บันทึกข้อมูลไม่สำเร็จ
+        บันทึกไม่สำเร็จ: {errorMessage}
+
         </Alert>
       </Snackbar>
       <Paper>

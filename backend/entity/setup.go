@@ -488,7 +488,7 @@ func SetupDatabase() {
 	introduce1 := Introduce{
 		Title:     "แคลคูลัส 1 สำหรับวิศวกร",
 		Author:    "รศ. ดร.ธีระศักดิ์ อุรัจนานนท์",
-		ISBN:      9786162139130,
+		ISBN:      "9786162139130",
 		Edition:   1,
 		Pub_Name:  "สกายบุ๊กส์ บ.จ.ก.",
 		Pub_Year:  "2012",
@@ -502,7 +502,7 @@ func SetupDatabase() {
 	introduce2 := Introduce{
 		Title:     "คัมภีร์ Python",
 		Author:    "อรพิน ประวัติบริสุทธิ์",
-		ISBN:      9786162047930,
+		ISBN:      "9786162047930",
 		Edition:   1,
 		Pub_Name:  "Provision",
 		Pub_Year:  "2021",
@@ -516,7 +516,7 @@ func SetupDatabase() {
 	introduce3 := Introduce{
 		Title:     "เพียงชั่วเวลากาแฟยังอุ่น ตราบชั่วเวลาของคำโกหก",
 		Author:    "คาวางุจิ โทชิคาซึ",
-		ISBN:      9786161848330,
+		ISBN:      "9786161848330",
 		Edition:   1,
 		Pub_Name:  "แพรว ส.น.พ.",
 		Pub_Year:  "2022",
@@ -542,45 +542,40 @@ func SetupDatabase() {
 	db.Model(&Level{}).Create(&level3)
 
 	//จำลองตาราง BookRepair khanoon
-	db.Model(&BookRepair{}).Create(&BookRepair{
+	br1 := BookRepair{
 		BookPurchasing: bookPurchasing1,
 		Level:          level1,
 		Date:           time.Now(),
+		Note:       	"ชำรุด",
 		Librarian:      sirivipa,
-	})
-	db.Model(&BookRepair{}).Create(&BookRepair{
-		BookPurchasing: bookPurchasing1,
+	}
+	db.Model(&BookRepair{}).Create(&br1)
+	br2 := BookRepair{
+		BookPurchasing: bookPurchasing2,
 		Level:          level2,
 		Date:           time.Now(),
+		Note:       	"Not OK",
 		Librarian:      thanphirom,
-	})
-	db.Model(&BookRepair{}).Create(&BookRepair{
-		BookPurchasing: bookPurchasing2,
-		Level:          level3,
-		Date:           time.Now(),
-		Librarian:      chanaporn,
-	})
+	}
+	db.Model(&BookRepair{}).Create(&br2)
 
 	//จำลองตาราง EquipmentRepair khanoon
-	db.Model(&EquipmentRepair{}).Create(&EquipmentRepair{
-
+	er1 := EquipmentRepair{
 		EquipmentPurchasing: EquipmentPurchasing1,
-		Level:               level1,
-		Date:                time.Now(),
-		Librarian:           sirivipa,
-	})
-	db.Model(&EquipmentRepair{}).Create(&EquipmentRepair{
+		Level:          level1,
+		Date:           time.Now(),
+		Note:       	"ชำรุด",
+		Librarian:      sirivipa,
+	}
+	db.Model(&EquipmentRepair{}).Create(&er1)
+	er2 := EquipmentRepair{
 		EquipmentPurchasing: EquipmentPurchasing2,
-		Level:               level2,
-		Date:                time.Now(),
-		Librarian:           thanphirom,
-	})
-	db.Model(&EquipmentRepair{}).Create(&EquipmentRepair{
-		EquipmentPurchasing: EquipmentPurchasing1,
-		Level:               level3,
-		Date:                time.Now(),
-		Librarian:           chanaporn,
-	})
+		Level:          level2,
+		Date:           time.Now(),
+		Note:       	"Not OK",
+		Librarian:      thanphirom,
+	}
+	db.Model(&EquipmentRepair{}).Create(&er2)
 
 	//B6223090 นิด
 	//------ Equipment Status Data
