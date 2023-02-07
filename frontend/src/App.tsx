@@ -66,6 +66,9 @@ import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
 import Confirmation from "./components/Confirmation";
 import ConfirmationCreate from "./components/ConfirmationCreate";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
+import BookRepair from "./components/BookRepair";
+import BookRepairCreate from "./components/BookRepairCreate";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
@@ -199,6 +202,11 @@ export default function MiniDrawer() {
       name: "ระบบยืนยันการรับหนังสือ",
       icon: <ShoppingCartCheckoutIcon />,
       path: "/confirmation",
+    },
+    {
+      name: "ระบบการแจ้งซ่อมหนังสือ",
+      icon: <MenuBookIcon />,
+      path: "/bookrepair",
     },
   ];
   const menuUser = [
@@ -395,6 +403,9 @@ export default function MiniDrawer() {
                <Route path="/preorder/create" element={<PreorderCreate />} />
                <Route path="/confirmation" element={<Confirmation />} />
                <Route path="/confirmation/create" element={<ConfirmationCreate />} />
+
+               <Route path="/bookrepair" element={<BookRepair />} />
+               <Route path="/bookrepair/create" element={<BookRepairCreate />} />
             </Routes>
           </div>
         </main>
