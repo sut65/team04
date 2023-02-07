@@ -12,10 +12,12 @@ type EquipmentRepair struct {
 	EquipmentPurchasing   EquipmentPurchasing `gorm:"references:id;"`
 
 	LevelID *uint
-	Level   `gorm:"references:id;"`
+	Level   Level	`gorm:"references:id;"`
 
 	Date time.Time
 
+	Note	string
+
 	LibrarianID *uint
-	Librarian   `gorm:"references:id;"`
+	Librarian   Librarian	`gorm:"references:id;"`
 }
