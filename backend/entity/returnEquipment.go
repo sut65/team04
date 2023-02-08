@@ -3,6 +3,7 @@ package entity
 import (
 	"time"
 
+	"github.com/asaskevich/govalidator"
 	"gorm.io/gorm"
 )
 
@@ -15,15 +16,32 @@ type EquipmentStatus struct {
 
 type ReturnEquipment struct {
 	gorm.Model
-	Return_Day    time.Time
-	Return_Detail string
+	Return_Day    time.Time `valid:"Past~วันที่และเวลาต้องไม่เป็นอดีต,Future~วันที่และเวลาต้องไม่เป็นอนาคต"`
+	Return_Detail string    `valid:"required~กรุณากรอกรายละเอียดเพิ่มเติม"`
 
 	EquipmentStatusID *uint
-	EquipmentStatus   EquipmentStatus `gorm:"references:id;"`
+	EquipmentStatus   EquipmentStatus `gorm:"references:id" valid:"-"`
 
 	LibrarianID *uint
-	Librarian   Librarian `gorm:"references:id;"`
+	Librarian   Librarian `gorm:"references:id" valid:"-"`
 
 	BorrowEquipmentID *uint
-	BorrowEquipment   BorrowEquipment `gorm:"references:id;"`
+	BorrowEquipment   BorrowEquipment `gorm:"references:id" valid:"-"`
+}
+
+// ฟังก์ชันที่จะใช่ในการ validation EntryTime
+func init() {
+	govalidator.CustomTypeTagMap.Set("Past", func(i interface{}, context interface{}) bool {
+		t := i.(time.Time)
+		return t.After(time.Now().Add(time.Minute*-2)) || t.Equal(time.Now())
+		//return t.Before(time.Now())
+	})
+
+	govalidator.CustomTypeTagMap.Set("Future", func(i interface{}, context interface{}) bool {
+		t := i.(time.Time)
+		return t.Before(time.Now().Add(time.Minute*24)) || t.Equal(time.Now())
+
+		// now := time.Now()
+		// return now.Before(time.Time(t))
+	})
 }
