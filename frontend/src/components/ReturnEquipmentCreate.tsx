@@ -41,6 +41,7 @@ function ReturnEquipmentCreate() {
   const [librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
   const [returnequipment, setReturnEquipment] = useState<Partial<ReturnEquipmentInterface>>({}); //Partial ชิ้นส่วนเอาไว้เซทข้อมูลที่ละส่วน
   const [borrowequipment, setBorrowEquipment] = useState<BorrowEquipmentInterface[]>([]); //Partial ชิ้นส่วนเอาไว้เซทข้อมูลที่ละส่วน
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleClose = (
     event?: React.SyntheticEvent | Event,
@@ -83,7 +84,7 @@ function ReturnEquipmentCreate() {
     let data = {
       //เก็บข้อมูลที่จะเอาไปเก็บในดาต้าเบส
 
-      Return_Day:    new Date(),
+      Return_Day:    Return_Day,
       Return_Detail:  returnequipment.Return_Detail ?? "",
       BorrowEquipmentID:     returnequipment.BorrowEquipmentID,
       EquipmentStatusID:      returnequipment.EquipmentStatusID,  
@@ -105,10 +106,13 @@ function ReturnEquipmentCreate() {
       .then((res) => {
         console.log(res);
         if (res.data) {
+          console.log("บันทึกได้")
           setSuccess(true);
-          getBorrowEquipment();
+          setErrorMessage("")
         } else {
+          console.log("บันทึกไม่ได้")
           setError(true);
+          setErrorMessage(res.error)
         }
       });
   }
@@ -131,7 +135,7 @@ function ReturnEquipmentCreate() {
       });
   };
   const getBorrowEquipment = async () => {
-    const apiUrl = `http://localhost:8080/borrowEquipment`;
+    const apiUrl = `http://localhost:8080/BorrowEquipmentForTrackingCheck`;
     fetch(apiUrl, requestOptions)
       .then((response) => response.json()) //เปลี่ยนจากเจสันเป็นจาว่าสคริปต์
       .then((res) => {
@@ -176,18 +180,27 @@ const getEquipmentStatus = async () => {
   return (
     <Container maxWidth="md">
       <Snackbar
+        id="success"
         open={success}
         autoHideDuration={6000}
         onClose={handleClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert onClose={handleClose} severity="success">
-          บันทึกข้อมูลสำเร็จ
+        บันทึกสำเร็จ
         </Alert>
       </Snackbar>
-      <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
+      <Snackbar 
+        id="error"
+        open={error} 
+        autoHideDuration={6000} 
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+
+        >
         <Alert onClose={handleClose} severity="error">
-          บันทึกข้อมูลไม่สำเร็จ
+        บันทึกไม่สำเร็จ: {errorMessage}
+
         </Alert>
       </Snackbar>
       <Paper>
@@ -213,6 +226,16 @@ const getEquipmentStatus = async () => {
 
           <Grid item xs={12}>
             <FormControl fullWidth variant="standard">
+              <Typography variant="inherit">
+              <Paper sx={{bgcolor: "#FFFFCC",  spacing: 3, padding: 2}}>
+              <b>จำนวนรายการที่เหลือ {borrowequipment.length} รายการ</b>
+              </Paper>
+              </Typography>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={12}>
+            <FormControl fullWidth variant="standard">
               <p>ผู้ที่เคยยืมอุปกรณ์</p>
               <Select
                 
@@ -229,6 +252,8 @@ const getEquipmentStatus = async () => {
                     <MenuItem value={item.ID} key={item.ID}>
                       ชื่อ: {item.User.Name} | 
                       ชื่ออุปกรณ์: {item.EquipmentPurchasing.EquipmentName} | 
+                      จำนวนอุปกรณ์ที่ยืม: {item.Amount_BorrowEquipment} ชิ้น | 
+
                       {/* วันกำหนดคืน: {item.Return_Day}  */}
                     </MenuItem> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
                   )
