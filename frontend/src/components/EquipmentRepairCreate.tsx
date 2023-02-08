@@ -42,6 +42,8 @@ function EquipmentRepairCreate() {
   const [equipmentpurchasing, setEquipmentPurchasing] = useState<EquipmentPurchasingInterface[]>([]);
   const [librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
 
+  const [errorMessage, setErrorMessage] = useState("");
+
   const handleClose = (
     event?: React.SyntheticEvent | Event,
 
@@ -86,7 +88,7 @@ function EquipmentRepairCreate() {
       //เก็บข้อมูลที่จะเอาไปเก็บในดาต้าเบส
       EquipmentPurchasingID: Number(equipmentrepair.EquipmentPurchasingID),
       LevelID: Number(equipmentrepair.LevelID),
-      Date: new Date(),
+      Date: date,
       Note: String(equipmentrepair.Note) ?? "",
       LibrarianID: Number(localStorage.getItem("nid")),
     };
@@ -103,16 +105,30 @@ function EquipmentRepairCreate() {
       body: JSON.stringify(data),
     };
 
-    fetch(apiUrl, requestOptions)
-      .then((response) => response.json()) //มี then เพื่อรับ response มา
+    // fetch(apiUrl, requestOptions)
+    //   .then((response) => response.json()) //มี then เพื่อรับ response มา
 
+    //   .then((res) => {
+    //     console.log(res);
+    //     if (res.data) {
+    //       setSuccess(true);
+    //       //   getPlanning();
+    //     } else {
+    //       setError(true);
+    //     }
+    //   });
+    fetch(apiUrl, requestOptions)
+      .then((response) => response.json())
       .then((res) => {
         console.log(res);
         if (res.data) {
+          console.log("บันทึกได้")
           setSuccess(true);
-          //   getPlanning();
+          setErrorMessage("")
         } else {
+          console.log("บันทึกไม่ได้")
           setError(true);
+          setErrorMessage(res.error)
         }
       });
   }
@@ -174,7 +190,7 @@ function EquipmentRepairCreate() {
 
   return (
     <Container maxWidth="md">
-      <Snackbar
+      {/* <Snackbar
         open={success}
         autoHideDuration={6000}
         onClose={handleClose}
@@ -188,6 +204,28 @@ function EquipmentRepairCreate() {
       <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error">
           บันทึกข้อมูลไม่สำเร็จ
+        </Alert>
+      </Snackbar> */}
+      <Snackbar
+        id="success"
+        open={success}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert onClose={handleClose} severity="success">
+        บันทึกสำเร็จ
+        </Alert>
+      </Snackbar>
+
+      <Snackbar 
+        id="error"
+        open={error} 
+        autoHideDuration={6000} 
+        onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error">
+        บันทึกไม่สำเร็จ: {errorMessage}
+
         </Alert>
       </Snackbar>
 

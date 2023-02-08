@@ -84,7 +84,9 @@ function EquipmentRepair() {
       .then((response) => response.json())
 
       .then((res) => {
-        if (res.data) {
+        console.log(res);
+
+        if (res) {
           setSuccess(true);
           window.location.reload();
         } else {
@@ -140,7 +142,7 @@ function EquipmentRepair() {
         field: "Date",
         headerName: "วันที่และเวลา",
         width: 170,
-        valueFormatter: (params) => format(new Date(params?.value), "P hh:mm a"),
+        valueFormatter: (params) => format(new Date(params?.value), "dd/MM/yyyy"),
       },
     {
       field: "LibrarianName",
