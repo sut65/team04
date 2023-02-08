@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 	"github.com/team04/entity"
 )
@@ -50,7 +51,10 @@ func CreateBookPurchasing(c *gin.Context) { // c รับข้อมูลม�
 		AuthorName:   bookpurchasing.AuthorName,
 		Amount:       bookpurchasing.Amount,
 	}
-
+	if _, err := govalidator.ValidateStruct(bookpurchasing); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 	// 18: บันทึก
 	if err := entity.DB().Create(&BP).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

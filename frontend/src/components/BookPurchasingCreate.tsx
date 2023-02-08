@@ -40,6 +40,7 @@ function BookPurchasingCreate() {
   const [bookcategory, setBookCategory] = useState<BookCategoryInterface[]>([]);
   const [publisher, setPublisher] = useState<PublisherInterface[]>([]);
   const [librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
+  const [messege, setmessege] = useState("");
 
   const handleClose = (
     event?: React.SyntheticEvent | Event,
@@ -112,8 +113,11 @@ function BookPurchasingCreate() {
         if (res.data) {
           setSuccess(true);
           //   getPlanning();
+          setmessege("บันทึกข้อมูลสำเร็จ");
+          setError(false);
         } else {
           setError(true);
+          setmessege("บันทึกข้อมูลไม่สำเร็จ " + res.error);
         }
       });
   }
@@ -148,6 +152,8 @@ function BookPurchasingCreate() {
         console.log(res.data);
         if (res.data) {
           setBookCategory(res.data);
+        } else {
+          console.log(res.err);
         }
       });
   };
@@ -182,13 +188,13 @@ function BookPurchasingCreate() {
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert onClose={handleClose} severity="success">
-          บันทึกข้อมูลสำเร็จ
+          {messege}
         </Alert>
       </Snackbar>
 
       <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error">
-          บันทึกข้อมูลไม่สำเร็จ
+          {messege}
         </Alert>
       </Snackbar>
 
@@ -235,16 +241,19 @@ function BookPurchasingCreate() {
                 value={bookpurchasing.BookCategoryID}
                 onChange={handleChange}
                 inputProps={{
-                  name: "BookCategoryID", //เอาไว้เข้าถึงข้อมูลแพลนนิ่งไอดี
+                  name: "BookCategoryID", //เอาไว้เข้าถึงข้อมูล
                 }}
               >
                 {bookcategory.map(
                   (
                     item: BookCategoryInterface //map
                   ) => (
-                    <MenuItem value={item.ID} key={item.ID}>
+                    <option value={item.ID} key={item.ID}>
                       {item.Name}
-                    </MenuItem> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
+                    </option>
+                    // <MenuItem value={item.ID} key={item.ID}>
+                    //   {item.Name}
+                    // </MenuItem> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
                   )
                 )}
               </Select>

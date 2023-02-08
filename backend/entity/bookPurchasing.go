@@ -3,6 +3,7 @@ package entity
 import (
 	"time"
 
+	"github.com/asaskevich/govalidator"
 	"gorm.io/gorm"
 )
 
@@ -40,10 +41,10 @@ type Publisher struct {
 
 type BookPurchasing struct {
 	gorm.Model
-	BookName   string
-	AuthorName string
-	Amount     uint
-	Date       time.Time
+	BookName   string    `valid:"required~BookName cannot be blank"`
+	AuthorName string    `valid:"required~Author cannot be blank"`
+	Amount     uint      `valid:"required~ข้อมูลจำนวนไม่ถูกต้อง"`
+	Date       time.Time `valid:"Past~วันที่และเวลาต้องไม่เป็นอดีต"`
 
 	LibrarianID *uint
 	Librarian   Librarian `gorm:"references:id;"`
@@ -56,4 +57,13 @@ type BookPurchasing struct {
 
 	BorrowBooks []BorrowBook `gorm:"foreignKey:BookPurchasingID"`
 	BookRepairs []BookRepair `gorm:"foreignKey:BookPurchasingID"`
+}
+
+// ฟังก์ชันที่จะใช่ในการ validation EntryTime
+func init() {
+	govalidator.CustomTypeTagMap.Set("Past", func(i interface{}, context interface{}) bool {
+		t := i.(time.Time)
+		return t.After(time.Now().Add(time.Minute*-2)) || t.Equal(time.Now())
+		//return t.Before(time.Now())
+	})
 }
