@@ -13,24 +13,23 @@ func TestBorrowEquipmentCorrect(t *testing.T) {
 
 	// ข้อมูลถูกต้องหมดทุก field
 	borrowequipment := BorrowEquipment{
-		BorrowEquipment_Day:    time.Now().Add(24 * time.Hour),
+		BorrowEquipment_Day:    time.Now(),
 		Amount_BorrowEquipment: 2,
 	}
-	// ตรวจสอบด้วย govalidator
+
+	//ตรวจสอบด้วย govalidator
 	ok, err := govalidator.ValidateStruct(borrowequipment)
 
-	// ok ต้องเป็น true แปลว่าไม่มี error
+	//ok ต้องไม่เป็นค่า true แปลว่าต้องจับ err ได้
 	g.Expect(ok).To(BeTrue())
 
-	// err เป็นค่า nil แปลว่าไม่มี error
-	g.Expect(err).To(BeNil())
-
-	// fmt.Println(err)
+	// err ต้องไม่เป็นค่า nil แปลว่าต้องจับ error ได้
+	g.Expect(err).To((BeNil()))
 
 }
 
 // // ตรวจสอบจำนวนอุปกรณ์ต้องเป็นตัวเลขที่อยู่ในช่วง 1-5
-func TestCreditMustBeInRange(t *testing.T) {
+func TestAmountMustBeInRange(t *testing.T) {
 	g := NewGomegaWithT(t)
 
 	fixtures := []int{
