@@ -53,27 +53,27 @@ func TestBookRepairNotBePast(t *testing.T) {
 	})
 }
 
-// func TestBookRepairNotBeFuture(t *testing.T) {
-// 	g := NewGomegaWithT(t)
+func TestBookRepairNotBeFuture(t *testing.T) {
+	g := NewGomegaWithT(t)
 
-// 	t.Run("Check format ReturnBook", func(t *testing.T) {
-// 		bookrepair := BookRepair{
-// 			Date:       time.Now().Add(+24 * time.Hour), //ผิด,
-// 			Note: 		"Not OK",
-// 		}
-// 		// ตรวจสอบด้วย govalidator
-// 	ok, err := govalidator.ValidateStruct(bookrepair)
+	t.Run("Check format ReturnBook", func(t *testing.T) {
+		bookrepair := BookRepair{
+			Date:       time.Now().Add(+24 * time.Hour), //ผิด,
+			Note: 		"Not OK",
+		}
+		// ตรวจสอบด้วย govalidator
+	ok, err := govalidator.ValidateStruct(bookrepair)
 
-// 	// ok ต้องไม่เป็นค่า true แปลว่าต้องจับ error ได้
-// 	g.Expect(ok).ToNot(BeTrue())
+	// ok ต้องไม่เป็นค่า true แปลว่าต้องจับ error ได้
+	g.Expect(ok).ToNot(BeTrue())
 
-// 	// err ต้องไม่เป็นค่า nil แปลว่าต้องจับ error ได้
-// 	g.Expect(err).ToNot(BeNil())
+	// err ต้องไม่เป็นค่า nil แปลว่าต้องจับ error ได้
+	g.Expect(err).ToNot(BeNil())
 
-// 	// err.Error ต้องมี error message แสดงออกมา
-// 	g.Expect(err.Error()).To(Equal("วันที่แจ้งซ่อมหนังสือต้องไม่เป็นวันในอนาคต"))
-// 	})
-// }
+	// err.Error ต้องมี error message แสดงออกมา
+	g.Expect(err.Error()).To(Equal("วันที่แจ้งซ่อมหนังสือต้องไม่เป็นวันในอนาคต"))
+	})
+}
 
 func TestNoteNotBlank(t *testing.T) {
 	g := NewGomegaWithT(t)
