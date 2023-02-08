@@ -11,18 +11,19 @@ type BorrowEquipment struct {
 	gorm.Model
 	BorrowEquipment_Day    time.Time `valid:"Past~วันที่และเวลาต้องไม่เป็นอดีต,Future~วันที่และเวลาต้องไม่เป็นอนาคต"`
 	Amount_BorrowEquipment int       `valid:"required~ข้อมูลจำนวนไม่ถูกต้อง,range(1|5)~ข้อมูลจำนวนไม่ถูกต้อง"`
+	TrackingCheck          bool
 
 	// BorrowEquipment_Day    time.Time `valid:"required,past~ข้อมูลวันที่และเวลาที่บันทึกต้องไม่เป็นอดีต, future~ข้อมูลวันที่และเวลาที่บันทึกต้องไม่เป็นอนาคต"`
 	// Amount_BorrowEquipment int       `valid:"required,range(1|5)~ยืมได้ครั้งละ 1- 5 ชิ้น/1อุปกรณ์"`
 
 	LibrarianID *uint
-	Librarian   Librarian `gorm:"references:id;"`
+	Librarian   Librarian `gorm:"references:id" valid:"-"`
 
 	UserID *uint
-	User   User `gorm:"references:id;"`
+	User   User `gorm:"references:id" valid:"-"`
 
 	EquipmentPurchasingID *uint
-	EquipmentPurchasing   EquipmentPurchasing `gorm:"references:id;"`
+	EquipmentPurchasing   EquipmentPurchasing `gorm:"references:id" valid:"-"`
 
 	ReturnEquipments []ReturnEquipment `gorm:"foreignKey:BorrowEquipmentID"`
 }
