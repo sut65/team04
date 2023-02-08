@@ -14,12 +14,12 @@ type Preorder struct {
 	UserID *uint
 	User   User `gorm:"references:id;"`
 
-	Name       string
-	Price      int
-	Author     string
-	Edition    int
-	Year       string
-	Quantity   int
+	Name       string `valid:"required~Name cannot be blank"`
+	Price      int    `valid:"required~Price must greater than zero, range(1|9999)~Price must greater than zero,"`
+	Author     string `valid:"required~Author cannot be blank"`
+	Edition    int    `valid:"required~Edition must greater than zero, range(1|9999)~Edition must greater than zero,"`
+	Year       string `valid:"required~year cannot be blank"`
+	Quantity   int    `valid:"required~quantity must be 1-5, range(1|5)~quantity must be 1-5"`
 	Totalprice int
 
 	PaymentID *uint

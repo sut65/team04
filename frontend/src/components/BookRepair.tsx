@@ -1,20 +1,24 @@
-import React , { useCallback, useState, useEffect } from "react";
-import { Link as RouterLink } from "react-router-dom";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
-import Box from "@mui/material/Box";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import React from "react";
+import { useEffect, useState, useCallback } from "react";
+import { BookRepairInterface } from "../models/IBookRepair";
+import { DataGrid, GridRowsProp, GridColDef } from "@mui/x-data-grid";
 import { format } from "date-fns";
+import Container from "@mui/material/Container";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import { Link as RouterLink } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
+import { LibrarianInterface } from "../models/ILibrarian";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { IntroduceInterface } from "../models/IIntroduce";
-
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
 
@@ -23,14 +27,13 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-function Introduce() {
-  const [introduce, setIntroduce] = useState<IntroduceInterface[]>([]);
-  
-  const [opendelete, setOpenDelete] = useState(false);
-  const [selectcell, setSelectCell] = useState(Number);
+function BookRepair() {
+  const [bookrepair, setBookRepair] = useState<BookRepairInterface[]>([]);
   const [success, setSuccess] = useState(false); //จะยังไม่ให้แสดงบันทึกข้อมูล
   const [error, setError] = useState(false);
+  const [opendelete, setOpenDelete] = useState(false);
 
+  const [selectcell, setSelectCell] = useState(Number);
   const handleCellFocus = useCallback(
     (event: React.FocusEvent<HTMLDivElement>) => {
       const row = event.currentTarget.parentElement;
@@ -40,7 +43,6 @@ function Introduce() {
     },
     []
   );
-
   const handleClose = (
     event?: React.SyntheticEvent | Event,
 
@@ -55,13 +57,11 @@ function Introduce() {
 
     setError(false);
   };
-
   const handleClickDelete = () => {
     // setSelectCell(selectcell);
-    DeleteForfeit(selectcell);
+    DeleteBookRepair(selectcell);
     setOpenDelete(false);
   };
-
   const handleDelete = () => {
     setOpenDelete(true);
   };
@@ -69,9 +69,8 @@ function Introduce() {
   const handleDeleteClose = () => {
     setOpenDelete(false);
   };
-
-  const DeleteForfeit = async (id: Number) => {
-    const apiUrl = `http://localhost:8080/forfeit/${id}`;
+  const DeleteBookRepair = async (id: Number) => {
+    const apiUrl = `http://localhost:8080/bookrepair/${id}`;
     const requestOptions = {
       method: "DELETE",
 
@@ -94,12 +93,12 @@ function Introduce() {
       });
   };
 
-
-  const getIntroduce = async () => {
-    const apiUrl = "http://localhost:8080/introduce";
+  const GetAllBookRepair = async () => {
+    const apiUrl = "http://localhost:8080/bookrepair";
 
     const requestOptions = {
       method: "GET",
+
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`, //การยืนยันตัวตน
         "Content-Type": "application/json",
@@ -113,55 +112,52 @@ function Introduce() {
         console.log(res.data);
 
         if (res.data) {
-          setIntroduce(res.data);
+          setBookRepair(res.data);
         }
       });
   };
 
   const columns: GridColDef[] = [
-    { field: "ID", headerName: "ลำดับ", width: 50 },
-    { field: "Title", headerName: "ชื่อเรื่อง", width: 350 },
-    { field: "Author", headerName: "ชื่อผู้แต่ง", width: 250 },
-    { field: "ISBN", headerName: "ISBN", width: 150 },
-    { field: "Edition", headerName: "ตีพิมพ์ครั้งที่", width: 100 },
-    { field: "Pub_Name", headerName: "สำนักพิมพ์", width: 200 },
-    { field: "Pub_Year", headerName: "ปีที่พิมพ์", width: 80 },
+    { field: "ID", headerName: "ลำดับ", width: 20 },
     {
-      field: "BookTypeName",
-      headerName: "ประเภท",
-      width: 150,
+        field: "BookNameRepair", //getValue ชื่อห้ามซ้ำกัน
+        headerName: "ชื่อหนังสือที่แจ้งซ่อม",
+        width: 215,
+        valueGetter: (params) => {
+          return params.getValue(params.id, "BookPurchasing").BookName;
+        },
+      },
+    {
+      field: "BookRepairLevelName", //getValue ชื่อห้ามซ้ำกัน
+      headerName: "ระดับความเสียหายของหนังสือ",
+      width: 215,
       valueGetter: (params) => {
-        return params.getValue(params.id, "BookType").Name;
+        return params.getValue(params.id, "Level").Name;
       },
     },
+    { field: "Note", headerName: "หมายเหตุ", width: 250 },
     {
-      field: "ObjectiveName",
-      headerName: "วัตถุประสงค์",
-      width: 150,
-      valueGetter: (params) => {
-        return params.getValue(params.id, "Objective").Name;
+        field: "Date",
+        headerName: "วันที่และเวลา",
+        width: 170,
+        valueFormatter: (params) => format(new Date(params?.value), "P hh:mm a"),
       },
-    },
     {
-      field: "I_Date",
-      headerName: "วันที่แนะนำหนังสือ",
-      width: 200,
-      valueFormatter: (params) => format(new Date(params?.value), "P hh:mm a"),
-    },
-    {
-      field: "UserName",
-      headerName: "ผู้แนะนำหนังสือ",
+      field: "LibrarianName",
+      headerName: "ผู้บันทึกข้อมูล",
       width: 200,
       valueGetter: (params) => {
-        return params.getValue(params.id, "User").Name;
+        return params.getValue(params.id, "Librarian").Name;
       },
     },
+    
     {
       field: "actions",
-      headerName: "Actions",
+      headerName: "จัดการรายการแจ้งซ่อม",
       width: 175,
       renderCell: () => (
         <div>
+            &nbsp;
           <Button
             variant="contained"
             size="small"
@@ -170,53 +166,53 @@ function Introduce() {
           >
             แก้ไข
           </Button>
-          &nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;
           <Button
             onClick={handleDelete}
             variant="contained"
             size="small"
-            startIcon={<DeleteIcon />}
+            startIcon={<DeleteForeverIcon />}
             color="error"
           >
             ลบ
           </Button>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
         </div>
       ),
     },
   ];
 
   useEffect(() => {
-    getIntroduce();
+    GetAllBookRepair();
   }, []);
 
   return (
     <div>
       <Container maxWidth="xl">
-      <Snackbar
-            open={success}
-            autoHideDuration={6000}
-            onClose={handleClose}
-            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-          >
-            <Alert onClose={handleClose} severity="success">
-              ลบข้อมูลสำเร็จ
-            </Alert>
-          </Snackbar>
+        <Snackbar
+          open={success}
+          autoHideDuration={6000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        >
+          <Alert onClose={handleClose} severity="success">
+            ลบข้อมูลสำเร็จ
+          </Alert>
+        </Snackbar>
 
-          <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
-            <Alert onClose={handleClose} severity="error">
-              ลบข้อมูลไม่สำเร็จ
-            </Alert>
-          </Snackbar>
-
-          <Dialog
+        <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
+          <Alert onClose={handleClose} severity="error">
+            ลบข้อมูลไม่สำเร็จ
+          </Alert>
+        </Snackbar>
+        <Dialog
           open={opendelete}
           onClose={handleDeleteClose}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">
-            {"คุณต้องการลบใช่หรือไม่?"}
+            {"คุณต้องการลบรายการแจ้งซ่อมใช่หรือไม่?"}
           </DialogTitle>
 
           <DialogActions>
@@ -226,7 +222,6 @@ function Introduce() {
             </Button>
           </DialogActions>
         </Dialog>
-
         <Box
           display="flex"
           sx={{
@@ -235,32 +230,39 @@ function Introduce() {
         >
           <Box flexGrow={1}>
             <Typography
-              component="h2"
+              component="h1"
               variant="h6"
               color="primary"
               gutterBottom
             >
-              ข้อมูลการแนะนำหนังสือ
+              &nbsp;&nbsp;&nbsp;  รายการแจ้งซ่อมหนังสือ
             </Typography>
           </Box>
+
           <Box>
             <Button
               component={RouterLink}
-              to="/introduce/create"
+              to="/bookrepair/create"
               variant="contained"
               color="primary"
             >
-              แนะนำหนังสือ
+              แจ้งซ่อมหนังสือ
             </Button>
           </Box>
         </Box>
+
         <div style={{ height: 600, width: "100%", marginTop: "20px" }}>
           <DataGrid
-            rows={introduce}
+            rows={bookrepair}
             getRowId={(row) => row.ID}
             columns={columns}
-            pageSize={20}
-            rowsPerPageOptions={[40]}
+            pageSize={5}
+            componentsProps={{
+              cell: {
+                onFocus: handleCellFocus,
+              },
+            }}
+            rowsPerPageOptions={[5]}
           />
         </div>
       </Container>
@@ -268,4 +270,4 @@ function Introduce() {
   );
 }
 
-export default Introduce;
+export default BookRepair;

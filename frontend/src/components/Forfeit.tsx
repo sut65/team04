@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React , { useCallback, useState, useEffect } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -6,10 +6,94 @@ import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { format } from "date-fns";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert, { AlertProps } from "@mui/material/Alert";
+import DialogTitle from "@mui/material/DialogTitle";
 import { ForfeitInterface } from "../models/IForfeit";
+
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
+
+  ref
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 function Forfeit() {
   const [forfeit, setForfeit] = useState<ForfeitInterface[]>([]);
+
+  const [opendelete, setOpenDelete] = useState(false);
+  const [selectcell, setSelectCell] = useState(Number);
+  const [success, setSuccess] = useState(false); //จะยังไม่ให้แสดงบันทึกข้อมูล
+  const [error, setError] = useState(false);
+
+  const handleCellFocus = useCallback(
+    (event: React.FocusEvent<HTMLDivElement>) => {
+      const row = event.currentTarget.parentElement;
+      const id = row!.dataset.id!;
+      const field = event.currentTarget.dataset.field!;
+      setSelectCell(Number(id));
+    },
+    []
+  );
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+
+    reason?: string
+  ) => {
+    console.log(reason);
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setSuccess(false);
+
+    setError(false);
+  };
+
+  const handleClickDelete = () => {
+    // setSelectCell(selectcell);
+    DeleteForfeit(selectcell);
+    setOpenDelete(false);
+  };
+
+  const handleDelete = () => {
+    setOpenDelete(true);
+  };
+
+  const handleDeleteClose = () => {
+    setOpenDelete(false);
+  };
+
+  const DeleteForfeit = async (id: Number) => {
+    const apiUrl = `http://localhost:8080/forfeit/${id}`;
+    const requestOptions = {
+      method: "DELETE",
+
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`, //การยืนยันตัวตน
+        "Content-Type": "application/json",
+      },
+    };
+
+    fetch(apiUrl, requestOptions)
+      .then((response) => response.json())
+
+      .then((res) => {
+        if (res.data) {
+          setSuccess(true);
+          window.location.reload();
+        } else {
+          setError(true);
+        }
+      });
+  };
+
 
   const getForfeit = async () => {
     const apiUrl = "http://localhost:8080/forfeit";
@@ -53,6 +137,14 @@ function Forfeit() {
         },
     },
     {
+      field: "Amount",
+      headerName: "ราคาหนังสือ",
+      width: 130,
+      valueGetter: (params) => {
+        return params.getValue(params.id, "ReturnBook").BorrowBook.BookPurchasing.Amount;
+      },
+  },
+    {
         field: "LostBookName",
         headerName: "การทำหนังสือหาย",
         width: 150,
@@ -78,20 +170,48 @@ function Forfeit() {
       },
     },
     { field: "Note", headerName: "หมายเหตุ", width: 250 },
+    { field: "ModulateNote", headerName: "การขอลดหย่อน", width: 250 },
     {
       field: "Pay_Date",
-      headerName: "วันที่และเวลา",
+      headerName: "วันที่และเวลาที่บันทึกค่าปรับ",
       width: 200,
       valueFormatter: (params) => format(new Date(params?.value), "P hh:mm a"),
     },
-      {
+    {
         field: "LibrarianName",
         headerName: "บรรณารักษ์ผู้บันทึก",
         width: 200,
         valueGetter: (params) => {
           return params.getValue(params.id, "Librarian").Name;
         },
-      },
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      width: 175,
+      renderCell: () => (
+        <div>
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={<EditIcon />}
+            color="success"
+          >
+            แก้ไข
+          </Button>
+          &nbsp;&nbsp;&nbsp;
+          <Button
+            onClick={handleDelete}
+            variant="contained"
+            size="small"
+            startIcon={<DeleteIcon />}
+            color="error"
+          >
+            ลบ
+          </Button>
+        </div>
+      ),
+    },
     ];
   
     useEffect(() => {
@@ -102,6 +222,41 @@ function Forfeit() {
     return (
       <div>
         <Container maxWidth="lg">
+          <Snackbar
+            open={success}
+            autoHideDuration={6000}
+            onClose={handleClose}
+            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          >
+            <Alert onClose={handleClose} severity="success">
+              ลบข้อมูลสำเร็จ
+            </Alert>
+          </Snackbar>
+
+          <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity="error">
+              ลบข้อมูลไม่สำเร็จ
+            </Alert>
+          </Snackbar>
+
+          <Dialog
+          open={opendelete}
+          onClose={handleDeleteClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"คุณต้องการลบใช่หรือไม่?"}
+          </DialogTitle>
+
+          <DialogActions>
+            <Button onClick={handleDeleteClose}>ยกเลิก</Button>
+            <Button onClick={handleClickDelete} autoFocus>
+              ตกลง
+            </Button>
+          </DialogActions>
+        </Dialog>
+
           <Box
             display="flex"
             sx={{

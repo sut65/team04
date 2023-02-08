@@ -39,6 +39,7 @@ function IntroduceCreate() {
 
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === "clickaway") {
@@ -69,48 +70,6 @@ function IntroduceCreate() {
       [name]: event.target.value,
     });
   };
-
-  const convertType = (data: string | number | undefined) => {
-    let val = typeof data === "string" ? parseInt(data) : data;
-    return val;
-  };
-
-  function submit() {
-    let data = {
-      Title: introduce.Title ?? "",
-      Author: introduce.Author ?? "",
-      ISBN: convertType(introduce.ISBN),
-      Edition: convertType(introduce.Edition),
-      Pub_Name: introduce.Pub_Name ?? "",
-      Pub_Year: introduce.Pub_Year ?? "",
-      BookTypeID: convertType(introduce.BookTypeID),
-      ObjectiveID: convertType(introduce.ObjectiveID),
-      I_Date: new Date(),
-      UserID: Number(localStorage.getItem("uid")),
-    };
-    console.log(data);
-
-    const apiUrl = "http://localhost:8080/introduce";
-    const requestOptionsPost = {
-      method: "POST", //เอาข้อมูลไปเก็บไว้ในดาต้าเบส
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        "Content-Type": "application/json",
-      },
-
-      body: JSON.stringify(data),
-    };
-
-    fetch(apiUrl, requestOptionsPost)
-      .then((response) => response.json())
-      .then((res) => {
-        if (res.data) {
-          setSuccess(true);
-        } else {
-          setError(true);
-        }
-      });
-  }
 
   const requestOptions = {
     method: "GET",
@@ -164,15 +123,65 @@ function IntroduceCreate() {
       });
   };
 
+  //ทำงานทุกครั้งที่เรารีเฟชหน้าจอ
+  //ไม่ให้รันแบบอินฟินิตี้ลูป
   useEffect(() => {
     getBookType();
     getObjective();
     getUsers();
   }, []);
 
+  const convertType = (data: string | number | undefined) => {
+    let val = typeof data === "string" ? parseInt(data) : data;
+    return val;
+  };
+
+  function submit() {
+    let data = {
+      Title: introduce.Title ?? "",
+      Author: introduce.Author ?? "",
+      ISBN: introduce.ISBN ?? "",
+      Edition: convertType(introduce.Edition),
+      Pub_Name: introduce.Pub_Name ?? "",
+      Pub_Year: introduce.Pub_Year ?? "",
+      BookTypeID: convertType(introduce.BookTypeID),
+      ObjectiveID: convertType(introduce.ObjectiveID),
+      I_Date: new Date(),
+      UserID: Number(localStorage.getItem("uid")),
+    };
+    console.log(data);
+
+    const apiUrl = "http://localhost:8080/introduce";
+    const requestOptionsPost = {
+      method: "POST", //เอาข้อมูลไปเก็บไว้ในดาต้าเบส
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify(data),
+    };
+
+    fetch(apiUrl, requestOptionsPost)
+    .then((response) => response.json())
+    .then((res) => {
+      console.log(res);
+      if (res.data) {
+        console.log("บันทึกได้")
+        setSuccess(true);
+        setErrorMessage("")
+      } else {
+        console.log("บันทึกไม่ได้")
+        setError(true);
+        setErrorMessage(res.error)
+      }
+    });
+}
+
   return (
     <Container maxWidth="md">
       <Snackbar
+        id="success"
         open={success}
         autoHideDuration={6000}
         onClose={handleClose}
@@ -183,9 +192,15 @@ function IntroduceCreate() {
         </Alert>
       </Snackbar>
 
-      <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
+      <Snackbar 
+        id="error"
+        open={error} 
+        autoHideDuration={6000} 
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        >
         <Alert onClose={handleClose} severity="error">
-          บันทึกข้อมูลไม่สำเร็จ
+          บันทึกข้อมูลไม่สำเร็จ : {errorMessage}
         </Alert>
       </Snackbar>
 
@@ -193,10 +208,10 @@ function IntroduceCreate() {
         <Box
           display="flex"
           sx={{
-            marginTop: 2,
+            marginTop: 2
           }}
         >
-          <Box sx={{ paddingX: 2, paddingY: 1 }}>
+          <Box sx={{ paddingX: 3, paddingY: 1 }}>
             <Typography
               component="h2"
               variant="h6"
@@ -245,7 +260,7 @@ function IntroduceCreate() {
               <TextField
                 id="ISBN"
                 variant="standard"
-                type="number"
+                type="string"
                 size="medium"
                 value={introduce.ISBN|| ""}
                 onChange={handleInputChange}
@@ -340,21 +355,6 @@ function IntroduceCreate() {
               </Select>
             </FormControl>
           </Grid>
-
-          {/* <Grid item xs={6}>
-            <FormControl fullWidth variant="standard">
-              <p>วันที่</p>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DatePicker
-                  value={PnDate}
-                  onChange={(newValue) => {
-                    setDate(newValue);
-                  }}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </LocalizationProvider>
-            </FormControl>
-          </Grid> */}
 
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">

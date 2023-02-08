@@ -7,6 +7,7 @@ export interface ForfeitInterface{
     Pay: number
 	Pay_Date: Date
 	Note:     string
+	ModulateNote:     string
 
 	ReturnBookID: number
 	ReturnBook:   ReturnBookInterface

@@ -14,116 +14,105 @@ import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { DatePicker } from "@mui/x-date-pickers";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useEffect, useState } from "react";
-import { BorrowEquipmentInterface } from "../models/IBorrowEquipment";
 import { EquipmentPurchasingInterface } from "../models/IEquipmentPurchasing";
-import { UserInterface } from "../models/IUser";
 import { LibrarianInterface } from "../models/ILibrarian";
+import { LevelInterface } from "../models/ILevel";
+import { EquipmentRepairInterface } from "../models/IEquipmentRepair";
+
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
+
   ref
 ) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
-function BorrowEquipmentCreate() {
-  const [BorrowEquipment_Day, setBorrowEquipment_Day] = useState<Date | null>();
-  const [borrowequipment, setBorrowEquipment] = useState<
-    Partial<BorrowEquipmentInterface>
-  >({}); //Partial ชิ้นส่วนเอาไว้เซทข้อมูลที่ละส่วน
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(false);
-  const [equipmentpurchasing, setEquipmentPurchasing] = useState<
-    EquipmentPurchasingInterface[]
-  >([]);
-  const [user, setUser] = useState<UserInterface[]>([]);
-  const [librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
-  const [errorMessage, setErrorMessage] = useState("");
 
+function EquipmentRepairCreate() {
+  const [date, setDate] = useState<Date | null>();
+  const [equipmentrepair, setEquipmentRepair] = useState<
+    Partial<EquipmentRepairInterface>
+  >({}); //Partial ชิ้นส่วนเอาไว้เซทข้อมูลที่ละส่วน
+  const [success, setSuccess] = useState(false); //จะยังไม่ให้แสดงบันทึกข้อมูล
+  const [error, setError] = useState(false);
+  const [level, setLevel] = useState<LevelInterface[]>([]);
+  const [equipmentpurchasing, setEquipmentPurchasing] = useState<EquipmentPurchasingInterface[]>([]);
+  const [librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
 
   const handleClose = (
     event?: React.SyntheticEvent | Event,
+
     reason?: string
   ) => {
+    console.log(reason);
     if (reason === "clickaway") {
       return;
     }
+
     setSuccess(false);
+
     setError(false);
   };
+
   const handleInputChange = (
     event: React.ChangeEvent<{ id?: string; value: any }> //ชื่อคอมลัมน์คือ id และค่าที่จะเอามาใส่ไว้ในคอมลัมน์นั้นคือ value
   ) => {
-    const id = event.target.id as keyof typeof borrowequipment; //
+    const id = event.target.id as keyof typeof equipmentrepair; //
     // console.log(event.target.id);
     // console.log(event.target.value);
+
     const { value } = event.target;
-    setBorrowEquipment({ ...borrowequipment, [id]: value });
+
+    setEquipmentRepair({ ...equipmentrepair, [id]: value });
   };
+
   const handleChange = (
-    event: React.ChangeEvent<{ name?: string; value: any }> //ชื่อคอมลัมน์คือ id และค่าที่จะเอามาใส่ไว้ในคอมลัมน์นั้นคือ value
+    event: React.ChangeEvent<{ name?: string; value: any }> //ชื่อคอมลัมน์คือ name และค่าที่จะเอามาใส่ไว้ในคอมลัมน์นั้นคือ value
   ) => {
-    const name = event.target.name as keyof typeof borrowequipment; //
-    console.log(event.target.name);
-    console.log(event.target.value);
+    const name = event.target.name as keyof typeof equipmentrepair; //
+    console.log("name", event.target.name);
+    console.log("value", event.target.value);
+
     const { value } = event.target;
-    setBorrowEquipment({ ...borrowequipment, [name]: value });
+
+    setEquipmentRepair({ ...equipmentrepair, [name]: value });
   };
-  // const handleChangePlanning = (event: React.ChangeEvent<{ value: any }>) => {
-  //   //ตัวแปรชื่อ event
-  //   console.log(event.target.value);
-  //   setPlanningID(event.target.value);
-  // };
-  const convertType = (data: string | number | undefined) => {
-    let val = typeof data === "string" ? Number(data) : data; //Number(data)
-    return val;
-  };
+
   function submit() {
     let data = {
       //เก็บข้อมูลที่จะเอาไปเก็บในดาต้าเบส
-      BorrowEquipment_Day: BorrowEquipment_Day,
-      Amount_BorrowEquipment:
-        Number(borrowequipment.Amount_BorrowEquipment) ?? "",
-      UserID: Number(borrowequipment.UserID),
-      EquipmentPurchasingID: Number(borrowequipment.EquipmentPurchasingID),
+      EquipmentPurchasingID: Number(equipmentrepair.EquipmentPurchasingID),
+      LevelID: Number(equipmentrepair.LevelID),
+      Date: new Date(),
+      Note: String(equipmentrepair.Note) ?? "",
       LibrarianID: Number(localStorage.getItem("nid")),
     };
     console.log(data);
-    const apiUrl = "http://localhost:8080/borrowEquipment";
+
+    const apiUrl = "http://localhost:8080/equipmentrepair";
     const requestOptions = {
       method: "POST", //เอาข้อมูลไปเก็บไว้ในดาต้าเบส
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`, //การยืนยันตัวตน
         "Content-Type": "application/json",
       },
+
       body: JSON.stringify(data),
     };
 
-    // fetch(`${apiUrl}/examschedules`, requestOptionsPost)
-    // .then((response) => response.json())
-    // .then((res) => {
-    //   if (res.data) {
-    //     setSuccess(true);
-    //     setErrorMessage("");
-    //   } else {
-    //     setError(true);
-    //     setErrorMessage(res.error);
-    //   }
-    // });
-
     fetch(apiUrl, requestOptions)
-      .then((response) => response.json())
+      .then((response) => response.json()) //มี then เพื่อรับ response มา
+
       .then((res) => {
         console.log(res);
         if (res.data) {
-          console.log("บันทึกได้")
           setSuccess(true);
-          setErrorMessage("")
+          //   getPlanning();
         } else {
-          console.log("บันทึกไม่ได้")
           setError(true);
-          setErrorMessage(res.error)
         }
       });
   }
@@ -134,21 +123,26 @@ function BorrowEquipmentCreate() {
       "Content-Type": "application/json",
     },
   };
-  const getLibrarian = async () => {
-    const apiUrl = "http://localhost:8080/librarian";
+  const GetAllLevel = async () => {
+    const apiUrl = "http://localhost:8080/level";
+
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
+
       .then((res) => {
         console.log(res.data);
         if (res.data) {
-          setLibrarian(res.data);
+          setLevel(res.data);
         }
       });
   };
-  const getEquipmentPurchasing = async () => {
+
+  const GetAllEquipmentPurchasing = async () => {
     const apiUrl = "http://localhost:8080/equipmentPurchasing";
+
     fetch(apiUrl, requestOptions)
-      .then((response) => response.json()) //เปลี่ยนจากเจสันเป็นจาว่าสคริปต์
+      .then((response) => response.json())
+
       .then((res) => {
         console.log(res.data);
         if (res.data) {
@@ -156,63 +150,47 @@ function BorrowEquipmentCreate() {
         }
       });
   };
-  const getUser = async () => {
-    const apiUrl = "http://localhost:8080/users";
+
+  const GetAllLibrarian = async () => {
+    const apiUrl = "http://localhost:8080/librarian";
+
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
+
       .then((res) => {
         console.log(res.data);
         if (res.data) {
-          setUser(res.data);
+          setLibrarian(res.data);
         }
       });
   };
   useEffect(() => {
     //ทำงานทุกครั้งที่เรารีเฟชหน้าจอ
     //ไม่ให้รันแบบอินฟินิตี้ลูป
-    getEquipmentPurchasing();
-    getLibrarian();
-    getUser();
+    GetAllEquipmentPurchasing();
+    GetAllLevel();
+    GetAllLibrarian();
   }, []);
+
   return (
     <Container maxWidth="md">
-      {/* <Snackbar 
-        open={success} 
-        autoHideDuration={6000} 
-        onClose={handleClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }} >
-          <Alert onClose={handleClose} severity="success">
-            บันทึกสำเร็จ
-          </Alert>
-        </Snackbar>
-        <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity="error">
-            บันทึกไม่สำเร็จ: {errorMessage}
-          </Alert>
-        </Snackbar> */}
       <Snackbar
-        id="success"
         open={success}
         autoHideDuration={6000}
         onClose={handleClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert onClose={handleClose} severity="success">
-        บันทึกสำเร็จ
+          บันทึกข้อมูลสำเร็จ
         </Alert>
       </Snackbar>
-      <Snackbar 
-        id="error"
-        open={error} 
-        autoHideDuration={6000} 
-        onClose={handleClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-        >
-        <Alert onClose={handleClose} severity="error">
-        บันทึกไม่สำเร็จ: {errorMessage}
 
+      <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error">
+          บันทึกข้อมูลไม่สำเร็จ
         </Alert>
       </Snackbar>
+
       <Paper>
         <Box
           display="flex"
@@ -227,96 +205,74 @@ function BorrowEquipmentCreate() {
               color="primary"
               gutterBottom
             >
-              เก็บข้อมูลการยืมอุปกรณ์
+              บันทึกการแจ้งซ่อมอุปกรณ์
             </Typography>
           </Box>
         </Box>
+
         <Divider />
-        <Grid container spacing={2} sx={{ padding: 1 }}>
+        <Grid container spacing={3} sx={{ padding: 2 }}>
           <Grid item xs={6}>
             <FormControl fullWidth variant="outlined">
-              <p>ชื่อ-นามสกุล สมาชิกห้องสมุด</p>
+              <b><p>ชื่ออุปกรณ์ที่แจ้งซ่อม</p></b>
+
               <Select
-                native
-                value={borrowequipment.UserID}
+                value={equipmentrepair.EquipmentPurchasingID}
                 onChange={handleChange}
                 inputProps={{
-                  name: "UserID",
+                  name: "EquipmentPurchasingID", //เอาไว้เข้าถึงข้อมูลแพลนนิ่งไอดี
                 }}
               >
                 <option aria-label="None" value="">
-                  กรุณาเลือกรายชื่อสมาชิก
-                </option>
-                {user.map((item: UserInterface) => (
-                  <option value={item.ID} key={item.ID}>
-                    {item.Name}
-                  </option>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={6}>
-            <FormControl fullWidth variant="outlined">
-              <p>รายการอุปกรณ์</p>
-              <Select
-                native
-                value={borrowequipment.EquipmentPurchasingID}
-                onChange={handleChange}
-                inputProps={{
-                  name: "EquipmentPurchasingID",
-                }}
-              >
-                <option aria-label="None" value="">
-                  กรุณาเลือกรายการอุปกรณ์
+                    กรุณาเลือกชื่ออุปกรณ์ที่จะแจ้งซ่อม
                 </option>
                 {equipmentpurchasing.map(
-                  (item: EquipmentPurchasingInterface) => (
-                    <option value={item.ID} key={item.ID}>
+                  (
+                    item: EquipmentPurchasingInterface //map
+                  ) => (
+                    <MenuItem value={item.ID} key={item.ID}>
                       {item.EquipmentName}
-                    </option>
+                    </MenuItem> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
                   )
                 )}
               </Select>
             </FormControl>
           </Grid>
+
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
-              <p>จำนวนอุปกรณ์</p>
-              <TextField
-                id="Amount_BorrowEquipment"
-                variant="standard"
-                type="number"
-                size="medium"
-                value={borrowequipment.Amount_BorrowEquipment || ""}
-                onChange={handleInputChange}
-              />
-            </FormControl>
-          </Grid>
-          <Grid item xs={6}>
-            <FormControl fullWidth variant="standard">
-              <p>วัน เวลา ที่ยืมอุปกรณ์</p>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DateTimePicker
-                  
-                  value={BorrowEquipment_Day}
-                  onChange={(newValue) => {
-                    setBorrowEquipment_Day(newValue);
-                  }}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </LocalizationProvider>
-            </FormControl>
-          </Grid>
-          <Grid item xs={6}>
-            <FormControl fullWidth variant="standard">
-              <p>บรรณารักษ์ผู้บันทึกข้อมูล</p>
+              <p>ระดับความเสียหายของอุปกรณ์</p>
+
               <Select
-                // defaultOpen={true}
+                value={equipmentrepair.LevelID}
+                onChange={handleChange}
+                inputProps={{
+                  name: "LevelID", //เอาไว้เข้าถึงข้อมูลแพลนนิ่งไอดี
+                }}
+              >
+                <option aria-label="None" value="">
+                    กรุณาเลือกระดับความเสียหายของอุปกรณ์
+                </option>
+                {level.map(
+                  (
+                    item: LevelInterface //map
+                  ) => (
+                    <MenuItem value={item.ID} key={item.ID}>
+                      {item.Name}
+                    </MenuItem> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
+                  )
+                )}
+              </Select>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={6}>
+            <FormControl fullWidth variant="standard">
+              <p>ผู้บันทึกข้อมูล</p>
+
+              <Select
                 disabled={true} //เป็นจางๆไม่ให้เปลี่ยน
-                // labelId="เลขบัตรประชาชน"
-                // id="เลขบัตรประชาชน"
                 value={localStorage.getItem("nid")}
-                // label="Name"
               >
                 {librarian.map(
                   (
@@ -330,21 +286,52 @@ function BorrowEquipmentCreate() {
               </Select>
             </FormControl>
           </Grid>
+          <Grid item xs={6}>
+            <FormControl fullWidth variant="standard">
+              <p>วันที่และเวลาบันทึกข้อมูล</p>
+
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DatePicker
+                  value={date}
+                  onChange={(newValue) => {
+                    setDate(newValue);
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={12}>
+            <FormControl fullWidth variant="standard">
+              <p>หมายเหตุ</p>
+              <TextField
+                id="Note"
+                variant="standard"
+                type="string"
+                size="medium"
+                value={equipmentrepair.Note || ""}
+                onChange={handleInputChange}
+              />
+            </FormControl>
+          </Grid>
+
           <Grid item xs={12}>
             <Button
               component={RouterLink}
-              to="/borrowEquipment"
+              to="/equipmentrepair"
               variant="contained"
             >
               กลับ
             </Button>
+
             <Button
               style={{ float: "right" }}
               onClick={submit}
               variant="contained"
               color="success"
             >
-              บันทึกข้อมูล
+              บันทึกการแจ้งซ่อมอุปกรณ์
             </Button>
           </Grid>
         </Grid>
@@ -352,4 +339,5 @@ function BorrowEquipmentCreate() {
     </Container>
   );
 }
-export default BorrowEquipmentCreate;
+
+export default EquipmentRepairCreate;

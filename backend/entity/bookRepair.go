@@ -10,7 +10,8 @@ type Level struct {
 	gorm.Model
 	Name string
 
-	BookRepairs []BookRepair `gorm:"foreignKey:LevelID"`
+	BookRepair []BookRepair `gorm:"foreignKey:LevelID"`
+	EquipmentRepair []EquipmentRepair  `gorm:"foreignKey:LevelID"`
 }
 
 type BookRepair struct {
@@ -20,10 +21,12 @@ type BookRepair struct {
 	BookPurchasing   BookPurchasing `gorm:"references:id;"`
 
 	LevelID *uint
-	Level   `gorm:"references:id;"`
+	Level   Level	`gorm:"references:id;"`
 
 	Date time.Time
 
+	Note	string
+
 	LibrarianID *uint
-	Librarian   `gorm:"references:id;"`
+	Librarian   Librarian	`gorm:"references:id;"`
 }

@@ -36,5 +36,5 @@ type EquipmentPurchasing struct {
 	Company   Company `gorm:"references:id;"`
 
 	BorrowEquipments []BorrowEquipment `gorm:"foreignKey:EquipmentPurchasingID"`
-	EquipmentRepairs []EquipmentRepair `gorm:"foreignKey:EquipmentPurchasingID"`
+	EquipmentRepair []EquipmentRepair `gorm:"foreignKey:EquipmentPurchasingID"`
 }

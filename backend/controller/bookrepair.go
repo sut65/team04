@@ -41,10 +41,11 @@ func CreateBookRepair(c *gin.Context) { // c รับข้อมูลมา�
 
 	//12: สร้าง bookrepair
 	br := entity.BookRepair{
-		BookPurchasing:		bookpurchasing,
-		Level: 				level,
-		Date: 				bookrepair.Date,
-		Librarian: 			librarian,
+		BookPurchasingID: bookrepair.BookPurchasingID,
+		LevelID:          bookrepair.LevelID,
+		Date:             bookrepair.Date,
+		Note:             bookrepair.Note,
+		LibrarianID:      bookrepair.LibrarianID,
 	}
 
 	//13: บันทึก
@@ -58,48 +59,48 @@ func CreateBookRepair(c *gin.Context) { // c รับข้อมูลมา�
 // GET bookRepair
 func GetAllBookRepair(c *gin.Context) {
 
-	var bookRepair []entity.BookRepair
+	var bookrepair []entity.BookRepair
 
-	if err := entity.DB().Model(&entity.BookRepair{}).Preload("BookPurchasing").Preload("Level").Preload("Librarian").Find(&bookRepair).Error; err != nil {
+	if err := entity.DB().Model(&entity.BookRepair{}).Preload("BookPurchasing").Preload("Level").Preload("Librarian").Find(&bookrepair).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": bookRepair})
+	c.JSON(http.StatusOK, gin.H{"data": bookrepair})
 }
 
 // GET bookRepair By ID
 func GetBookRepairByID(c *gin.Context) {
 
-	var bookRepair entity.BookRepair
+	var bookrepair entity.BookRepair
 
 	Id := c.Param("id") //id ที่เราตั้งไว้ใน main.go ที่อยู่หลัง : ตัวอย่าง >> /bookRepair/:id
-	if err := entity.DB().Model(&entity.BookRepair{}).Where("ID = ?", Id).Preload("BookPurchasing").Preload("Level").Preload("Librarian").Find(&bookRepair); err.RowsAffected == 0 {
+	if err := entity.DB().Model(&entity.BookRepair{}).Where("ID = ?", Id).Preload("BookPurchasing").Preload("Level").Preload("Librarian").Find(&bookrepair); err.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("BookRepairID :  Id%s not found.", Id)})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": bookRepair})
+	c.JSON(http.StatusOK, gin.H{"data": bookrepair})
 }
 
 // PATCH /bookPurchasing
 func UpdateBookRepair(c *gin.Context) {
-	var bookRepair entity.BookRepair
+	var bookrepair entity.BookRepair
 
-	if err := c.ShouldBindJSON(&bookRepair); err != nil {
+	if err := c.ShouldBindJSON(&bookrepair); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	if tx := entity.DB().Where("id = ?", bookRepair.ID).First(&entity.BookRepair{}); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "bookRepair not found"}) //เช็คว่ามีไอดีอยู่ในดาต้าเบสมั้ย
+	if tx := entity.DB().Where("id = ?", bookrepair.ID).First(&entity.BookRepair{}); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "bookrepair not found"}) //เช็คว่ามีไอดีอยู่ในดาต้าเบสมั้ย
 		return
 	}
-	if err := entity.DB().Save(&bookRepair).Error; err != nil {
+	if err := entity.DB().Save(&bookrepair).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": bookRepair})
+	c.JSON(http.StatusOK, gin.H{"data": bookrepair})
 }
 
 // DELETE bookRepair By id

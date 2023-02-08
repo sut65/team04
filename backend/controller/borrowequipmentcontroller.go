@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 	"github.com/team04/entity"
 )
@@ -48,6 +49,12 @@ func CreateBorrowEquipment(c *gin.Context) { // c รับข้อมูลม
 		BorrowEquipment_Day:    borrowequipment.BorrowEquipment_Day,    // โยงความสัมพันธ์กับ Entity วันเวลา
 		Librarian:              librarian,                              // โยงความสัมพันธ์กับ Entity Librarian
 
+		TrackingCheck: false,
+	}
+
+	if _, err := govalidator.ValidateStruct(borrowequipment); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	// 18: บันทึก
@@ -117,11 +124,19 @@ func UpdateBorrowEquipment(c *gin.Context) {
 
 // DELETE borrowequipment By id
 func DeleteBorrowEquipment(c *gin.Context) {
-	Id := c.Param("id")
-	if tx := entity.DB().Delete(&entity.BorrowEquipment{}, Id); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "borrow equipment ID not found"})
+	id := c.Param("id")
+	if tx := entity.DB().Exec("DELETE FROM borrow_equipments WHERE id = ?", id); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "borrow equipment not found"})
 		return
 	}
+	c.JSON(http.StatusOK, gin.H{"data": id})
+}
 
-	c.JSON(http.StatusOK, fmt.Sprintf("BorrowEquipmentID :  %s deleted.", Id))
+func ListBorrowEquipmentForTrackingCheck(c *gin.Context) {
+	var borrowequipment []entity.BorrowEquipment
+	if err := entity.DB().Model(&entity.BorrowEquipment{}).Preload("User").Preload("EquipmentPurchasing").Preload("Librarian").Raw("SELECT * FROM borrow_equipments where tracking_check = false").Find(&borrowequipment).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": borrowequipment})
 }

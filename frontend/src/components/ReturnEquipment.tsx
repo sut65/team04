@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -11,13 +11,99 @@ import { DataGrid, GridColDef,GridRowsProp, GridRenderCellParams } from "@mui/x-
 import { UserInterface } from "../models/IUser";
 import { ReturnEquipmentInterface } from "../models/IReturnEquipment";
 import { EquipmentStatusInterface } from "../models/IEquipmentStatus";
+import MuiAlert, { AlertProps } from "@mui/material/Alert";
+import DialogTitle from "@mui/material/DialogTitle";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever'; // Icon ลบ
+import EditIcon from "@mui/icons-material/Edit";     // Icon เเก้ไข
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
+import Snackbar from "@mui/material/Snackbar";
 
 
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
 
-function ReturnEquipment(): JSX.Element {
+  ref
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
+function ReturnEquipment() {
   const [returnequipment, setReturnEquipment] = useState<ReturnEquipmentInterface[]>([]);
+  const [success, setSuccess] = useState(false); //จะยังไม่ให้แสดงบันทึกข้อมูล
+  const [error, setError] = useState(false);
+  const [opendelete, setOpenDelete] = useState(false);
+  const [selectcell, setSelectCell] = useState(Number);
 
-  const getReturnEquipment = async () => {
+  
+  const handleCellFocus = useCallback(
+    (event: React.FocusEvent<HTMLDivElement>) => {
+      const row = event.currentTarget.parentElement;
+      const id = row!.dataset.id!;
+      const field = event.currentTarget.dataset.field!;
+        setSelectCell(Number(id));
+      },
+    []
+  );
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+
+    reason?: string
+  ) => {
+    console.log(reason);
+    if (reason === "clickaway") {
+      return;
+    }
+    setSuccess(false);
+    setError(false);
+  };
+
+  const handleClickDelete = () => {
+      // setSelectCell(selectcell);
+      DeleteReturnEquipment(selectcell);
+      setOpenDelete(false);
+  };
+
+  
+
+  const handleDelete = () => {
+    setOpenDelete(true);
+};
+
+
+const handleDeleteClose = () => {
+    setOpenDelete(false);
+};
+
+const DeleteReturnEquipment = async (id: Number) => {
+  const apiUrl = `http://localhost:8080/returnEquipment/${id}`;
+  const requestOptions = {
+    method: "DELETE",
+
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`, //การยืนยันตัวตน
+      "Content-Type": "application/json",
+    },
+  };
+
+  fetch(apiUrl, requestOptions)
+    .then((response) => response.json())
+    .then((res) => {
+      if (res.data) {
+        setSuccess(true);
+        window.location.reload();
+      } else {
+        setError(true);
+      }
+    });
+  };
+
+
+
+  const GetAllReturnEquipment = async () => {
     const apiUrl = "http://localhost:8080/returnEquipment";
 
     const requestOptions = {
@@ -45,7 +131,7 @@ function ReturnEquipment(): JSX.Element {
       headerName: "ลำดับ", 
       align: "center",
       headerAlign: "center",
-      width: 20 
+      width: 70 
     },
 
     {
@@ -53,7 +139,7 @@ function ReturnEquipment(): JSX.Element {
       headerName: "ชื่อผู้ที่เคยยืมอุปกรณ์",
       align: "center",
       headerAlign: "center",
-      width: 180,
+      width: 200,
       valueGetter: (params) => {
         return params.getValue(params.id, "BorrowEquipment").User.Name;
       },
@@ -68,16 +154,6 @@ function ReturnEquipment(): JSX.Element {
         return params.getValue(params.id, "BorrowEquipment").EquipmentPurchasing.EquipmentName;
       },
     },
-    // {
-    //   field: "Return_Day",
-    //   headerName: "วันกำหนดคืน",
-    //   width: 200,
-    //   valueGetter: (params) => {
-    //     return params.getValue(params.id, "BorrowEquipment").Return_Day;
-    //   },
-    // },
-
-
     {
       field: "EquipmentStatusName",
       headerName: "สภาพอุปกรณ์",
@@ -114,47 +190,102 @@ function ReturnEquipment(): JSX.Element {
         return params.getValue(params.id, "Librarian").Name;
       },
     },
+    
+    {
+      field: "Edit",
+      headerName: "Edit",
+      align: "center",
+      headerAlign: "center",
+      width: 120,
+      renderCell: () => (
+        <div>
+            &nbsp;
+          <Button 
+            variant="contained" 
+            size="small" 
+            startIcon={<EditIcon />}
+            color="warning"
+          > 
+              Edit
+          </Button>
+        </div>
+      ),
+    },
+    {
+      field: "Delete",
+      headerName: "Delete",
+      align: "center",
+      headerAlign: "center",
+      width: 120,
+      renderCell: () => (
+        <div>
+          <Button
+            onClick={handleDelete}
+            variant="contained"
+            size="small"
+            startIcon={<DeleteForeverOutlinedIcon />}
+            color="error"
+          >
+              Delete 
+          </Button>
+        </div>
+      ),
+    },
 
-    // {
-    //   field: "Librarian.Name",
-    //   headerName: "บรรณารักษ์ผู้บันทึก",
-    //   width: 130,
-    //   align: "center",
-    //   headerAlign: "center",
-    //   renderCell: (params: GridRenderCellParams<any>) => {
-    //     return <>{params.row.Librarian.Name}</>;
-    //   },
-    // },
 
-    // { field: "Update", 
-    //   headerName: "บรรณารักษ์ผู้บันทึก",
-    //   align: "center",
-    //   headerAlign: "center",
-    //   width: 100,
-    //   valueGetter: (params) => {
-    //     return params.getValue(params.id, "EquipmentPurchasing").EquipmentName;
-    //   },
-    // },
-
-    // { field: "Delete", 
-    //   headerName: "บรรณารักษ์ผู้บันทึก",
-    //   align: "center",
-    //   headerAlign: "center",
-    //   width: 100 ,
-    //   valueGetter: (params) => {
-    //     return params.getValue(params.id, "EquipmentPurchasing").EquipmentName;
-    //   },
-    // },
   ];
 
 
   useEffect(() => {
-    getReturnEquipment();
+    GetAllReturnEquipment();
   }, []);
 
   return (
     <div>
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
+      <Snackbar
+          open={success}
+          autoHideDuration={6000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        >
+          <Alert onClose={handleClose} severity="success">
+            ลบข้อมูลสำเร็จ
+          </Alert>
+        </Snackbar>
+
+        <Snackbar 
+          open={error} 
+          autoHideDuration={6000} 
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+
+          >
+          <Alert onClose={handleClose} severity="error">
+            ลบข้อมูลไม่สำเร็จ
+          </Alert>
+        </Snackbar>
+
+        <Dialog
+          open={opendelete}
+          onClose={handleDeleteClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"คุณต้องการลบข้อมูลใช่หรือไม่?"}
+          </DialogTitle>
+
+          <DialogActions>
+            <Button onClick={handleDeleteClose}>
+              ยกเลิก
+            </Button>
+            <Button onClick={handleClickDelete} autoFocus>
+              ตกลง
+            </Button>
+          </DialogActions>
+        </Dialog>
+
         <Box
           display="flex"
           sx={{
@@ -189,8 +320,13 @@ function ReturnEquipment(): JSX.Element {
             rows={returnequipment}
             getRowId={(row) => row.ID}
             columns={columns}
-            pageSize={20}
-            rowsPerPageOptions={[20]}
+            pageSize={15}
+            componentsProps={{
+              cell: {
+                onFocus: handleCellFocus,
+              },
+            }}
+            rowsPerPageOptions={[5]}
           />
         </div>
       </Container>
