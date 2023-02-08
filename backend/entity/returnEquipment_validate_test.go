@@ -50,27 +50,27 @@ func TestReturnDetailNotBlank(t *testing.T) {
 
 }
 
-// // ตรวจสอบวันเวลาที่บันทึกต้องไม่เป็นเวลาในอดีต
-// func TestReturnEquipmentMustNotBePast(t *testing.T) {
-// 	g := NewGomegaWithT(t)
+// ตรวจสอบวันเวลาที่บันทึกต้องไม่เป็นเวลาในอดีต
+func TestReturnEquipmentMustNotBePast(t *testing.T) {
+	g := NewGomegaWithT(t)
 
-// 	returnequipment := ReturnEquipment{
-// 		Return_Day:    time.Now().Add(-24 * time.Hour), //ผิด
-// 		Return_Detail: "ปกติ",
-// 	}
+	returnequipment := ReturnEquipment{
+		Return_Day:    time.Now().Add(-24 * time.Hour), //ผิด
+		Return_Detail: "ปกติ",
+	}
 
-// 	// ตรวจสอบด้วย govalidator
-// 	ok, err := govalidator.ValidateStruct(returnequipment)
+	// ตรวจสอบด้วย govalidator
+	ok, err := govalidator.ValidateStruct(returnequipment)
 
-// 	// ok ต้องไม่เป็นค่า true แปลว่าต้องจับ error ได้
-// 	g.Expect(ok).ToNot(BeTrue())
+	// ok ต้องไม่เป็นค่า true แปลว่าต้องจับ error ได้
+	g.Expect(ok).ToNot(BeTrue())
 
-// 	// err ต้องไม่เป็นค่า nil แปลว่าต้องจับ error ได้
-// 	g.Expect(err).ToNot(BeNil())
+	// err ต้องไม่เป็นค่า nil แปลว่าต้องจับ error ได้
+	g.Expect(err).ToNot(BeNil())
 
-// 	// err.Error ต้องมี error message แสดงออกมา
-// 	g.Expect(err.Error()).To(Equal("วันที่และเวลาต้องไม่เป็นอดีต"))
-// }
+	// err.Error ต้องมี error message แสดงออกมา
+	g.Expect(err.Error()).To(Equal("วันที่และเวลาต้องไม่เป็นอดีต"))
+}
 
 // // ตรวจสอบวันเวลาที่บันทึกต้องไม่เป็นเวลาในอนาคต
 // func TestReturnEquipmenttNotBeFuture(t *testing.T) {
