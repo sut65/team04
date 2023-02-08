@@ -100,6 +100,7 @@ func main() {
 			protected.POST("/borrowEquipment", controller.CreateBorrowEquipment)
 			protected.PATCH("/borrowEquipment", controller.UpdateBorrowEquipment)
 			protected.DELETE("/borrowEquipment/:id", controller.DeleteBorrowEquipment)
+			protected.GET("/BorrowEquipmentForTrackingCheck", controller.ListBorrowEquipmentForTrackingCheck) // เช็คการยืม
 
 			// equipment status
 			protected.GET("/equipment_statuses", controller.ListEquipmentStatuses)
