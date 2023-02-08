@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 	"github.com/team04/entity"
 )
@@ -48,6 +49,12 @@ func CreateBookRepair(c *gin.Context) { // c รับข้อมูลมา�
 		LibrarianID:      bookrepair.LibrarianID,
 	}
 
+	//Validate
+	if _, err := govalidator.ValidateStruct(bookrepair); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	//13: บันทึก
 	if err := entity.DB().Create(&br).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -83,7 +90,7 @@ func GetBookRepairByID(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": bookrepair})
 }
 
-// PATCH /bookPurchasing
+// PATCH /bookrepair
 func UpdateBookRepair(c *gin.Context) {
 	var bookrepair entity.BookRepair
 
@@ -107,9 +114,9 @@ func UpdateBookRepair(c *gin.Context) {
 func DeleteBookRepair(c *gin.Context) {
 	Id := c.Param("id")
 	if tx := entity.DB().Delete(&entity.BookRepair{}, Id); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "bookRepair ID not found"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "bookrepair ID not found"})
 		return
 	}
 
-	c.JSON(http.StatusOK, fmt.Sprintf("BookRepairID :  Id%s deleted.", Id))
+	c.JSON(http.StatusOK, gin.H{"message": fmt.Sprintf("BookRepairID :  Id%s deleted.", Id)})
 }
