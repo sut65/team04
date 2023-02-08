@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 	"github.com/team04/entity"
 )
@@ -34,6 +35,12 @@ func CreateReturnEquipment(c *gin.Context) { // c รับข้อมูลม
 		return
 	}
 
+	// 11: อัพเดทคอลัมน์ TrackingCheck ว่าการคืนอุปกรณ์ถูกประเมินแล้ว
+	if tx := entity.DB().Model(&borrowequipment).Update("TrackingCheck", true); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "borrowequipment not found"})
+		return
+	}
+
 	// 15: ค้นหา librarian ด้วย id
 	if tx := entity.DB().Where("id = ?", returnequipment.LibrarianID).First(&librarian); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "librarian not found"})
@@ -48,6 +55,11 @@ func CreateReturnEquipment(c *gin.Context) { // c รับข้อมูลม
 		Return_Day:      returnequipment.Return_Day,    //ตั้งค่าฟิลด์ Return_Day
 		Return_Detail:   returnequipment.Return_Detail, //ตั้งค่าฟิลด์ Return_Detail
 
+	}
+
+	if _, err := govalidator.ValidateStruct(returnequipment); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	// 18: บันทึก
@@ -108,11 +120,10 @@ func UpdateReturnEquipment(c *gin.Context) {
 
 // DELETE return_equipments By id
 func DeleteReturnEquipment(c *gin.Context) {
-	Id := c.Param("id")
-	if tx := entity.DB().Delete(&entity.ReturnEquipment{}, Id); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "return equipment ID not found"})
+	id := c.Param("id")
+	if tx := entity.DB().Exec("DELETE FROM return_equipments WHERE id = ?", id); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "return equipment not found"})
 		return
 	}
-
-	c.JSON(http.StatusOK, fmt.Sprintf("ReturnEquipmentID :  %s deleted.", Id))
+	c.JSON(http.StatusOK, gin.H{"data": id})
 }
