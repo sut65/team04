@@ -42,6 +42,8 @@ function BookRepairCreate() {
   const [bookpurchasing, setBookPurchasing] = useState<BookPurchasingInterface[]>([]);
   const [librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
 
+  const [errorMessage, setErrorMessage] = useState("");
+
   const handleClose = (
     event?: React.SyntheticEvent | Event,
 
@@ -86,7 +88,7 @@ function BookRepairCreate() {
       //เก็บข้อมูลที่จะเอาไปเก็บในดาต้าเบส
       BookPurchasingID: Number(bookrepair.BookPurchasingID),
       LevelID: Number(bookrepair.LevelID),
-      Date: new Date(),
+      Date: date,
       Note: String(bookrepair.Note) ?? "",
       LibrarianID: Number(localStorage.getItem("nid")),
     };
@@ -104,17 +106,31 @@ function BookRepairCreate() {
     };
 
     fetch(apiUrl, requestOptions)
-      .then((response) => response.json()) //มี then เพื่อรับ response มา
-
+      .then((response) => response.json())
       .then((res) => {
         console.log(res);
         if (res.data) {
+          console.log("บันทึกได้")
           setSuccess(true);
-          //   getPlanning();
+          setErrorMessage("")
         } else {
+          console.log("บันทึกไม่ได้")
           setError(true);
+          setErrorMessage(res.error)
         }
       });
+    // fetch(apiUrl, requestOptions)
+    //   .then((response) => response.json()) //มี then เพื่อรับ response มา
+
+    //   .then((res) => {
+    //     console.log(res);
+    //     if (res.data) {
+    //       setSuccess(true);
+    //       //   getPlanning();
+    //     } else {
+    //       setError(true);
+    //     }
+    //   });
   }
   const requestOptions = {
     method: "GET",
@@ -174,7 +190,7 @@ function BookRepairCreate() {
 
   return (
     <Container maxWidth="md">
-      <Snackbar
+      {/* <Snackbar
         open={success}
         autoHideDuration={6000}
         onClose={handleClose}
@@ -184,10 +200,32 @@ function BookRepairCreate() {
           บันทึกข้อมูลสำเร็จ
         </Alert>
       </Snackbar>
-
+    
       <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error">
           บันทึกข้อมูลไม่สำเร็จ
+        </Alert>
+      </Snackbar> */}
+      <Snackbar
+        id="success"
+        open={success}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert onClose={handleClose} severity="success">
+        บันทึกสำเร็จ
+        </Alert>
+      </Snackbar>
+
+      <Snackbar 
+        id="error"
+        open={error} 
+        autoHideDuration={6000} 
+        onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error">
+        บันทึกไม่สำเร็จ: {errorMessage}
+
         </Alert>
       </Snackbar>
 
@@ -291,7 +329,7 @@ function BookRepairCreate() {
               <p>วันที่และเวลาบันทึกข้อมูล</p>
 
               <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DatePicker
+                <DateTimePicker
                   value={date}
                   onChange={(newValue) => {
                     setDate(newValue);
