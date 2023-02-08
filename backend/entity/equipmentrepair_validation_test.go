@@ -70,3 +70,23 @@ func TestEquipmentRepairNotBePast(t *testing.T) {
 	// err.Error ต้องมี error message แสดงออกมา
 	g.Expect(err.Error()).To(Equal("วันที่แจ้งซ่อมอุปกรณ์ต้องไม่เป็นวันในอดีต"))
 }
+
+func TestEquipmentRepairNotBeFuture(t *testing.T) {
+	g := NewGomegaWithT(t)
+
+		equipmentrepair := EquipmentRepair{
+			Date:       time.Now().Add(+24 * time.Hour), //ผิด,
+			Note: 		"Not OK",
+		}
+		// ตรวจสอบด้วย govalidator
+	ok, err := govalidator.ValidateStruct(equipmentrepair)
+
+	// ok ต้องไม่เป็นค่า true แปลว่าต้องจับ error ได้
+	g.Expect(ok).ToNot(BeTrue())
+
+	// err ต้องไม่เป็นค่า nil แปลว่าต้องจับ error ได้
+	g.Expect(err).ToNot(BeNil())
+
+	// err.Error ต้องมี error message แสดงออกมา
+	g.Expect(err.Error()).To(Equal("วันที่แจ้งซ่อมอุปกรณ์ต้องไม่เป็นวันในอนาคต"))
+}
