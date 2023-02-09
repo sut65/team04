@@ -108,3 +108,27 @@ func TestDateBePresent(t *testing.T) {
 		g.Expect(err.Error()).To(Equal("วันที่จัดซื้อหนังสือต้องเป็นปัจจุบัน กรุณาลองใหม่อีกครั้ง"))
 	}
 }
+
+// ตรวจสอบจำนวนหนังสือที่สั่งซื้อ
+func TestAmount(t *testing.T) {
+	g := NewGomegaWithT(t)
+
+	amount := BookPurchasing{
+		BookName:   "ภาษาไพธอน",
+		AuthorName: "อาจารย์กร",
+		Amount:     0,
+		Date:       time.Now(),
+	}
+	//ตรวจสอบด้วย govalidator
+	ok, err := govalidator.ValidateStruct(amount)
+
+	//ok ต้องไม่เป็นค่า true แปลว่าต้องจับ err ได้
+	g.Expect(ok).ToNot(BeTrue())
+
+	// err ต้องไม่เป็นค่า nil แปลว่าต้องจับ error ได้
+	g.Expect(err).ToNot(BeNil())
+
+	// err.Error ต้องมี error message แสดงออกมา
+	g.Expect(err.Error()).To(Equal("จำนวนหนังสือต้องมากกว่า 0 กรุณาลองใหม่อีกครั้ง"))
+
+}
