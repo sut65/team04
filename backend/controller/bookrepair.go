@@ -47,11 +47,6 @@ func CreateBookRepair(c *gin.Context) { // c รับข้อมูลมา�
 		Date:             bookrepair.Date,
 		Note:             bookrepair.Note,
 		LibrarianID:      bookrepair.LibrarianID,
-		BookPurchasingID: bookrepair.BookPurchasingID,
-		LevelID:          bookrepair.LevelID,
-		Date:             bookrepair.Date,
-		Note:             bookrepair.Note,
-		LibrarianID:      bookrepair.LibrarianID,
 	}
 
 	//Validate
@@ -100,7 +95,6 @@ func UpdateBookRepair(c *gin.Context) {
 	var bookrepair entity.BookRepair
 
 	if err := c.ShouldBindJSON(&bookrepair); err != nil {
-	if err := c.ShouldBindJSON(&bookrepair); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -117,7 +111,7 @@ func UpdateBookRepair(c *gin.Context) {
 }
 
 // DELETE bookRepair By id
-func DeleteBookRepair (c *gin.Context) {
+func DeleteBookRepair(c *gin.Context) {
 	Id := c.Param("id")
 	if tx := entity.DB().Delete(&entity.BookRepair{}, Id); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "bookrepair ID not found"})
