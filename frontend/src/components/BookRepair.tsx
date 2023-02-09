@@ -15,7 +15,7 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -84,7 +84,9 @@ function BookRepair() {
       .then((response) => response.json())
 
       .then((res) => {
-        if (res.data) {
+        console.log(res);
+
+        if (res) {
           setSuccess(true);
           window.location.reload();
         } else {
@@ -120,13 +122,13 @@ function BookRepair() {
   const columns: GridColDef[] = [
     { field: "ID", headerName: "ลำดับ", width: 20 },
     {
-        field: "BookNameRepair", //getValue ชื่อห้ามซ้ำกัน
-        headerName: "ชื่อหนังสือที่แจ้งซ่อม",
-        width: 215,
-        valueGetter: (params) => {
-          return params.getValue(params.id, "BookPurchasing").BookName;
-        },
+      field: "BookNameRepair", //getValue ชื่อห้ามซ้ำกัน
+      headerName: "ชื่อหนังสือที่แจ้งซ่อม",
+      width: 215,
+      valueGetter: (params) => {
+        return params.getValue(params.id, "BookPurchasing").BookName;
       },
+    },
     {
       field: "BookRepairLevelName", //getValue ชื่อห้ามซ้ำกัน
       headerName: "ระดับความเสียหายของหนังสือ",
@@ -137,11 +139,11 @@ function BookRepair() {
     },
     { field: "Note", headerName: "หมายเหตุ", width: 250 },
     {
-        field: "Date",
-        headerName: "วันที่และเวลา",
-        width: 170,
-        valueFormatter: (params) => format(new Date(params?.value), "P hh:mm a"),
-      },
+      field: "Date",
+      headerName: "วันที่และเวลา",
+      width: 170,
+      valueFormatter: (params) => format(new Date(params?.value), "dd/MM/yyyy"),
+    },
     {
       field: "LibrarianName",
       headerName: "ผู้บันทึกข้อมูล",
@@ -150,14 +152,14 @@ function BookRepair() {
         return params.getValue(params.id, "Librarian").Name;
       },
     },
-    
+
     {
       field: "actions",
       headerName: "จัดการรายการแจ้งซ่อม",
       width: 175,
       renderCell: () => (
         <div>
-            &nbsp;
+          &nbsp;
           <Button
             variant="contained"
             size="small"
@@ -166,7 +168,7 @@ function BookRepair() {
           >
             แก้ไข
           </Button>
-                &nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;
           <Button
             onClick={handleDelete}
             variant="contained"
@@ -176,7 +178,7 @@ function BookRepair() {
           >
             ลบ
           </Button>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         </div>
       ),
     },
@@ -235,7 +237,7 @@ function BookRepair() {
               color="primary"
               gutterBottom
             >
-              &nbsp;&nbsp;&nbsp;  รายการแจ้งซ่อมหนังสือ
+              &nbsp;&nbsp;&nbsp; รายการแจ้งซ่อมหนังสือ
             </Typography>
           </Box>
 

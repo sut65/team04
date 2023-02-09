@@ -15,8 +15,6 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -61,6 +59,7 @@ function BookPurchasing() {
   const handleClickDelete = () => {
     // setSelectCell(selectcell);
     DeleteBookPurchasing(selectcell);
+
     setOpenDelete(false);
   };
   const handleDelete = () => {
@@ -85,9 +84,14 @@ function BookPurchasing() {
       .then((response) => response.json())
 
       .then((res) => {
+        //ตรงนี้คือลบในดาต้าเบสสำเร็จแล้ว
         if (res.data) {
           setSuccess(true);
-          window.location.reload();
+          const remove = bookpurchasing.filter(
+            //กรองเอาข้อมูลที่ไม่ได้ลบ
+            (perv) => perv.ID !== selectcell
+          );
+          setBookPurchasing(remove);
         } else {
           setError(true);
         }
@@ -154,13 +158,13 @@ function BookPurchasing() {
     },
     {
       field: "Date",
-      headerName: "วันที่และเวลา",
+      headerName: "วันที่",
       width: 170,
-      valueFormatter: (params) => format(new Date(params?.value), "P hh:mm a"),
+      valueFormatter: (params) => format(new Date(params?.value), "P HH:mm:ss"),
     },
     {
       field: "actions",
-      headerName: "Actions",
+      headerName: "การจัดการข้อมูล",
       width: 175,
       renderCell: () => (
         <div>
@@ -168,7 +172,7 @@ function BookPurchasing() {
             variant="contained"
             size="small"
             startIcon={<EditIcon />}
-            color="success"
+            color="warning"
           >
             แก้ไข
           </Button>
@@ -256,7 +260,7 @@ function BookPurchasing() {
           </Box>
         </Box>
 
-        <div style={{ height: 600, width: "100%", marginTop: "20px" }}>
+        <div style={{ height: 500, width: "100%", marginTop: "20px" }}>
           <DataGrid
             rows={bookpurchasing}
             getRowId={(row) => row.ID}

@@ -33,14 +33,18 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 
 function BookRepairCreate() {
   const [date, setDate] = useState<Date | null>();
-  const [bookrepair, setBookRepair] = useState<
-    Partial<BookRepairInterface>
-  >({}); //Partial ชิ้นส่วนเอาไว้เซทข้อมูลที่ละส่วน
+  const [bookrepair, setBookRepair] = useState<Partial<BookRepairInterface>>(
+    {}
+  ); //Partial ชิ้นส่วนเอาไว้เซทข้อมูลที่ละส่วน
   const [success, setSuccess] = useState(false); //จะยังไม่ให้แสดงบันทึกข้อมูล
   const [error, setError] = useState(false);
   const [level, setLevel] = useState<LevelInterface[]>([]);
-  const [bookpurchasing, setBookPurchasing] = useState<BookPurchasingInterface[]>([]);
+  const [bookpurchasing, setBookPurchasing] = useState<
+    BookPurchasingInterface[]
+  >([]);
   const [librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
+
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleClose = (
     event?: React.SyntheticEvent | Event,
@@ -86,7 +90,7 @@ function BookRepairCreate() {
       //เก็บข้อมูลที่จะเอาไปเก็บในดาต้าเบส
       BookPurchasingID: Number(bookrepair.BookPurchasingID),
       LevelID: Number(bookrepair.LevelID),
-      Date: new Date(),
+      Date: date,
       Note: String(bookrepair.Note) ?? "",
       LibrarianID: Number(localStorage.getItem("nid")),
     };
@@ -104,17 +108,31 @@ function BookRepairCreate() {
     };
 
     fetch(apiUrl, requestOptions)
-      .then((response) => response.json()) //มี then เพื่อรับ response มา
-
+      .then((response) => response.json())
       .then((res) => {
         console.log(res);
         if (res.data) {
+          console.log("บันทึกได้");
           setSuccess(true);
-          //   getPlanning();
+          setErrorMessage("");
         } else {
+          console.log("บันทึกไม่ได้");
           setError(true);
+          setErrorMessage(res.error);
         }
       });
+    // fetch(apiUrl, requestOptions)
+    //   .then((response) => response.json()) //มี then เพื่อรับ response มา
+
+    //   .then((res) => {
+    //     console.log(res);
+    //     if (res.data) {
+    //       setSuccess(true);
+    //       //   getPlanning();
+    //     } else {
+    //       setError(true);
+    //     }
+    //   });
   }
   const requestOptions = {
     method: "GET",
@@ -174,7 +192,7 @@ function BookRepairCreate() {
 
   return (
     <Container maxWidth="md">
-      <Snackbar
+      {/* <Snackbar
         open={success}
         autoHideDuration={6000}
         onClose={handleClose}
@@ -184,10 +202,32 @@ function BookRepairCreate() {
           บันทึกข้อมูลสำเร็จ
         </Alert>
       </Snackbar>
-
+    
       <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error">
           บันทึกข้อมูลไม่สำเร็จ
+        </Alert>
+      </Snackbar> */}
+      <Snackbar
+        id="success"
+        open={success}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert onClose={handleClose} severity="success">
+          บันทึกสำเร็จ
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        id="error"
+        open={error}
+        autoHideDuration={6000}
+        onClose={handleClose}
+      >
+        <Alert onClose={handleClose} severity="error">
+          บันทึกไม่สำเร็จ: {errorMessage}
         </Alert>
       </Snackbar>
 
@@ -214,7 +254,9 @@ function BookRepairCreate() {
         <Grid container spacing={3} sx={{ padding: 2 }}>
           <Grid item xs={6}>
             <FormControl fullWidth variant="outlined">
-              <b><p>ชื่อหนังสือที่แจ้งซ่อม</p></b>
+              <b>
+                <p>ชื่อหนังสือที่แจ้งซ่อม</p>
+              </b>
 
               <Select
                 value={bookrepair.BookPurchasingID}
@@ -224,7 +266,7 @@ function BookRepairCreate() {
                 }}
               >
                 <option aria-label="None" value="">
-                    กรุณาเลือกชื่อหนังสือที่จะแจ้งซ่อม
+                  กรุณาเลือกชื่อหนังสือที่จะแจ้งซ่อม
                 </option>
                 {bookpurchasing.map(
                   (
@@ -251,7 +293,7 @@ function BookRepairCreate() {
                 }}
               >
                 <option aria-label="None" value="">
-                    กรุณาเลือกระดับความเสียหายของหนังสือ
+                  กรุณาเลือกระดับความเสียหายของหนังสือ
                 </option>
                 {level.map(
                   (
@@ -291,7 +333,7 @@ function BookRepairCreate() {
               <p>วันที่และเวลาบันทึกข้อมูล</p>
 
               <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DatePicker
+                <DateTimePicker
                   value={date}
                   onChange={(newValue) => {
                     setDate(newValue);
@@ -317,11 +359,7 @@ function BookRepairCreate() {
           </Grid>
 
           <Grid item xs={12}>
-            <Button
-              component={RouterLink}
-              to="/bookrepair"
-              variant="contained"
-            >
+            <Button component={RouterLink} to="/bookrepair" variant="contained">
               กลับ
             </Button>
 

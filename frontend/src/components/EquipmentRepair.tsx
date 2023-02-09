@@ -15,7 +15,7 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -28,7 +28,9 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 });
 
 function EquipmentRepair() {
-  const [equipmentrepair, setEquipmentRepair] = useState<EquipmentRepairInterface[]>([]);
+  const [equipmentrepair, setEquipmentRepair] = useState<
+    EquipmentRepairInterface[]
+  >([]);
   const [success, setSuccess] = useState(false); //จะยังไม่ให้แสดงบันทึกข้อมูล
   const [error, setError] = useState(false);
   const [opendelete, setOpenDelete] = useState(false);
@@ -84,7 +86,9 @@ function EquipmentRepair() {
       .then((response) => response.json())
 
       .then((res) => {
-        if (res.data) {
+        console.log(res);
+
+        if (res) {
           setSuccess(true);
           window.location.reload();
         } else {
@@ -120,13 +124,13 @@ function EquipmentRepair() {
   const columns: GridColDef[] = [
     { field: "ID", headerName: "ลำดับ", width: 20 },
     {
-        field: "EquipmentNameRepair", //getValue ชื่อห้ามซ้ำกัน
-        headerName: "ชื่ออุปกรณ์ที่แจ้งซ่อม",
-        width: 215,
-        valueGetter: (params) => {
-          return params.getValue(params.id, "EquipmentPurchasing").EquipmentName;
-        },
+      field: "EquipmentNameRepair", //getValue ชื่อห้ามซ้ำกัน
+      headerName: "ชื่ออุปกรณ์ที่แจ้งซ่อม",
+      width: 215,
+      valueGetter: (params) => {
+        return params.getValue(params.id, "EquipmentPurchasing").EquipmentName;
       },
+    },
     {
       field: "EquipmentRepairLevelName", //getValue ชื่อห้ามซ้ำกัน
       headerName: "ระดับความเสียหายของอุปกรณ์",
@@ -137,11 +141,11 @@ function EquipmentRepair() {
     },
     { field: "Note", headerName: "หมายเหตุ", width: 250 },
     {
-        field: "Date",
-        headerName: "วันที่และเวลา",
-        width: 170,
-        valueFormatter: (params) => format(new Date(params?.value), "P hh:mm a"),
-      },
+      field: "Date",
+      headerName: "วันที่และเวลา",
+      width: 170,
+      valueFormatter: (params) => format(new Date(params?.value), "dd/MM/yyyy"),
+    },
     {
       field: "LibrarianName",
       headerName: "ผู้บันทึกข้อมูล",
@@ -150,14 +154,14 @@ function EquipmentRepair() {
         return params.getValue(params.id, "Librarian").Name;
       },
     },
-    
+
     {
       field: "actions",
       headerName: "จัดการรายการแจ้งซ่อม",
       width: 175,
       renderCell: () => (
         <div>
-            &nbsp;
+          &nbsp;
           <Button
             variant="contained"
             size="small"
@@ -166,7 +170,7 @@ function EquipmentRepair() {
           >
             แก้ไข
           </Button>
-                &nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;
           <Button
             onClick={handleDelete}
             variant="contained"
@@ -176,7 +180,7 @@ function EquipmentRepair() {
           >
             ลบ
           </Button>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         </div>
       ),
     },
@@ -235,7 +239,7 @@ function EquipmentRepair() {
               color="primary"
               gutterBottom
             >
-              &nbsp;&nbsp;&nbsp;  รายการแจ้งซ่อมอุปกรณ์
+              &nbsp;&nbsp;&nbsp; รายการแจ้งซ่อมอุปกรณ์
             </Typography>
           </Box>
 

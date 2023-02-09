@@ -20,8 +20,8 @@ type Librarian struct {
 	Forfeit          []Forfeit         `gorm:"foreignKey:PaymentID"`
 	BorrowEquipments []BorrowEquipment `gorm:"foreignKey:LibrarianID"`
 	ReturnEquipments []ReturnEquipment `gorm:"foreignKey:LibrarianID"`
-	BookRepair		 []BookRepair      `gorm:"foreignKey:LibrarianID"`
-	EquipmentRepair	 []EquipmentRepair      `gorm:"foreignKey:LibrarianID"`
+	BookRepair       []BookRepair      `gorm:"foreignKey:LibrarianID"`
+	EquipmentRepair  []EquipmentRepair `gorm:"foreignKey:LibrarianID"`
 
 	Preorder     []Preorder     `gorm:"foreignKey:LibrarianID"`
 	Confirmation []Confirmation `gorm:"foreignKey:LibrarianID"`
@@ -43,29 +43,38 @@ type Publisher struct {
 
 type BookPurchasing struct {
 	gorm.Model
-	BookName   string    `valid:"required~BookName cannot be blank"`
-	AuthorName string    `valid:"required~Author cannot be blank"`
-	Amount     uint      `valid:"required~ข้อมูลจำนวนไม่ถูกต้อง"`
-	Date       time.Time `valid:"Past~วันที่และเวลาต้องไม่เป็นอดีต"`
+	BookName   string    `valid:"required~กรุณากรอกชื่อหนังสือ"`
+	AuthorName string    `valid:"required~กรุณากรอกชื่อผู้แต่ง"`
+	Amount     uint      `valid:"required~จำนวนหนังสือต้องมากกว่า 0 กรุณาลองใหม่อีกครั้ง,MoreThanZero~จำนวนหนังสือต้องมากกว่า 0 กรุณาลองใหม่อีกครั้ง"`
+	Date       time.Time `valid:"present~วันที่จัดซื้อหนังสือต้องเป็นปัจจุบัน กรุณาลองใหม่อีกครั้ง"`
 
 	LibrarianID *uint
-	Librarian   Librarian `gorm:"references:id;"`
+	Librarian   Librarian `gorm:"references:id" valid:"-"`
 
 	BookCategoryID *uint
-	BookCategory   BookCategory `gorm:"references:id;"`
+	BookCategory   BookCategory `gorm:"references:id" valid:"-"`
 
 	PublisherID *uint
-	Publisher   Publisher `gorm:"references:id;"`
+	Publisher   Publisher `gorm:"references:id" valid:"-"`
 
 	BorrowBooks []BorrowBook `gorm:"foreignKey:BookPurchasingID"`
-	BookRepair []BookRepair `gorm:"foreignKey:BookPurchasingID"`
+	BookRepair  []BookRepair `gorm:"foreignKey:BookPurchasingID"`
 }
 
 // ฟังก์ชันที่จะใช่ในการ validation EntryTime
 func init() {
-	govalidator.CustomTypeTagMap.Set("Past", func(i interface{}, context interface{}) bool {
+	govalidator.CustomTypeTagMap.Set("present", func(i interface{}, context interface{}) bool {
 		t := i.(time.Time)
-		return t.After(time.Now().Add(time.Minute*-2)) || t.Equal(time.Now())
-		//return t.Before(time.Now())
+		return t.After(time.Now().Add(2-time.Minute)) && t.Before(time.Now().Add(2+time.Minute))
 	})
+
+	govalidator.CustomTypeTagMap.Set("MoreThanZero", func(i interface{}, context interface{}) bool {
+		t := i.(uint)
+		if t <= 0 {
+			return false
+		} else {
+			return true
+		}
+	})
+
 }
