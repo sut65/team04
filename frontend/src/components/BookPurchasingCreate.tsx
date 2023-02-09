@@ -13,7 +13,7 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { DatePicker } from "@mui/x-date-pickers";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useEffect, useState } from "react";
@@ -40,6 +40,7 @@ function BookPurchasingCreate() {
   const [bookcategory, setBookCategory] = useState<BookCategoryInterface[]>([]);
   const [publisher, setPublisher] = useState<PublisherInterface[]>([]);
   const [librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleClose = (
     event?: React.SyntheticEvent | Event,
@@ -86,7 +87,7 @@ function BookPurchasingCreate() {
       BookName: bookpurchasing.BookName ?? "",
       AuthorName: bookpurchasing.AuthorName ?? "",
       Amount: Number(bookpurchasing.Amount) ?? "",
-      Date: new Date(),
+      Date: date, //?.toISOString()
       BookCategoryID: Number(bookpurchasing.BookCategoryID),
       PublisherID: Number(bookpurchasing.PublisherID),
       LibrarianID: Number(localStorage.getItem("nid")),
@@ -105,15 +106,17 @@ function BookPurchasingCreate() {
     };
 
     fetch(apiUrl, requestOptions)
-      .then((response) => response.json()) //มี then เพื่อรับ response มา
-
+      .then((response) => response.json())
       .then((res) => {
         console.log(res);
         if (res.data) {
+          console.log("บันทึกได้");
           setSuccess(true);
-          //   getPlanning();
+          setErrorMessage("");
         } else {
+          console.log("บันทึกไม่ได้");
           setError(true);
+          setErrorMessage(res.error);
         }
       });
   }
@@ -176,19 +179,24 @@ function BookPurchasingCreate() {
   return (
     <Container maxWidth="md">
       <Snackbar
+        id="success"
         open={success}
         autoHideDuration={6000}
         onClose={handleClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert onClose={handleClose} severity="success">
-          บันทึกข้อมูลสำเร็จ
+          บันทึกสำเร็จ
         </Alert>
       </Snackbar>
-
-      <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
+      <Snackbar
+        id="error"
+        open={error}
+        autoHideDuration={6000}
+        onClose={handleClose}
+      >
         <Alert onClose={handleClose} severity="error">
-          บันทึกข้อมูลไม่สำเร็จ
+          บันทึกไม่สำเร็จ: {errorMessage}
         </Alert>
       </Snackbar>
 
@@ -232,25 +240,26 @@ function BookPurchasingCreate() {
               <p>ประเภทหนังสือ</p>
 
               <Select
+                native
                 value={bookpurchasing.BookCategoryID}
                 onChange={handleChange}
                 inputProps={{
                   name: "BookCategoryID", //เอาไว้เข้าถึงข้อมูลแพลนนิ่งไอดี
                 }}
               >
+                <option aria-label="None" value=""></option>
                 {bookcategory.map(
                   (
                     item: BookCategoryInterface //map
                   ) => (
-                    <MenuItem value={item.ID} key={item.ID}>
+                    <option value={item.ID} key={item.ID}>
                       {item.Name}
-                    </MenuItem> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
+                    </option> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
                   )
                 )}
               </Select>
             </FormControl>
           </Grid>
-
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
               <p>ชื่อผู้แต่ง</p>
@@ -270,19 +279,21 @@ function BookPurchasingCreate() {
               <p>สำนักพิมพ์</p>
 
               <Select
+                native
                 value={bookpurchasing.PublisherID}
                 onChange={handleChange}
                 inputProps={{
                   name: "PublisherID", //เอาไว้เข้าถึงข้อมูลแพลนนิ่งไอดี
                 }}
               >
+                <option aria-label="None" value=""></option>
                 {publisher.map(
                   (
                     item: PublisherInterface //map
                   ) => (
-                    <MenuItem value={item.ID} key={item.ID}>
+                    <option value={item.ID} key={item.ID}>
                       {item.Name}
-                    </MenuItem> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
+                    </option> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
                   )
                 )}
               </Select>
@@ -325,11 +336,10 @@ function BookPurchasingCreate() {
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth variant="standard">
-              <p>วันที่และเวลาบันทึกข้อมูล</p>
+              <p>วันที่บันทึกข้อมูล</p>
 
               <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DateTimePicker
-                  disabled
+                <DatePicker
                   value={date}
                   onChange={(newValue) => {
                     setDate(newValue);
