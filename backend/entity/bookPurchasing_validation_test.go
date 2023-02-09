@@ -53,3 +53,27 @@ func TestBookNameNotBlank(t *testing.T) {
 	// err.Error ต้องมี error message แสดงออกมา
 	g.Expect(err.Error()).To(Equal("กรุณากรอกชื่อหนังสือ"))
 }
+
+// ตรวจสอบค่าว่างของ AuthorName แล้วต้องเจอ Error
+func TestAuthorNameNotBlank(t *testing.T) {
+	g := NewGomegaWithT(t)
+
+	authorname := BookPurchasing{
+		BookName:   "ภาษาไพธอน",
+		AuthorName: "",
+		Amount:     70,
+		Date:       time.Now(),
+	}
+
+	// ตรวจสอบด้วย govalidator
+	ok, err := govalidator.ValidateStruct(authorname)
+
+	// ok ต้องไม่เป็นค่า true แปลว่าต้องจับ error ได้
+	g.Expect(ok).ToNot(BeTrue())
+
+	// err ต้องไม่เป็นค่า nil แปลว่าต้องจับ error ได้
+	g.Expect(err).ToNot(BeNil())
+
+	// err.Error ต้องมี error message แสดงออกมา
+	g.Expect(err.Error()).To(Equal("กรุณากรอกชื่อผู้แต่ง"))
+}
