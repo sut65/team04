@@ -13,7 +13,7 @@ import (
 func TestBookRepairCorrect(t *testing.T) {
 	g := NewGomegaWithT(t)
 
-	t.Run("Check format ReturnBook", func(t *testing.T) {
+	t.Run("Check format BookRepair", func(t *testing.T) {
 		bookrepair := BookRepair{
 			Date:       time.Now(),
 			Note: 		"Not OK",
@@ -34,7 +34,6 @@ func TestBookRepairCorrect(t *testing.T) {
 func TestBookRepairNotBePast(t *testing.T) {
 	g := NewGomegaWithT(t)
 
-	t.Run("Check format ReturnBook", func(t *testing.T) {
 		bookrepair := BookRepair{
 			Date:       time.Now().Add(-24 * time.Hour), //ผิด,
 			Note: 		"Not OK",
@@ -50,13 +49,11 @@ func TestBookRepairNotBePast(t *testing.T) {
 
 	// err.Error ต้องมี error message แสดงออกมา
 	g.Expect(err.Error()).To(Equal("วันที่แจ้งซ่อมหนังสือต้องไม่เป็นวันในอดีต"))
-	})
 }
 
 func TestBookRepairNotBeFuture(t *testing.T) {
 	g := NewGomegaWithT(t)
 
-	t.Run("Check format ReturnBook", func(t *testing.T) {
 		bookrepair := BookRepair{
 			Date:       time.Now().Add(+24 * time.Hour), //ผิด,
 			Note: 		"Not OK",
@@ -72,7 +69,6 @@ func TestBookRepairNotBeFuture(t *testing.T) {
 
 	// err.Error ต้องมี error message แสดงออกมา
 	g.Expect(err.Error()).To(Equal("วันที่แจ้งซ่อมหนังสือต้องไม่เป็นวันในอนาคต"))
-	})
 }
 
 func TestNoteNotBlank(t *testing.T) {

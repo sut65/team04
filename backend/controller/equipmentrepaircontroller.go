@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 	"github.com/team04/entity"
 )
@@ -36,6 +37,12 @@ func CreateEquipmentRepair(c *gin.Context) { // c รับข้อมูลม
 	//11: ค้นหา level ด้วย id
 	if tx := entity.DB().Where("id = ?", equipmentrepair.LevelID).First(&level); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "level not found"})
+		return
+	}
+
+	//Validate
+	if _, err := govalidator.ValidateStruct(equipmentrepair); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -107,9 +114,9 @@ func UpdateEquipmentRepair(c *gin.Context) {
 func DeleteEquipmentRepair(c *gin.Context) {
 	Id := c.Param("id")
 	if tx := entity.DB().Delete(&entity.EquipmentRepair{}, Id); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "equipmentRepair ID not found"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "equipmentrepair ID not found"})
 		return
 	}
 
-	c.JSON(http.StatusOK, fmt.Sprintf("EquipmentRepairID :  Id%s deleted.", Id))
+	c.JSON(http.StatusOK, gin.H{"message": fmt.Sprintf("EquipmentRepairID :  Id%s deleted.", Id)})
 }
