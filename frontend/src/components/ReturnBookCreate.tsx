@@ -84,12 +84,12 @@ function ReturnBookCreate() {
   function submit() {
     let data = {
       //เก็บข้อมูลที่จะเอาไปเก็บในดาต้าเบส
-      Current_Day: current_day,
-      Late_Number: Number(returnbook.Late_Number) ?? "",
-      Book_Condition: returnbook.Book_Condition ?? "",
-      LostBookID: Number(returnbook.LostBookID),
-      LibrarianID: Number(localStorage.getItem("nid")),
-      BorrowBookID: Number(returnbook.BorrowBookID),
+      Current_Day:      current_day,
+      Late_Number:      Number(returnbook.Late_Number) ?? "",
+      Book_Condition:   returnbook.Book_Condition ?? "",
+      LostBookID:       Number(returnbook.LostBookID),
+      LibrarianID:      Number(localStorage.getItem("nid")),
+      BorrowBookID:     Number(returnbook.BorrowBookID),
     };
     console.log(data);
 
@@ -213,7 +213,9 @@ function ReturnBookCreate() {
         id="error"
         open={error} 
         autoHideDuration={6000} 
-        onClose={handleClose}>
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
         <Alert onClose={handleClose} severity="error">
         บันทึกไม่สำเร็จ: {errorMessage}
 
@@ -245,7 +247,7 @@ function ReturnBookCreate() {
         <Divider />
 
 
-        <Box sx={{ bgcolor: '#FFF0F5' }} flexGrow={1}>
+        <Box sx={{ bgcolor: '#fce4ec' }} flexGrow={1}>
         <Grid container spacing={3} sx={{ padding: 2 }}>
           
         <Grid item xs={12}>
