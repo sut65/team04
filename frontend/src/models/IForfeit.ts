@@ -4,17 +4,18 @@ import { LibrarianInterface } from "./ILibrarian"
 
 
 export interface ForfeitInterface{
-    Pay: number
-	Pay_Date: Date
-	Note:     string
-	ModulateNote:     string
+	ID?: number
+    Pay?: number
+	Pay_Date?: Date
+	Note?:     string
+	ModulateNote?:     string
 
-	ReturnBookID: number
+	ReturnBookID?: number
 	ReturnBook:   ReturnBookInterface
 
-	PaymentID: number
+	PaymentID?: number
 	Payment:   PaymentInterface
 
-	LibrarianID: number
+	LibrarianID?: number
 	Librarian:   LibrarianInterface
 }
