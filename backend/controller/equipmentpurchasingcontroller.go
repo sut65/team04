@@ -103,14 +103,15 @@ func UpdateEquipmentPurchasing(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "equipmentpurchasing not found"}) //เช็คว่ามีไอดีอยู่ในดาต้าเบสมั้ย
 		return
 	}
-	if err := entity.DB().Save(&equipmentpurchasing).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
 	if _, err := govalidator.ValidateStruct(equipmentpurchasing); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	if err := entity.DB().Save(&equipmentpurchasing).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{"data": equipmentpurchasing})
 }
 

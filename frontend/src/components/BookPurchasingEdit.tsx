@@ -103,7 +103,7 @@ function EditBookPurchasing({ Cancle, Data }: BookPurchasing) {
       BookName: bookpurchasing.BookName ?? "",
       AuthorName: bookpurchasing.AuthorName ?? "",
       Amount: Number(bookpurchasing.Amount) ?? "",
-      Date: bookpurchasing.Date, //?.toISOString()
+      Date: date, //?.toISOString()
       BookCategoryID: Number(bookpurchasing.BookCategoryID),
       PublisherID: Number(bookpurchasing.PublisherID),
       LibrarianID: Number(localStorage.getItem("nid")),
@@ -128,6 +128,7 @@ function EditBookPurchasing({ Cancle, Data }: BookPurchasing) {
         if (res.data) {
           console.log("บันทึกได้");
           setSuccess(true);
+          //window.location.reload();
           setErrorMessage("");
         } else {
           console.log("บันทึกไม่ได้");

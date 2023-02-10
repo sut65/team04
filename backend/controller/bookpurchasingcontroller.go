@@ -104,11 +104,12 @@ func UpdateBookPurchasing(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "bookPurchasing not found"}) //เช็คว่ามีไอดีอยู่ในดาต้าเบสมั้ย
 		return
 	}
-	if err := entity.DB().Save(&bookPurchasing).Error; err != nil {
+	if _, err := govalidator.ValidateStruct(bookPurchasing); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	if _, err := govalidator.ValidateStruct(bookPurchasing); err != nil {
+
+	if err := entity.DB().Save(&bookPurchasing).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
