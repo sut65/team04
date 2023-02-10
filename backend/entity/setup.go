@@ -76,10 +76,10 @@ func SetupDatabase() {
 		Password: string(password),
 	})
 	db.Model(&User{}).Create(&User{
-		Name:     "จองกุก จอห์น",
+		Name:     "หมี แบร์",
 		Idcard:   "8236560890416",
 		Tel:      "085-6589421",
-		Email:    "Jungkook@gmail.com",
+		Email:    "MeeBear@gmail.com",
 		Password: string(password),
 	})
 	db.Model(&User{}).Create(&User{
@@ -93,12 +93,12 @@ func SetupDatabase() {
 	var montree User
 	var mumana User
 	var songkran User
-	var jungkook User
+	var MeeBear User
 	var bambam User
 	db.Raw("SELECT * FROM users WHERE email = ?", "montree@gmail.com").Scan(&montree)
 	db.Raw("SELECT * FROM users WHERE email = ?", "mumana@gmail.com").Scan(&mumana)
 	db.Raw("SELECT * FROM users WHERE email = ?", "Songkran@gmail.com").Scan(&songkran)
-	db.Raw("SELECT * FROM users WHERE email = ?", "Jungkook@gmail.com").Scan(&jungkook)
+	db.Raw("SELECT * FROM users WHERE email = ?", "MeeBear@gmail.com").Scan(&MeeBear)
 	db.Raw("SELECT * FROM users WHERE email = ?", "BamBam@gmail.com").Scan(&bambam)
 
 	//
@@ -110,7 +110,7 @@ func SetupDatabase() {
 		Password: string(password),
 	})
 	db.Model(&Librarian{}).Create(&Librarian{
-		Name:     "ธารภิรมณ์ โลนุช",
+		Name:     "ธารภิรมย์ โลนุช",
 		Tel:      "0912365478",
 		Email:    "thanphirom@gmail.com",
 		Password: string(password),
@@ -225,7 +225,7 @@ func SetupDatabase() {
 	db.Model(&EquipmentCategory{}).Create(&equipmentCategory1)
 
 	equipmentCategory2 := EquipmentCategory{
-		Name: "อุปกรณ์อิเล็กทรอนิกส์",
+		Name: "อุปกรณ์ไฟฟ้า",
 	}
 	db.Model(&EquipmentCategory{}).Create(&equipmentCategory2)
 
@@ -257,7 +257,7 @@ func SetupDatabase() {
 	db.Model(&Company{}).Create(&Company2)
 
 	Company3 := Company{
-		Name: "ซีพีเค.ไวท์ร์ด จำกัด",
+		Name: "ซีพีเค.ไวท์บอร์ด จำกัด",
 	}
 	db.Model(&Company{}).Create(&Company3)
 
@@ -269,7 +269,7 @@ func SetupDatabase() {
 	//
 	// จำลองตาราง EquipmentPurchasing ---ฟ้า---
 	EquipmentPurchasing1 := EquipmentPurchasing{
-		EquipmentName:     "ปากกาไวท์บอ์ด PILOT สีน้ำเงิน",
+		EquipmentName:     "ปากกาไวท์บอร์ด PILOT สีน้ำเงิน",
 		Amount:            50,
 		Date:              time.Now(),
 		EquipmentCategory: equipmentCategory1,
@@ -546,7 +546,7 @@ func SetupDatabase() {
 		BookPurchasing: bookPurchasing1,
 		Level:          level1,
 		Date:           time.Now(),
-		Note:       	"ชำรุด",
+		Note:           "ชำรุด",
 		Librarian:      sirivipa,
 	}
 	db.Model(&BookRepair{}).Create(&br1)
@@ -554,7 +554,7 @@ func SetupDatabase() {
 		BookPurchasing: bookPurchasing2,
 		Level:          level2,
 		Date:           time.Now(),
-		Note:       	"Not OK",
+		Note:           "Not OK",
 		Librarian:      thanphirom,
 	}
 	db.Model(&BookRepair{}).Create(&br2)
@@ -562,18 +562,18 @@ func SetupDatabase() {
 	//จำลองตาราง EquipmentRepair khanoon
 	er1 := EquipmentRepair{
 		EquipmentPurchasing: EquipmentPurchasing1,
-		Level:          level1,
-		Date:           time.Now(),
-		Note:       	"ชำรุด",
-		Librarian:      sirivipa,
+		Level:               level1,
+		Date:                time.Now(),
+		Note:                "ชำรุด",
+		Librarian:           sirivipa,
 	}
 	db.Model(&EquipmentRepair{}).Create(&er1)
 	er2 := EquipmentRepair{
 		EquipmentPurchasing: EquipmentPurchasing2,
-		Level:          level2,
-		Date:           time.Now(),
-		Note:       	"Not OK",
-		Librarian:      thanphirom,
+		Level:               level2,
+		Date:                time.Now(),
+		Note:                "Not OK",
+		Librarian:           thanphirom,
 	}
 	db.Model(&EquipmentRepair{}).Create(&er2)
 
