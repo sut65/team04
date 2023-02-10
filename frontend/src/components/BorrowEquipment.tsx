@@ -18,6 +18,7 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever'; // Icon ล�
 import EditIcon from "@mui/icons-material/Edit";     // Icon เเก้ไข
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
+import EditBorrowEquipment from "./BorrowEquipmentEdit";
 
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -33,16 +34,19 @@ function BorrowEquipment() {
   const [success, setSuccess] = useState(false); //จะยังไม่ให้แสดงบันทึกข้อมูล
   const [error, setError] = useState(false);
   const [opendelete, setOpenDelete] = useState(false);
-  const [selectcell, setSelectCell] = useState(Number);
+  const [openedit, setOpenEdit] = useState(false);
+
+  const [selectcellData, setSelectcellData] = useState<BorrowEquipmentInterface>();
 
   const handleCellFocus = useCallback(
     (event: React.FocusEvent<HTMLDivElement>) => {
       const row = event.currentTarget.parentElement;
       const id = row!.dataset.id!;
-      const field = event.currentTarget.dataset.field!;
-        setSelectCell(Number(id));
-      },
-    []
+      const b = borrowequipment.filter((v) => Number(v.ID) == Number(id));
+      console.log(b[0]);
+      setSelectcellData(b[0]);
+    },
+    [borrowequipment]
   );
 
   const handleClose = (
@@ -59,8 +63,8 @@ function BorrowEquipment() {
   };
 
   const handleClickDelete = () => {
-      // setSelectCell(selectcell);
-      DeleteBorrowEquipment(selectcell);
+      // selectcellData(selectcellData);
+      DeleteBorrowEquipment(Number(selectcellData?.ID));
       setOpenDelete(false);
   };
 
@@ -72,6 +76,14 @@ function BorrowEquipment() {
 
   const handleDeleteClose = () => {
       setOpenDelete(false);
+  };
+  
+  const handleEdit = () => {
+    setOpenEdit(true);
+  };
+
+  const handleEditClose = () => {
+    setOpenEdit(false);
   };
 
   const DeleteBorrowEquipment = async (id: Number) => {
@@ -188,6 +200,7 @@ function BorrowEquipment() {
         <div>
             &nbsp;
           <Button 
+            onClick={handleEdit}
             variant="contained" 
             size="small" 
             startIcon={<EditIcon />}
@@ -269,6 +282,20 @@ function BorrowEquipment() {
             <Button onClick={handleClickDelete} autoFocus>
               ตกลง
             </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog
+          open={openedit}
+          onClose={handleEditClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogActions>
+            <EditBorrowEquipment
+              Cancle={handleEditClose}
+              Data={selectcellData}
+            />
           </DialogActions>
         </Dialog>
 
