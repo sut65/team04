@@ -87,7 +87,7 @@ function BookPurchasingCreate() {
       BookName: bookpurchasing.BookName ?? "",
       AuthorName: bookpurchasing.AuthorName ?? "",
       Amount: Number(bookpurchasing.Amount) ?? "",
-      Date: date, //?.toISOString()
+      Date: date?.toISOString(),
       BookCategoryID: Number(bookpurchasing.BookCategoryID),
       PublisherID: Number(bookpurchasing.PublisherID),
       LibrarianID: Number(localStorage.getItem("nid")),
