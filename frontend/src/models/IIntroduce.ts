@@ -3,6 +3,7 @@ import { ObjectiveInterface } from "./IObjective"
 import { UserInterface } from "./IUser"
 
 export interface IntroduceInterface{
+	ID: number
     Title:    string
 	Author:   string
 	ISBN:     string
