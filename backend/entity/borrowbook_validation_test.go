@@ -9,7 +9,7 @@ import (
 )
 
 // ตรวจสอบข้อมูลต้องถูกต้องหมดทุก field
-func TestBorrowBookCorrect(t *testing.T) {
+func TestAllBorrowBookCorrect(t *testing.T) {
 	g := NewGomegaWithT(t)
 
 	borrowbook := BorrowBook{
@@ -111,7 +111,7 @@ func TestReturn_DayMustNotBePast(t *testing.T) {
 }
 
 // ตรวจสอบจำนวนครั้งที่ยืมหนังสือต้องเป็นตัวเลข 1-1000
-func TestBorb_Frequency(t *testing.T) {
+func TestBorb_FrequencyMustMoreThanZero(t *testing.T) {
 	g := NewGomegaWithT(t)
 
 	fixture := []int{
