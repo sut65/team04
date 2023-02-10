@@ -102,7 +102,7 @@ function EditEquipmentPurchasing({ Cancle, Data }: EditBookPurchasing) {
       ID: Number(equipmentpurchasing.ID),
       EquipmentName: equipmentpurchasing.EquipmentName ?? "",
       Amount: Number(equipmentpurchasing.Amount) ?? "",
-      Date: equipmentpurchasing.Date, //?.toISOString()
+      Date: date, //equipmentpurchasing.Date, //?.toISOString()
       EquipmentCategoryID: Number(equipmentpurchasing.EquipmentCategoryID),
       CompanyID: Number(equipmentpurchasing.CompanyID),
       LibrarianID: Number(localStorage.getItem("nid")),
@@ -128,6 +128,7 @@ function EditEquipmentPurchasing({ Cancle, Data }: EditBookPurchasing) {
         if (res.data) {
           console.log("บันทึกได้");
           setSuccess(true);
+          //window.location.reload();
           setErrorMessage("");
         } else {
           console.log("บันทึกไม่ได้");
