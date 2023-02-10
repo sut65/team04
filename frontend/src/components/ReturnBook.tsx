@@ -18,11 +18,11 @@ import { LibrarianInterface } from "../models/ILibrarian";
 import { BorrowBookInterface } from "../models/IBorrowBook";
 import { ReturnBookInterface } from "../models/IReturnBook";
 import { LostBookInterface } from "../models/ILostBook";
+import EditReturnBook from "./ReturnBookEdit";
 
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
-
   ref
 ) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -34,22 +34,24 @@ function ReturnBook() {
     const [success, setSuccess] = useState(false); //จะยังไม่ให้แสดงบันทึกข้อมูล
     const [error, setError] = useState(false);
     const [opendelete, setOpenDelete] = useState(false);
+    const [openedit, setOpenEdit] = useState(false);
 
-    const [selectcell, setSelectCell] = useState(Number);
+    const [selectcellData, setSelectcellData] = useState<ReturnBookInterface>();
     const handleCellFocus = useCallback(
       (event: React.FocusEvent<HTMLDivElement>) => {
         const row = event.currentTarget.parentElement;
-        const id = row!.dataset.id!;
-        const field = event.currentTarget.dataset.field!;
-          setSelectCell(Number(id));
-    },
-    []
-  );
+        const id = row?.dataset.id;
+        const b = returnbook.filter((v) => Number(v.ID) == Number(id));
+        console.log(b[0]);
+        setSelectcellData(b[0]);
+      },
+      [returnbook]
+    );
+
 
 
   const handleClose = (
     event?: React.SyntheticEvent | Event,
-
     reason?: string
   ) => {
     console.log(reason);
@@ -63,7 +65,7 @@ function ReturnBook() {
 
   const handleClickDelete = () => {
       // setSelectCell(selectcell);
-      DeleteReturnBook(selectcell);
+      DeleteReturnBook(Number(selectcellData?.ID));
       setOpenDelete(false);
   };
 
@@ -71,10 +73,16 @@ function ReturnBook() {
   const handleDelete = () => {
       setOpenDelete(true);
   };
+  const handleEdit = () => {
+    setOpenEdit(true);
+  };
 
 
   const handleDeleteClose = () => {
       setOpenDelete(false);
+  };
+  const handleEditClose = () => {
+    setOpenEdit(false);
   };
 
 
@@ -91,11 +99,15 @@ function ReturnBook() {
 
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
-
       .then((res) => {
+        //ลบในดาต้าเบสสำเร็จแล้ว
         if (res.data) {
           setSuccess(true);
-          window.location.reload();
+          const remove = returnbook.filter(
+            //กรองเอาข้อมูลที่ไม่ได้ลบ
+            (perv) => perv.ID !== selectcellData?.ID
+          );
+          setReturnBook(remove);
         } else {
           setError(true);
         }
@@ -138,6 +150,7 @@ function ReturnBook() {
         <div>
             &nbsp;
           <Button 
+            onClick={handleEdit}
             variant="contained" 
             size="small" 
             startIcon={<EditIcon />}
@@ -293,6 +306,23 @@ function ReturnBook() {
             </Button>
           </DialogActions>
         </Dialog>
+
+
+        <Dialog
+          open={openedit}
+          onClose={handleEditClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogActions>
+            <EditReturnBook
+              Cancle={handleEditClose}
+              Data={selectcellData}
+            />
+          </DialogActions>
+        </Dialog>
+
+
         <Box
           display="flex"
           sx={{
