@@ -55,7 +55,7 @@ func TestPreorderNameNotBlank(t *testing.T) {
 	g.Expect(err).ToNot(BeNil())
 
 	// err.Error ต้องมี error message แสดงออกมา
-	g.Expect(err.Error()).To(Equal("Name cannot be blank"))
+	g.Expect(err.Error()).To(Equal("กรุณากรอกชื่อหนังสือ"))
 }
 
 // ตรวจสอบราคาหนังสือ ต้องเป็นตัวเลขมากกว่า 0 - ถ้าไม่ตรงจะ error
@@ -86,7 +86,7 @@ func TestPreorderPriceNotZero(t *testing.T) {
 		g.Expect(err).ToNot(BeNil())
 
 		// err.Error ต้องมี error message แสดงออกมา
-		g.Expect(err.Error()).To(Equal("Price must greater than zero"))
+		g.Expect(err.Error()).To(Equal("ราคาหนังสือไม่ถูกต้อง"))
 
 	}
 }
@@ -115,7 +115,7 @@ func TestPreorderAuthorNotBlank(t *testing.T) {
 	g.Expect(err).ToNot(BeNil())
 
 	// err.Error ต้องมี error message แสดงออกมา
-	g.Expect(err.Error()).To(Equal("Author cannot be blank"))
+	g.Expect(err.Error()).To(Equal("กรุณากรอกชื่อผู้แต่งหนังสือ"))
 }
 
 // ตรวจสอบพิมพ์ครั้งที่ ต้องเป็นตัวเลขมากกว่า 0 - ถ้าไม่ตรงจะ error
@@ -146,7 +146,7 @@ func TestPreorderEditionNotZero(t *testing.T) {
 		g.Expect(err).ToNot(BeNil())
 
 		// err.Error ต้องมี error message แสดงออกมา
-		g.Expect(err.Error()).To(Equal("Edition must greater than zero"))
+		g.Expect(err.Error()).To(Equal("จำนวนครั้งที่พิมพ์ไม่ถูกต้อง"))
 
 	}
 }
@@ -175,7 +175,7 @@ func TestPreorderYearNotBlank(t *testing.T) {
 	g.Expect(err).ToNot(BeNil())
 
 	// err.Error ต้องมี error message แสดงออกมา
-	g.Expect(err.Error()).To(Equal("year cannot be blank"))
+	g.Expect(err.Error()).To(Equal("กรุณากรอกปีที่พิมพ์"))
 }
 
 // ตรวจสอบจำนวนเล่ม ต้องเป็นตัวเลข มากกว่า 0 น้อยกว่า 5 - ถ้าไม่ตรงจะ error
@@ -206,7 +206,40 @@ func TestPreorderQuantity(t *testing.T) {
 		g.Expect(err).ToNot(BeNil())
 
 		// err.Error ต้องมี error message แสดงออกมา
-		g.Expect(err.Error()).To(Equal("quantity must be 1-5"))
+		g.Expect(err.Error()).To(Equal("จำนวนหนังสือควรมีตั้งแต่ 1-5 เท่านั้น"))
+
+	}
+}
+
+// ตรวจสอบราคารวมทั้งหมด ต้องเป็นตัวเลขมากกว่า 0 - ถ้าไม่ตรงจะ error
+func TestPreorderTotalPriceNotZero(t *testing.T) {
+	g := NewGomegaWithT(t)
+
+	fixture := []int{
+		-1, 0, 10000}
+
+	for _, ttp := range fixture {
+		pr := Preorder{
+			Name:       "Css",
+			Price:      1,
+			Author:     "maprang",
+			Edition:    2,
+			Year:       "2010",
+			Quantity:   1,
+			Totalprice: ttp, //ผิด
+		}
+
+		//ตรวจสอบด้วย govalidator
+		ok, err := govalidator.ValidateStruct(pr)
+
+		//ok ต้องไม่เป็นค่า true แปลว่าต้องจับ err ได้
+		g.Expect(ok).ToNot(BeTrue())
+
+		// err ต้องไม่เป็นค่า nil แปลว่าต้องจับ error ได้
+		g.Expect(err).ToNot(BeNil())
+
+		// err.Error ต้องมี error message แสดงออกมา
+		g.Expect(err.Error()).To(Equal("ราคารวมทั้งหมดไม่ถูกต้อง"))
 
 	}
 }
