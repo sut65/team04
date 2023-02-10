@@ -14,13 +14,13 @@ type Preorder struct {
 	UserID *uint
 	User   User `gorm:"references:id;"`
 
-	Name       string `valid:"required~Name cannot be blank"`
-	Price      int    `valid:"required~Price must greater than zero, range(1|9999)~Price must greater than zero,"`
-	Author     string `valid:"required~Author cannot be blank"`
-	Edition    int    `valid:"required~Edition must greater than zero, range(1|9999)~Edition must greater than zero,"`
-	Year       string `valid:"required~year cannot be blank"`
-	Quantity   int    `valid:"required~quantity must be 1-5, range(1|5)~quantity must be 1-5"`
-	Totalprice int
+	Name       string `valid:"required~กรุณากรอกชื่อหนังสือ"`
+	Price      int    `valid:"required~ราคาหนังสือไม่ถูกต้อง, range(1|9999)~ราคาหนังสือไม่ถูกต้อง,"`
+	Author     string `valid:"required~กรุณากรอกชื่อผู้แต่งหนังสือ"`
+	Edition    int    `valid:"required~จำนวนครั้งที่พิมพ์ไม่ถูกต้อง, range(1|9999)~จำนวนครั้งที่พิมพ์ไม่ถูกต้อง,"`
+	Year       string `valid:"required~กรุณากรอกปีที่พิมพ์"`
+	Quantity   int    `valid:"required~จำนวนหนังสือควรมีตั้งแต่ 1-5 เท่านั้น, range(1|5)~จำนวนหนังสือควรมีตั้งแต่ 1-5 เท่านั้น"`
+	Totalprice int    `valid:"required~ราคารวมทั้งหมดไม่ถูกต้อง, range(1|9999)~ราคารวมทั้งหมดไม่ถูกต้อง,"`
 
 	PaymentID *uint
 	Payment   Payment `gorm:"references:id;"`
