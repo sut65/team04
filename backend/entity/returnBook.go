@@ -17,7 +17,7 @@ type LostBook struct {
 type ReturnBook struct {
 	gorm.Model
 	Current_Day    time.Time `valid:"present~วันที่คืนหนังสือต้องเป็นปัจจุบัน กรุณาลองใหม่อีกครั้ง"`
-	Late_Number    int       `valid:"MoreThanEqualZero~จำนวนวันเลยกำหนดคืนต้องเป็นตัวเลขมากกว่าหรือเท่ากับ 0"`
+	Late_Number    int       `valid:"MoreThanEqualZeroToOneThousand~จำนวนวันเลยกำหนดคืนต้องเป็นตัวเลขมากกว่าหรือเท่ากับ 0 - 1000"`
 	Book_Condition string    `valid:"required~กรุณากรอกข้อมูลสภาพหนังสือ"`
 	ForfeitCheck   bool
 
@@ -40,9 +40,12 @@ func init() {
 		return t.After(time.Now().Add(2-time.Minute)) && t.Before(time.Now().Add(2+time.Minute))
 	})
 
-	govalidator.CustomTypeTagMap.Set("MoreThanEqualZero", func(i interface{}, context interface{}) bool {
+	govalidator.CustomTypeTagMap.Set("MoreThanEqualZeroToOneThousand", func(i interface{}, context interface{}) bool {
 		t := i.(int)
 		if t < 0 {
+			return false
+		}
+		if t > 1000 {
 			return false
 		} else {
 			return true
