@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/asaskevich/govalidator"
@@ -90,24 +89,32 @@ func GetForfeit(c *gin.Context) {
 // DELETE /forfeit/:id
 func DeleteForfeit(c *gin.Context) {
 	id := c.Param("id")
-	if tx := entity.DB().Delete(&entity.Forfeit{}, id); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Forfeit ID not found"})
+	if tx := entity.DB().Exec("DELETE FROM forfeits WHERE id = ?", id); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Forfeit not found"})
 		return
 	}
 
-	c.JSON(http.StatusOK, fmt.Sprintf("ForfeitID :  id%s deleted.", id))
+	c.JSON(http.StatusOK, gin.H{"data": id})
 }
 
 // PATCH /forfeit
 func UpdateForfeit(c *gin.Context) {
+
 	var forfeit entity.Forfeit
+
 	if err := c.ShouldBindJSON(&forfeit); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if tx := entity.DB().Where("id = ?", forfeit.ID).First(&forfeit); tx.RowsAffected == 0 {
+	if tx := entity.DB().Where("id = ?", forfeit.ID).First(&entity.Forfeit{}); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "forfeit not found"})
+		return
+	}
+
+	// การ validate
+	if _, err := govalidator.ValidateStruct(forfeit); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
