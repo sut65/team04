@@ -1,4 +1,5 @@
 import React from "react";
+import EditBookPurchasing from "./BookPurchasingEdit";
 import { useEffect, useState, useCallback } from "react";
 import { BookPurchasingInterface } from "../models/IBookPurchasing";
 import { DataGrid, GridRowsProp, GridColDef } from "@mui/x-data-grid";
@@ -28,19 +29,24 @@ function BookPurchasing() {
   const [bookpurchasing, setBookPurchasing] = useState<
     BookPurchasingInterface[]
   >([]);
+
+  const [selectcellData, setSelectcellData] =
+    useState<BookPurchasingInterface>();
+
   const [success, setSuccess] = useState(false); //จะยังไม่ให้แสดงบันทึกข้อมูล
   const [error, setError] = useState(false);
   const [opendelete, setOpenDelete] = useState(false);
+  const [openedit, setOpenEdit] = useState(false);
 
-  const [selectcell, setSelectCell] = useState(Number);
   const handleCellFocus = useCallback(
     (event: React.FocusEvent<HTMLDivElement>) => {
       const row = event.currentTarget.parentElement;
-      const id = row!.dataset.id!;
-      const field = event.currentTarget.dataset.field!;
-      setSelectCell(Number(id));
+      const id = row?.dataset.id;
+      const b = bookpurchasing.filter((v) => Number(v.ID) == Number(id));
+      console.log(b[0]);
+      setSelectcellData(b[0]);
     },
-    []
+    [bookpurchasing]
   );
   const handleClose = (
     event?: React.SyntheticEvent | Event,
@@ -58,16 +64,22 @@ function BookPurchasing() {
   };
   const handleClickDelete = () => {
     // setSelectCell(selectcell);
-    DeleteBookPurchasing(selectcell);
+    DeleteBookPurchasing(Number(selectcellData?.ID));
 
     setOpenDelete(false);
   };
   const handleDelete = () => {
     setOpenDelete(true);
   };
+  const handleEdit = () => {
+    setOpenEdit(true);
+  };
 
   const handleDeleteClose = () => {
     setOpenDelete(false);
+  };
+  const handleEditClose = () => {
+    setOpenEdit(false);
   };
   const DeleteBookPurchasing = async (id: Number) => {
     const apiUrl = `http://localhost:8080/bookPurchasing/${id}`;
@@ -89,7 +101,7 @@ function BookPurchasing() {
           setSuccess(true);
           const remove = bookpurchasing.filter(
             //กรองเอาข้อมูลที่ไม่ได้ลบ
-            (perv) => perv.ID !== selectcell
+            (perv) => perv.ID !== selectcellData?.ID
           );
           setBookPurchasing(remove);
         } else {
@@ -128,7 +140,6 @@ function BookPurchasing() {
       field: "BookName",
       headerName: "ชื่อหนังสือ",
       width: 215,
-      editable: true,
     },
     {
       field: "BookCategoryName", //getValue ชื่อห้ามซ้ำกัน
@@ -169,6 +180,7 @@ function BookPurchasing() {
       renderCell: () => (
         <div>
           <Button
+            onClick={handleEdit}
             variant="contained"
             size="small"
             startIcon={<EditIcon />}
@@ -229,6 +241,20 @@ function BookPurchasing() {
             <Button onClick={handleClickDelete} autoFocus>
               ตกลง
             </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog
+          open={openedit}
+          onClose={handleEditClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogActions>
+            <EditBookPurchasing
+              Cancle={handleEditClose}
+              Data={selectcellData}
+            />
           </DialogActions>
         </Dialog>
         <Box
