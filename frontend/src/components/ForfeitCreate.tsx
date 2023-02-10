@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink , useParams} from "react-router-dom";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import Container from "@mui/material/Container";
@@ -31,6 +31,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 
 function ForfeitCreate() {
   //const classes = useStyles();
+  let { id } = useParams();
   const [Pay_Date, setPay_Date] = useState<Date | null>();
   const [returnBook, setReturnBook] = useState<ReturnBookInterface[]>([]);
   const [payment, setPayment] = useState<PaymentInterface[]>([]);
@@ -41,7 +42,41 @@ function ForfeitCreate() {
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+  // const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+  //   if (reason === "clickaway") {
+  //     return;
+  //   }
+
+  //   setSuccess(false);
+
+  //   setError(false);
+  // };
+
+  // const handleInputChange = (
+  //   event: React.ChangeEvent<{ id?: string; value: any }>
+  // ) => {
+  //   const id = event.target.id as keyof typeof ForfeitCreate;
+
+  //   const { value } = event.target;
+
+  //   setForfeit({ ...forfeit, [id]: value });
+  // };
+
+  // const handleChange = (
+  //   event: React.ChangeEvent<{ name?: string; value: any }>
+  // ) => {
+  //   const name = event.target.name as keyof typeof forfeit;
+  //   setForfeit({
+  //     ...forfeit,
+  //     [name]: event.target.value,
+  //   });
+  // };
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+
+    reason?: string
+  ) => {
+    console.log(reason);
     if (reason === "clickaway") {
       return;
     }
@@ -52,9 +87,11 @@ function ForfeitCreate() {
   };
 
   const handleInputChange = (
-    event: React.ChangeEvent<{ id?: string; value: any }>
+    event: React.ChangeEvent<{ id?: string; value: any }> //ชื่อคอมลัมน์คือ id และค่าที่จะเอามาใส่ไว้ในคอมลัมน์นั้นคือ value
   ) => {
-    const id = event.target.id as keyof typeof ForfeitCreate;
+    const id = event.target.id as keyof typeof forfeit; //
+    // console.log(event.target.id);
+    // console.log(event.target.value);
 
     const { value } = event.target;
 
@@ -62,13 +99,15 @@ function ForfeitCreate() {
   };
 
   const handleChange = (
-    event: React.ChangeEvent<{ name?: string; value: any }>
+    event: React.ChangeEvent<{ name?: string; value: any }> //ชื่อคอมลัมน์คือ name และค่าที่จะเอามาใส่ไว้ในคอมลัมน์นั้นคือ value
   ) => {
-    const name = event.target.name as keyof typeof forfeit;
-    setForfeit({
-      ...forfeit,
-      [name]: event.target.value,
-    });
+    const name = event.target.name as keyof typeof forfeit; //
+    console.log("name", event.target.name);
+    console.log("value", event.target.value);
+
+    const { value } = event.target;
+
+    setForfeit({ ...forfeit, [name]: value });
   };
 
   const requestOptions = {
@@ -86,7 +125,7 @@ function ForfeitCreate() {
       .then((response) => response.json())
 
       .then((res) => {
-        console.log(res.data);
+        forfeit.LibrarianID = res.ID;
         if (res.data) {
           setLibrarian(res.data);
         } else {
@@ -137,7 +176,7 @@ function ForfeitCreate() {
 
   function submit() {
     let data = {
-      ReturnBookID: forfeit.ReturnBookID,
+      ReturnBookID: convertType(forfeit.ReturnBookID),
       Pay: convertType(forfeit.Pay),
       PaymentID: convertType(forfeit.PaymentID),
       Pay_Date: new Date(),
@@ -200,18 +239,18 @@ function ForfeitCreate() {
         </Alert>
       </Snackbar>
 
-      <Paper>
+      <Paper sx={{bgcolor: "#E0FFFF"}}>
         <Box
           display="flex"
           sx={{
-            marginTop: 2
+            bgcolor: "#4682B4", marginTop: 2
           }}
         >
           <Box sx={{ paddingX: 3, paddingY: 1 }}>
             <Typography
               component="h2"
               variant="h6"
-              color="primary"
+              color="#E0FFFF"
               gutterBottom
             >
               บันทึกการบันทึกค่าปรับ
@@ -221,7 +260,7 @@ function ForfeitCreate() {
 
         <Divider />
         
-        <Paper sx={{bgcolor: "#F0F8FF", spacing: 5, padding: 4, marginBottom: 1}}>
+        <Paper sx={{bgcolor: "#BFEFFF", spacing: 5, padding: 4, marginBottom: 1}}>
           
           ห้องสมุดได้คิดอัตราค่าปรับไว้ดังนี้ <br />
           &emsp;  - หนังสือทั่วไป ปรับวันละ 5 บาท ต่อเล่ม/วัน <br />
@@ -239,7 +278,9 @@ function ForfeitCreate() {
           <Grid item xs={12}>
             <FormControl fullWidth variant="standard">
               <Typography variant="inherit">
-                จำนวนรายการที่เหลือ {returnBook.length} รายการ
+                <Paper sx={{bgcolor: "#B0E0E6",  spacing: 3, padding: 2}}>
+                  จำนวนรายการที่เหลือ {returnBook.length} รายการ
+                </Paper>
               </Typography>
             </FormControl>
           </Grid>
