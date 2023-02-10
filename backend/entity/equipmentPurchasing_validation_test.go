@@ -51,3 +51,33 @@ func TestEquipmentNameNotBlank(t *testing.T) {
 	// err.Error ต้องมี error message แสดงออกมา
 	g.Expect(err.Error()).To(Equal("กรุณากรอกชื่ออุปกรณ์"))
 }
+
+// ตรวจสอบวันที่บันทึกข้อมูลต้องเป็นปัจจุบัน
+func TestDateinEquipmentBePresent(t *testing.T) {
+	g := NewGomegaWithT(t)
+
+	fixture := []time.Time{
+		time.Now().Add(+24 * time.Hour),
+		time.Now().Add(-24 * time.Hour),
+	}
+
+	for _, datetime := range fixture {
+		dateequipment := EquipmentPurchasing{
+			EquipmentName: "หูฟัง",
+			Amount:        50,
+			Date:          datetime,
+		}
+
+		// ตรวจสอบด้วย govalidator
+		ok, err := govalidator.ValidateStruct(dateequipment)
+
+		// ok ต้องไม่เป็นค่า true แปลว่าต้องจับ error ได้
+		g.Expect(ok).ToNot(BeTrue())
+
+		// err ต้องไม่เป็นค่า nil แปลว่าต้องจับ error ได้
+		g.Expect(err).ToNot(BeNil())
+
+		// err.Error ต้องมี error message แสดงออกมา
+		g.Expect(err.Error()).To(Equal("วันที่จัดซื้ออุปกรณ์ต้องเป็นปัจจุบัน กรุณาลองใหม่อีกครั้ง"))
+	}
+}
