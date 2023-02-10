@@ -20,6 +20,8 @@ import EditIcon from "@mui/icons-material/Edit";     // Icon เเก้ไข
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import Snackbar from "@mui/material/Snackbar";
+import EditReturnEquipment from "./ReturnEquipmentEdit";
+
 
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -35,17 +37,19 @@ function ReturnEquipment() {
   const [success, setSuccess] = useState(false); //จะยังไม่ให้แสดงบันทึกข้อมูล
   const [error, setError] = useState(false);
   const [opendelete, setOpenDelete] = useState(false);
-  const [selectcell, setSelectCell] = useState(Number);
+  const [selectcellData, setSelectcellData] = useState<ReturnEquipmentInterface>();
+  const [openedit, setOpenEdit] = useState(false);
 
   
   const handleCellFocus = useCallback(
     (event: React.FocusEvent<HTMLDivElement>) => {
       const row = event.currentTarget.parentElement;
       const id = row!.dataset.id!;
-      const field = event.currentTarget.dataset.field!;
-        setSelectCell(Number(id));
-      },
-    []
+      const b = returnequipment.filter((v) => Number(v.ID) == Number(id));
+      console.log(b[0]);
+      setSelectcellData(b[0]);
+    },
+    [returnequipment]
   );
 
   const handleClose = (
@@ -62,43 +66,54 @@ function ReturnEquipment() {
   };
 
   const handleClickDelete = () => {
-      // setSelectCell(selectcell);
-      DeleteReturnEquipment(selectcell);
+      // setselectcellData(selectcellData);
+      DeleteReturnEquipment(Number(selectcellData?.ID));
       setOpenDelete(false);
   };
 
-  
 
   const handleDelete = () => {
     setOpenDelete(true);
-};
-
-
-const handleDeleteClose = () => {
-    setOpenDelete(false);
-};
-
-const DeleteReturnEquipment = async (id: Number) => {
-  const apiUrl = `http://localhost:8080/returnEquipment/${id}`;
-  const requestOptions = {
-    method: "DELETE",
-
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`, //การยืนยันตัวตน
-      "Content-Type": "application/json",
-    },
   };
 
-  fetch(apiUrl, requestOptions)
-    .then((response) => response.json())
-    .then((res) => {
-      if (res.data) {
-        setSuccess(true);
-        window.location.reload();
-      } else {
-        setError(true);
-      }
-    });
+
+  const handleDeleteClose = () => {
+    setOpenDelete(false);
+  };
+
+  const handleEdit = () => {
+    setOpenEdit(true);
+  };
+
+  const handleEditClose = () => {
+    setOpenEdit(false);
+  };
+
+  const DeleteReturnEquipment = async (id: Number) => {
+    const apiUrl = `http://localhost:8080/returnEquipment/${id}`;
+    const requestOptions = {
+      method: "DELETE",
+
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`, //การยืนยันตัวตน
+        "Content-Type": "application/json",
+      },
+    };
+
+    fetch(apiUrl, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        if (res.data) {
+          setSuccess(true);
+          const remove = returnequipment.filter(
+            //กรองเอาข้อมูลที่ไม่ได้ลบ
+            (perv) => perv.ID !== selectcellData?.ID
+          );
+          setReturnEquipment(remove);
+        } else {
+          setError(true);
+        }
+      });
   };
 
 
@@ -201,6 +216,7 @@ const DeleteReturnEquipment = async (id: Number) => {
         <div>
             &nbsp;
           <Button 
+            onClick={handleEdit}
             variant="contained" 
             size="small" 
             startIcon={<EditIcon />}
@@ -285,6 +301,21 @@ const DeleteReturnEquipment = async (id: Number) => {
             </Button>
           </DialogActions>
         </Dialog>
+
+        <Dialog
+          open={openedit}
+          onClose={handleEditClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogActions>
+            <EditReturnEquipment
+              Cancle={handleEditClose}
+              Data={selectcellData}
+            />
+          </DialogActions>
+        </Dialog>
+
 
         <Box
           display="flex"
