@@ -116,7 +116,7 @@ function EditBorrowEquipment({ Cancle, Data }: BorrowEquipment) {
         if (res.data) {
           console.log("บันทึกได้")
           setSuccess(true);
-          window.location.reload();
+          // window.location.reload();
           setErrorMessage("")
         } else {
           console.log("บันทึกไม่ได้")
