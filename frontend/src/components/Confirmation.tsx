@@ -17,6 +17,8 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import DialogTitle from "@mui/material/DialogTitle";
 
+import EditConfirmation from "./ConfirmationEdit";
+
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
 
@@ -32,15 +34,19 @@ function Confirmation() {
   const [selectcell, setSelectCell] = useState(Number);
   const [success, setSuccess] = useState(false); //จะยังไม่ให้แสดงบันทึกข้อมูล
   const [error, setError] = useState(false);
+  
+  const [openedit, setOpenEdit] = useState(false);
+  const [selectcellData, setSelectcellData] = useState<ConfirmationInterface>();
 
   const handleCellFocus = useCallback(
     (event: React.FocusEvent<HTMLDivElement>) => {
       const row = event.currentTarget.parentElement;
       const id = row!.dataset.id!;
-      const field = event.currentTarget.dataset.field!;
-      setSelectCell(Number(id));
+      const c = confirmation.filter((v) => Number(v.ID) == Number(id));
+      console.log(c[0]);
+      setSelectcellData(c[0]);
     },
-    []
+    [confirmation]
   );
 
   const handleClose = (
@@ -59,7 +65,7 @@ function Confirmation() {
   };
   const handleClickDelete = () => {
     // setSelectCell(selectcell);
-    DeleteConfirmation(selectcell);
+    DeleteConfirmation(Number(selectcellData?.ID));
     setOpenDelete(false);
   };
   const handleDelete = () => {
@@ -68,6 +74,15 @@ function Confirmation() {
   const handleDeleteClose = () => {
     setOpenDelete(false);
   };
+
+  const handleEdit = () => {
+    setOpenEdit(true);
+  };
+
+  const handleEditClose = () => {
+    setOpenEdit(false);
+  };
+
   const DeleteConfirmation = async (id: Number) => {
     const apiUrl = `http://localhost:8080/confirmation/${id}`;
     const requestOptions = {
@@ -170,22 +185,35 @@ function Confirmation() {
         return params.getValue(params.id, "Librarian").Name;
       },
     },
-
-    {
-      field: "actions",
-      headerName: "Actions",
-      width: 175,
+{
+      field: "Edit",
+      headerName: "แก้ไขข้อมูล",
+      align: "center",
+      headerAlign: "center",
+      width: 120,
       renderCell: () => (
         <div>
-          <Button
-            variant="contained"
-            size="small"
+            &nbsp;
+          <Button 
+            onClick={handleEdit}
+            variant="contained" 
+            size="small" 
             startIcon={<EditIcon />}
-            color="success"
-          >
-            แก้ไข
+            color="warning"
+          > 
+              แก้ไขข้อมูล
           </Button>
-          &nbsp;&nbsp;&nbsp;
+        </div>
+      ),
+    },
+    {
+      field: "Delete",
+      headerName: "ลบข้อมูล",
+      align: "center",
+      headerAlign: "center",
+      width: 120,
+      renderCell: () => (
+        <div>
           <Button
             onClick={handleDelete}
             variant="contained"
@@ -193,7 +221,7 @@ function Confirmation() {
             startIcon={<DeleteIcon />}
             color="error"
           >
-            ลบ
+              ลบข้อมูล 
           </Button>
         </div>
       ),
@@ -232,7 +260,7 @@ function Confirmation() {
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">
-            {"คุณต้องการลบใช่หรือไม่?"}
+            {"คุณต้องการลบข้อมูลใช่หรือไม่?"}
           </DialogTitle>
 
           <DialogActions>
@@ -240,6 +268,20 @@ function Confirmation() {
             <Button onClick={handleClickDelete} autoFocus>
               ตกลง
             </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog
+          open={openedit}
+          onClose={handleEditClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogActions>
+            <EditConfirmation
+              Cancle={handleEditClose}
+              Data={selectcellData}
+            />
           </DialogActions>
         </Dialog>
 

@@ -23,7 +23,7 @@ func TestConfirmationNoteNameNotBlank(t *testing.T) {
 
 		g.Expect(ok).ToNot(BeTrue())
 		g.Expect(err).ToNot(BeNil())
-		g.Expect(err.Error()).To(Equal("NoteName cannot be blank"))
+		g.Expect(err.Error()).To(Equal("กรุณากรอกชื่อผู้รับหนังสือ"))
 	})
 }
 
@@ -51,7 +51,7 @@ func TestNoteTelMustBeInValidPattern(t *testing.T) {
 		ok, err := govalidator.ValidateStruct(c)
 		g.Expect(ok).ToNot(BeTrue())
 		g.Expect(err).ToNot(BeNil())
-		g.Expect(err.Error()).To(Equal("NoteTel invalid"))
+		g.Expect(err.Error()).To(Equal("รูปแบบเบอร์โทรผู้รับไม่ถูกต้อง"))
 	}
 }
 
@@ -81,6 +81,6 @@ func TestDateTimeMustBePresent(t *testing.T) {
 		g.Expect(err).ToNot(BeNil())
 
 		// err.Error ต้องมี error message แสดงออกมา
-		g.Expect(err.Error()).To(Equal("DateTime Must Be Present"))
+		g.Expect(err.Error()).To(Equal("วันเวลาควรเป็นปัจจุบัน"))
 	}
 }

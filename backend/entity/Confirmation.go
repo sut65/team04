@@ -25,9 +25,9 @@ type Confirmation struct {
 	ReceiverID *uint
 	Receiver   Receiver `gorm:"references:id;" valid:"-"`
 
-	NoteName string    `valid:"required~NoteName cannot be blank"`
-	NoteTel  string    `valid:"required~NoteTel invalid,matches(^0([6|8|9])([0-9]{8}$))~NoteTel invalid"`
-	Datetime time.Time `valid:"present~DateTime Must Be Present"`
+	NoteName string    `valid:"required~กรุณากรอกชื่อผู้รับหนังสือ"`
+	NoteTel  string    `valid:"required~รูปแบบเบอร์โทรผู้รับไม่ถูกต้อง ,matches(^0([6|8|9])([0-9]{8}$))~รูปแบบเบอร์โทรผู้รับไม่ถูกต้อง"`
+	Datetime time.Time `valid:"present~วันเวลาควรเป็นปัจจุบัน"`
 
 	LibrarianID *uint
 	Librarian   Librarian `gorm:"references:id;" valid:"-"`
