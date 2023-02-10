@@ -13,7 +13,7 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { DatePicker } from "@mui/x-date-pickers";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useEffect, useState } from "react";
@@ -42,6 +42,7 @@ function EquipmentPurchasingCreate() {
   >([]);
   const [company, setCompany] = useState<CompanyInterface[]>([]);
   const [librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleClose = (
     event?: React.SyntheticEvent | Event,
@@ -87,7 +88,7 @@ function EquipmentPurchasingCreate() {
       //เก็บข้อมูลที่จะเอาไปเก็บในดาต้าเบส
       EquipmentName: equipmentpurchasing.EquipmentName ?? "",
       Amount: Number(equipmentpurchasing.Amount) ?? "",
-      Date: new Date(),
+      Date: date?.toISOString(),
       EquipmentCategoryID: Number(equipmentpurchasing.EquipmentCategoryID),
       CompanyID: Number(equipmentpurchasing.CompanyID),
       LibrarianID: Number(localStorage.getItem("nid")),
@@ -111,9 +112,13 @@ function EquipmentPurchasingCreate() {
       .then((res) => {
         console.log(res);
         if (res.data) {
+          console.log("บันทึกได้");
           setSuccess(true);
+          setErrorMessage("");
         } else {
+          console.log("บันทึกไม่ได้");
           setError(true);
+          setErrorMessage(res.error);
         }
       });
   }
@@ -188,7 +193,7 @@ function EquipmentPurchasingCreate() {
 
       <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error">
-          บันทึกข้อมูลไม่สำเร็จ
+          บันทึกข้อมูลไม่สำเร็จ: {errorMessage}
         </Alert>
       </Snackbar>
 
@@ -232,19 +237,21 @@ function EquipmentPurchasingCreate() {
               <p>ประเภทอุปกรณ์</p>
 
               <Select
+                native
                 value={equipmentpurchasing.EquipmentCategoryID}
                 onChange={handleChange}
                 inputProps={{
                   name: "EquipmentCategoryID", //เอาไว้เข้าถึงข้อมูลแพลนนิ่งไอดี
                 }}
               >
+                <option aria-label="None" value=""></option>
                 {equipmentcategory.map(
                   (
                     item: EquipmentCategoryInterface //map
                   ) => (
-                    <MenuItem value={item.ID} key={item.ID}>
+                    <option value={item.ID} key={item.ID}>
                       {item.Name}
-                    </MenuItem> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
+                    </option> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
                   )
                 )}
               </Select>
@@ -256,19 +263,21 @@ function EquipmentPurchasingCreate() {
               <p>บริษัท</p>
 
               <Select
+                native
                 value={equipmentpurchasing.CompanyID}
                 onChange={handleChange}
                 inputProps={{
                   name: "CompanyID", //เอาไว้เข้าถึงข้อมูลแพลนนิ่งไอดี
                 }}
               >
+                <option aria-label="None" value=""></option>
                 {company.map(
                   (
                     item: CompanyInterface //map
                   ) => (
-                    <MenuItem value={item.ID} key={item.ID}>
+                    <option value={item.ID} key={item.ID}>
                       {item.Name}
-                    </MenuItem> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
+                    </option> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
                   )
                 )}
               </Select>
@@ -311,11 +320,10 @@ function EquipmentPurchasingCreate() {
           </Grid>
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
-              <p>วันที่และเวลาบันทึกข้อมูล</p>
+              <p>วันที่บันทึกข้อมูล</p>
 
               <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DateTimePicker
-                  disabled
+                <DatePicker
                   value={date}
                   onChange={(newValue) => {
                     setDate(newValue);
