@@ -35,7 +35,7 @@ func TestEquipmentNameNotBlank(t *testing.T) {
 
 	equipmentname := EquipmentPurchasing{
 		EquipmentName: "",
-		Amount:        50,
+		Amount:        75,
 		Date:          time.Now(),
 	}
 
