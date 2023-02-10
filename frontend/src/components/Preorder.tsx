@@ -16,6 +16,7 @@ import DialogActions from "@mui/material/DialogActions";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import DialogTitle from "@mui/material/DialogTitle";
+import EditPreorder from "./PreorderEdit";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -29,18 +30,21 @@ function Preorder() {
   const [preorder, setPreorder] = useState<PreorderInterface[]>([]);
 
   const [opendelete, setOpenDelete] = useState(false);
-  const [selectcell, setSelectCell] = useState(Number);
   const [success, setSuccess] = useState(false); //จะยังไม่ให้แสดงบันทึกข้อมูล
   const [error, setError] = useState(false);
   
+  const [openedit, setOpenEdit] = useState(false);
+  const [selectcellData, setSelectcellData] = useState<PreorderInterface>();
+
   const handleCellFocus = useCallback(
     (event: React.FocusEvent<HTMLDivElement>) => {
       const row = event.currentTarget.parentElement;
       const id = row!.dataset.id!;
-      const field = event.currentTarget.dataset.field!;
-      setSelectCell(Number(id));
+      const pr = preorder.filter((v) => Number(v.ID) == Number(id));
+      console.log(pr[0]);
+      setSelectcellData(pr[0]);
     },
-    []
+    [preorder]
   );
 
   const handleClose = (
@@ -59,7 +63,7 @@ function Preorder() {
   };
   const handleClickDelete = () => {
     // setSelectCell(selectcell);
-    DeletePreorder(selectcell);
+    DeletePreorder(Number(selectcellData?.ID));
     setOpenDelete(false);
   };
   const handleDelete = () => {
@@ -68,6 +72,16 @@ function Preorder() {
   const handleDeleteClose = () => {
     setOpenDelete(false);
   };
+
+  const handleEdit = () => {
+    setOpenEdit(true);
+  };
+
+  const handleEditClose = () => {
+    setOpenEdit(false);
+  };
+
+
   const DeletePreorder = async (id: Number) => {
     const apiUrl = `http://localhost:8080/preorder/${id}`;
     const requestOptions = {
@@ -160,20 +174,34 @@ function Preorder() {
       },
     },
     {
-      field: "actions",
-      headerName: "Actions",
-      width: 175,
+      field: "Edit",
+      headerName: "แก้ไขข้อมูล",
+      align: "center",
+      headerAlign: "center",
+      width: 120,
       renderCell: () => (
         <div>
-          <Button
-            variant="contained"
-            size="small"
+            &nbsp;
+          <Button 
+            onClick={handleEdit}
+            variant="contained" 
+            size="small" 
             startIcon={<EditIcon />}
-            color="success"
-          >
-            แก้ไข
+            color="warning"
+          > 
+              แก้ไขข้อมูล
           </Button>
-          &nbsp;&nbsp;&nbsp;
+        </div>
+      ),
+    },
+    {
+      field: "Delete",
+      headerName: "ลบข้อมูล",
+      align: "center",
+      headerAlign: "center",
+      width: 120,
+      renderCell: () => (
+        <div>
           <Button
             onClick={handleDelete}
             variant="contained"
@@ -181,7 +209,7 @@ function Preorder() {
             startIcon={<DeleteIcon />}
             color="error"
           >
-            ลบ
+              ลบข้อมูล 
           </Button>
         </div>
       ),
@@ -213,6 +241,7 @@ function Preorder() {
             ลบข้อมูลไม่สำเร็จ
           </Alert>
         </Snackbar>
+
         <Dialog
           open={opendelete}
           onClose={handleDeleteClose}
@@ -220,14 +249,30 @@ function Preorder() {
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">
-            {"คุณต้องการลบใช่หรือไม่?"}
+            {"คุณต้องการลบข้อมูลใช่หรือไม่?"}
           </DialogTitle>
 
           <DialogActions>
-            <Button onClick={handleDeleteClose}>ยกเลิก</Button>
+            <Button onClick={handleDeleteClose}>
+              ยกเลิก
+            </Button>
             <Button onClick={handleClickDelete} autoFocus>
               ตกลง
             </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog
+          open={openedit}
+          onClose={handleEditClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogActions>
+            <EditPreorder
+              Cancle={handleEditClose}
+              Data={selectcellData}
+            />
           </DialogActions>
         </Dialog>
 

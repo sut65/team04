@@ -25,6 +25,8 @@ import { PreorderInterface } from "../models/IPreorder";
 import { PaymentInterface } from "../models/IPayment";
 import { LibrarianInterface } from "../models/ILibrarian";
 
+import Preorder from "./Preorder";
+
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
 
@@ -47,15 +49,32 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+interface Preorder {
+    Cancle: () => void;
+    Data: PreorderInterface | undefined;
+}
 
-function PreorderCreate() {
-  const classes = useStyles();
-//   const [Librarian, setLibrarian] = useState<Partial<LibrarianInterface>>({});
+  
+function EditPreorder({ Cancle, Data }: Preorder) {
   const [User, setUser] = useState<UserInterface[]>([]);
-  const [preorder, setPreorder] = useState<Partial<PreorderInterface>>({});
   const [Payment, setPayment] = useState<PaymentInterface[]>([]);
   const [Librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
   const [datetime, setDatetime] = React.useState<Date | null>();
+
+  const [preorder, setPreorder] = useState<Partial<PreorderInterface>>({
+    ID: Data?.ID,
+    UserID: Data?.UserID,
+    Name: Data?.Name,
+    Price: Data?.Price,
+    Author: Data?.Author,
+    Edition: Data?.Edition,
+    Year: Data?.Year,
+    Quantity: Data?.Quantity,
+    Totalprice: Data?.Totalprice,
+    PaymentID: Data?.PaymentID,
+    Datetime: Data?.Datetime,
+    LibrarianID: Data?.LibrarianID,
+  });
 
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
@@ -88,10 +107,54 @@ function PreorderCreate() {
   const handleInputChange = (
     event: React.ChangeEvent<{ id?: string; value: any }>
   ) => {
-    const id = event.target.id as keyof typeof PreorderCreate;
+    const id = event.target.id as keyof typeof EditPreorder;
     const { value } = event.target;
     setPreorder({ ...preorder, [id]: value });
   };
+
+  function submit() {
+    let data = {
+        ID: Number(preorder.ID),
+        UserID: Number(preorder.UserID),
+        Name: preorder.Name,
+        Price: Number(preorder.Price),
+        Author: preorder.Author,
+        Edition: Number(preorder.Edition),
+        Year: preorder.Year,
+        Quantity: Number(preorder.Quantity),
+        Totalprice: Number(preorder.Totalprice), 
+        PaymentID: Number(preorder.PaymentID),
+        Datetime:  datetime,
+        LibrarianID: Number(localStorage.getItem("nid")),
+    };
+
+    console.log(data);
+
+    const apiUrl = "http://localhost:8080/preorder";
+    const requestOptions = {
+      method: "PATCH",  
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    };
+
+    fetch(apiUrl, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        console.log(res);
+        if (res.data) {
+          console.log("บันทึกได้")
+          setSuccess(true);
+          setErrorMessage("")
+        } else {
+          console.log("บันทึกไม่ได้")
+          setError(true);
+          setErrorMessage(res.error)
+        }
+      });
+  }
 
   const apiUrl = "http://localhost:8080";
   const requestOptions = {
@@ -153,55 +216,7 @@ function PreorderCreate() {
     getLibrarian();
     getPayment();
     getUser();
-  }, []);
-
-  const convertType = (data: string | number | undefined) => {
-    let val = typeof data === "string" ? parseInt(data) : data;
-    return val;
-  };
-
-  function submit() {
-    let data = {
-        UserID: Number(preorder.UserID) ?? "",
-        Name: preorder.Name ?? "",
-        Price: Number(preorder.Price) ?? "",
-        Author: preorder.Author ?? "",
-        Edition: Number(preorder.Edition) ?? "",
-        Year: preorder.Year ?? "",
-        Quantity: Number(preorder.Quantity) ?? "",
-        Totalprice: Number(preorder.Totalprice) ?? "", 
-        PaymentID: Number(preorder.PaymentID) ?? "",
-        Datetime:  new Date(),
-        LibrarianID: Number(localStorage.getItem("nid")),
-    };
-
-    console.log(data);
-
-    const apiUrl = "http://localhost:8080/preorder";
-    const requestOptions = {
-      method: "POST",  
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    };
-
-    fetch(apiUrl, requestOptions)
-      .then((response) => response.json())
-      .then((res) => {
-        console.log(res);
-        if (res.data) {
-          console.log("บันทึกได้")
-          setSuccess(true);
-          setErrorMessage("")
-        } else {
-          console.log("บันทึกไม่ได้")
-          setError(true);
-          setErrorMessage(res.error)
-        }
-      });
-  }
+  }, []);  
 
   return (
     <Container maxWidth="md">
@@ -240,7 +255,7 @@ function PreorderCreate() {
               color="primary"
               gutterBottom
             >
-              สร้างใบรายการคำสั่งซื้อ
+              แก้ไขข้อมูลใบคำสั่งซื้อหนังสือ ลำดับที่ {preorder.ID}
             </Typography>
           </Box>
         </Box>
@@ -472,20 +487,18 @@ function PreorderCreate() {
 
           <Grid item xs={12}>
             <Button
-              component={RouterLink}
-              to="/preorder"
               variant="contained"
-              color="inherit"
+              onClick={Cancle}
             >
-              ย้อนกลับ
+              ยกเลิก
             </Button>
             <Button
               style={{ float: "right" }}
               onClick={submit}
               variant="contained"
-              color="primary"
+              color="success"
             >
-              บันทึกข้อมูล
+              บันทึกการแก้ไขข้อมูล
             </Button>
           </Grid>
         </Grid>
@@ -494,4 +507,4 @@ function PreorderCreate() {
   );
 }
 
-export default PreorderCreate;
+export default EditPreorder;
