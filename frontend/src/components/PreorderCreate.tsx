@@ -240,7 +240,7 @@ function PreorderCreate() {
               color="primary"
               gutterBottom
             >
-              สร้างข้อมูลผู้ป่วย
+              สร้างใบรายการคำสั่งซื้อ
             </Typography>
           </Box>
         </Box>
