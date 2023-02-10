@@ -108,6 +108,10 @@ func UpdateBookPurchasing(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	if _, err := govalidator.ValidateStruct(bookPurchasing); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{"data": bookPurchasing})
 }
