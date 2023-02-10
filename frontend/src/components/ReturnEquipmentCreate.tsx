@@ -34,10 +34,8 @@ function ReturnEquipmentCreate() {
 
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
-
-  const [Return_Day, setReturn_Day] = useState<Date | null>();
+  const [return_day, setReturn_Day] = useState<Date | null>();
   const [equipmentstatus, setEquipmentStatus] = useState<EquipmentStatusInterface[]>([]);
-  const [user, setUser] = useState<UserInterface[]>([] );
   const [librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
   const [returnequipment, setReturnEquipment] = useState<Partial<ReturnEquipmentInterface>>({}); //Partial ชิ้นส่วนเอาไว้เซทข้อมูลที่ละส่วน
   const [borrowequipment, setBorrowEquipment] = useState<BorrowEquipmentInterface[]>([]); //Partial ชิ้นส่วนเอาไว้เซทข้อมูลที่ละส่วน
@@ -53,6 +51,7 @@ function ReturnEquipmentCreate() {
     setSuccess(false);
     setError(false);
   };
+
   const handleInputChange = (
     event: React.ChangeEvent<{ id?: string; value: any }> //ชื่อคอมลัมน์คือ id และค่าที่จะเอามาใส่ไว้ในคอมลัมน์นั้นคือ value
   ) => {
@@ -62,6 +61,7 @@ function ReturnEquipmentCreate() {
     const { value } = event.target;
     setReturnEquipment({ ...returnequipment, [id]: value });
   };
+
   const handleChange = (
     event: React.ChangeEvent<{ name?: string; value: any }> //ชื่อคอมลัมน์คือ id และค่าที่จะเอามาใส่ไว้ในคอมลัมน์นั้นคือ value
   ) => {
@@ -71,26 +71,21 @@ function ReturnEquipmentCreate() {
     const { value } = event.target;
     setReturnEquipment({ ...returnequipment, [name]: value });
   };
-  // const handleChangePlanning = (event: React.ChangeEvent<{ value: any }>) => {
-  //   //ตัวแปรชื่อ event
-  //   console.log(event.target.value);
-  //   setPlanningID(event.target.value);
-  // };
-  const convertType = (data: string | number | undefined) => {
-    let val = typeof data === "string" ? Number(data) : data; //Number(data)
-    return val;
-  };
+
   function submit() {
     let data = {
       //เก็บข้อมูลที่จะเอาไปเก็บในดาต้าเบส
 
-      Return_Day:    Return_Day,
-      Return_Detail:  returnequipment.Return_Detail ?? "",
-      BorrowEquipmentID:     returnequipment.BorrowEquipmentID,
-      EquipmentStatusID:      returnequipment.EquipmentStatusID,  
-      LibrarianID: Number(localStorage.getItem("nid")),
+      Return_Day:         return_day,
+      Return_Detail:      returnequipment.Return_Detail ?? "",
+      BorrowEquipmentID:  Number(returnequipment.BorrowEquipmentID),
+      EquipmentStatusID:  Number(returnequipment.EquipmentStatusID),  
+      LibrarianID:        Number(localStorage.getItem("nid")),
     };
+
     console.log(data);
+
+
     const apiUrl = "http://localhost:8080/returnEquipment";
     const requestOptions = {
       method: "POST", //เอาข้อมูลไปเก็บไว้ในดาต้าเบส
@@ -116,6 +111,7 @@ function ReturnEquipmentCreate() {
         }
       });
   }
+
   const requestOptions = {
     method: "GET",
     headers: {
@@ -123,6 +119,7 @@ function ReturnEquipmentCreate() {
       "Content-Type": "application/json",
     },
   };
+
   const getLibrarian = async () => {
     const apiUrl = "http://localhost:8080/librarian";
     fetch(apiUrl, requestOptions)
@@ -134,6 +131,7 @@ function ReturnEquipmentCreate() {
         }
       });
   };
+
   const getBorrowEquipment = async () => {
     const apiUrl = `http://localhost:8080/BorrowEquipmentForTrackingCheck`;
     fetch(apiUrl, requestOptions)
@@ -146,7 +144,7 @@ function ReturnEquipmentCreate() {
       });
   };
 
-const getEquipmentStatus = async () => {
+  const getEquipmentStatus = async () => {
     const apiUrl = "http://localhost:8080/equipment_statuses";
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
@@ -158,25 +156,14 @@ const getEquipmentStatus = async () => {
       });
   };
 
-  const getUser = async () => {
-    const apiUrl = "http://localhost:8080/users";
-    fetch(apiUrl, requestOptions)
-      .then((response) => response.json())
-      .then((res) => {
-        console.log(res.data);
-        if (res.data) {
-          setUser(res.data);
-        }
-      });
-  };
   useEffect(() => {
     //ทำงานทุกครั้งที่เรารีเฟชหน้าจอ
     //ไม่ให้รันแบบอินฟินิตี้ลูป
     getEquipmentStatus();
     getBorrowEquipment();
     getLibrarian();
-    getUser();
   }, []);
+
   return (
     <Container maxWidth="md">
       <Snackbar
@@ -190,19 +177,19 @@ const getEquipmentStatus = async () => {
         บันทึกสำเร็จ
         </Alert>
       </Snackbar>
+
       <Snackbar 
         id="error"
         open={error} 
         autoHideDuration={6000} 
         onClose={handleClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-
         >
         <Alert onClose={handleClose} severity="error">
         บันทึกไม่สำเร็จ: {errorMessage}
-
         </Alert>
       </Snackbar>
+
       <Paper>
         <Box
           display="flex"
@@ -238,39 +225,35 @@ const getEquipmentStatus = async () => {
             <FormControl fullWidth variant="standard">
               <p>ผู้ที่เคยยืมอุปกรณ์</p>
               <Select
-                
+                native
                 value={returnequipment.BorrowEquipmentID}
                 onChange={handleChange}
                 inputProps={{
                   name: "BorrowEquipmentID", //เอาไว้เข้าถึงข้อมูล borrow equipment ไอดี
                 }}
               >
-                {borrowequipment.map(
-                  (
-                    item: BorrowEquipmentInterface //map
-                  ) => (
-                    <MenuItem value={item.ID} key={item.ID}>
+                <option aria-label="None" value="">
+                  กรุณาเลือกรายการอุปกรณ์ที่ถูกยืม
+                </option>
+
+                {borrowequipment.map((item: BorrowEquipmentInterface) => (
+                    <option value={item.ID} key={item.ID}>
                       ชื่อ: {item.User.Name} | 
                       ชื่ออุปกรณ์: {item.EquipmentPurchasing.EquipmentName} | 
                       จำนวนอุปกรณ์ที่ยืม: {item.Amount_BorrowEquipment} ชิ้น | 
-
-                      {/* วันกำหนดคืน: {item.Return_Day}  */}
-                    </MenuItem> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
+                    </option> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
                   )
                 )}
-
               </Select>
             </FormControl>
           </Grid>
-
-
 
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
               <p>วันที่คืนอุปกรณ์</p>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DateTimePicker
-                  value={Return_Day}
+                  value={return_day}
                   onChange={(newValue) => {
                     setReturn_Day(newValue);
                   }}
@@ -280,32 +263,29 @@ const getEquipmentStatus = async () => {
             </FormControl>
           </Grid>
 
-
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
-              <p>สภาพอุปกรณ์(ชำรุด/ไม่ไม่ชำรุด)</p>
+              <p>สภาพอุปกรณ์(ชำรุด/ไม่ชำรุด)</p>
               <Select
-                
+                native
                 value={returnequipment.EquipmentStatusID}
                 onChange={handleChange}
                 inputProps={{
                   name: "EquipmentStatusID", //เอาไว้เข้าถึงข้อมูล EquipmentStatusID
                 }}
               >
-                {equipmentstatus.map(
-                  (
-                    item: EquipmentStatusInterface //map
-                  ) => (
-                    <MenuItem value={item.ID} key={item.ID}>
+                <option aria-label="None" value="">
+                  กรุณาเลือกสภาพอุปกรณ์
+                </option>
+                {equipmentstatus.map((item: EquipmentStatusInterface) => (
+                    <option value={item.ID} key={item.ID}>
                       {item.Name}
-                    </MenuItem> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
+                    </option> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
                   )
                 )}
               </Select>
             </FormControl>
           </Grid>
-
-
 
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard"> 
@@ -321,23 +301,14 @@ const getEquipmentStatus = async () => {
             </FormControl>
           </Grid>
 
-
-
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
               <p>บรรณารักษ์ผู้บันทึกข้อมูล</p>
               <Select
-                // defaultOpen={true}
                 disabled={true} //เป็นจางๆไม่ให้เปลี่ยน
-                // labelId="เลขบัตรประชาชน"
-                // id="เลขบัตรประชาชน"
                 value={localStorage.getItem("nid")}
-                // label="Name"
               >
-                {librarian.map(
-                  (
-                    item: LibrarianInterface //map
-                  ) => (
+                {librarian.map((item: LibrarianInterface) => (
                     <MenuItem value={item.ID} key={item.ID}>
                       {item.Name}
                     </MenuItem> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
@@ -347,10 +318,11 @@ const getEquipmentStatus = async () => {
             </FormControl>
           </Grid>
 
-
-
           <Grid item xs={12}>
-            <Button component={RouterLink} to="/returnEquipment" variant="contained">
+            <Button 
+            component={RouterLink} 
+            to="/returnEquipment" 
+            variant="contained">
               กลับ
             </Button>
 
