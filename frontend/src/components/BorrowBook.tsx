@@ -18,10 +18,10 @@ import { LibrarianInterface } from "../models/ILibrarian";
 import { BorrowBookInterface } from "../models/IBorrowBook";
 import { BookCategoryInterface } from "../models/IBookCategory";
 import { BookPurchasingInterface } from "../models/IBookPurchasing";
+import EditBorrowBook from "./BorrowBookEdit";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
-
   ref
 ) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -33,22 +33,24 @@ function BorrowBook() {
     const [success, setSuccess] = useState(false); //จะยังไม่ให้แสดงบันทึกข้อมูล
     const [error, setError] = useState(false);
     const [opendelete, setOpenDelete] = useState(false);
+    const [openedit, setOpenEdit] = useState(false);
 
-    const [selectcell, setSelectCell] = useState(Number);
+    const [selectcellData, setSelectcellData] = useState<BorrowBookInterface>();
     const handleCellFocus = useCallback(
       (event: React.FocusEvent<HTMLDivElement>) => {
         const row = event.currentTarget.parentElement;
-        const id = row!.dataset.id!;
-        const field = event.currentTarget.dataset.field!;
-          setSelectCell(Number(id));
-    },
-    []
-  );
+        const id = row?.dataset.id;
+        const b = borrowbook.filter((v) => Number(v.ID) == Number(id));
+        console.log(b[0]);
+        setSelectcellData(b[0]);
+      },
+      [borrowbook]
+    );
+
 
 
   const handleClose = (
     event?: React.SyntheticEvent | Event,
-
     reason?: string
   ) => {
     console.log(reason);
@@ -62,7 +64,7 @@ function BorrowBook() {
 
   const handleClickDelete = () => {
       // setSelectCell(selectcell);
-      DeleteBorrowBook(selectcell);
+      DeleteBorrowBook(Number(selectcellData?.ID));
       setOpenDelete(false);
   };
 
@@ -70,10 +72,16 @@ function BorrowBook() {
   const handleDelete = () => {
       setOpenDelete(true);
   };
+  const handleEdit = () => {
+    setOpenEdit(true);
+  };
 
 
   const handleDeleteClose = () => {
       setOpenDelete(false);
+  };
+  const handleEditClose = () => {
+    setOpenEdit(false);
   };
 
 
@@ -91,9 +99,14 @@ function BorrowBook() {
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
       .then((res) => {
+        //ลบในดาต้าเบสสำเร็จแล้ว
         if (res.data) {
           setSuccess(true);
-          window.location.reload();
+          const remove = borrowbook.filter(
+            //กรองเอาข้อมูลที่ไม่ได้ลบ
+            (perv) => perv.ID !== selectcellData?.ID
+          );
+          setBorrowBook(remove);
         } else {
           setError(true);
         }
@@ -137,6 +150,7 @@ function BorrowBook() {
         <div>
             &nbsp;
           <Button 
+            onClick={handleEdit}
             variant="contained" 
             size="small" 
             startIcon={<EditIcon />}
@@ -273,6 +287,23 @@ function BorrowBook() {
             </Button>
           </DialogActions>
         </Dialog>
+
+
+        <Dialog
+          open={openedit}
+          onClose={handleEditClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogActions>
+            <EditBorrowBook
+              Cancle={handleEditClose}
+              Data={selectcellData}
+            />
+          </DialogActions>
+        </Dialog>
+
+
         <Box
           display="flex"
           sx={{
@@ -322,3 +353,4 @@ function BorrowBook() {
 }
 
 export default BorrowBook;
+
