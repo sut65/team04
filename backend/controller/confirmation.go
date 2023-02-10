@@ -110,8 +110,13 @@ func UpdateConfirmation(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	if tx := entity.DB().Where("id = ?", confirmation.ID).First(&confirmation); tx.RowsAffected == 0 {
+	if tx := entity.DB().Where("id = ?", confirmation.ID).First(&entity.Confirmation{}); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "confirmation not found"})
+		return
+	}
+
+	if _, err := govalidator.ValidateStruct(confirmation); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	if err := entity.DB().Save(&confirmation).Error; err != nil {
