@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 	"github.com/team04/entity"
 )
@@ -38,16 +39,20 @@ func CreateEquipmentPurchasing(c *gin.Context) { // c รับข้อมู�
 		c.JSON(http.StatusBadRequest, gin.H{"error": "librarian not found"})
 		return
 	}
-
+	localtime := equipmentpurchasing.Date.Local()
 	// 17: สร้าง EquipmentPurchasing
 	EP := entity.EquipmentPurchasing{
 
 		EquipmentName:     equipmentpurchasing.EquipmentName, //ตั้งค่าฟิลด์ใส่ symtom, ใส่ข้อมูลให้เข้าไปในคอลัมน์ symtom
-		Date:              equipmentpurchasing.Date,          //ตั้งค่าฟิลด์ Date
+		Date:              localtime,                         //ตั้งค่าฟิลด์ Date
 		Librarian:         librarian,                         // โยงความสัมพันธ์กับ Entity Librarian
 		Company:           company,                           // โยงความสัมพันธ์กับ Entity Company
 		EquipmentCategory: equipmentcategory,                 // โยงความสัมพันธ์กับ Entity EquipmentCategory
 		Amount:            equipmentpurchasing.Amount,        //ตั้งค่าฟิลด์ Amount
+	}
+	if _, err := govalidator.ValidateStruct(equipmentpurchasing); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	// 18: บันทึก
@@ -102,6 +107,10 @@ func UpdateEquipmentPurchasing(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	if _, err := govalidator.ValidateStruct(equipmentpurchasing); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{"data": equipmentpurchasing})
 }
 
@@ -113,5 +122,5 @@ func DeleteEquipmentPurchasing(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, fmt.Sprintf("equipmentpurchasingID :  Id%s deleted.", Id))
+	c.JSON(http.StatusOK, gin.H{"data": fmt.Sprintf("equipmentpurchasingID :  Id%s deleted.", Id)})
 }
