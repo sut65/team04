@@ -54,6 +54,7 @@ func CreateBorrowBook(c *gin.Context) {
 		TrackingCheck:  false,                     // สำหรับ returnbook system
 	}
 
+	// Validation
 	if _, err := govalidator.ValidateStruct(borrowbook); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -96,6 +97,11 @@ func UpdateBorrowBook(c *gin.Context) {
 	}
 	if tx := entity.DB().Where("id = ?", borrowbook.ID).First(&entity.BorrowBook{}); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "borrowbook not found"}) //เช็คว่ามีไอดีอยู่ในดาต้าเบสมั้ย
+		return
+	}
+	// Validation
+	if _, err := govalidator.ValidateStruct(borrowbook); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	if err := entity.DB().Save(&borrowbook).Error; err != nil {
