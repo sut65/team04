@@ -204,18 +204,18 @@ function IntroduceCreate() {
         </Alert>
       </Snackbar>
 
-      <Paper>
+      <Paper sx={{bgcolor: "#E0FFFF"}}>
         <Box
           display="flex"
           sx={{
-            marginTop: 2
+            bgcolor: "#4682B4", marginTop: 2
           }}
         >
           <Box sx={{ paddingX: 3, paddingY: 1 }}>
             <Typography
               component="h2"
               variant="h6"
-              color="primary"
+              color="#E0FFFF"
               gutterBottom
             >
               บันทึกการแนะนำหนังสือ
@@ -224,6 +224,16 @@ function IntroduceCreate() {
         </Box>
 
         <Divider />
+
+        <Paper sx={{bgcolor: "#BFEFFF", spacing: 5, padding: 4, marginBottom: 1}}>
+          
+          &emsp;  กรุณากรอก <b>ชื่อหนังสือ</b> ที่ต้องการแนะนำ !! <br /><br />
+          &emsp;  ในกรณีที่ไม่ทราบชื่อผู้แต่ง , สำนักพิมพ์ , ปีที่พิมพ์ ให้กรอกว่า <b> ไม่ทราบ </b><br /><br />
+          &emsp;  เลข ISBN จะต้องเป็นเลขขึ้นต้นด้วย 978 และ 979 ที่ตามด้วยตัวเลขอีก 10 ตัวเท่านั้น <br /><br />
+          &emsp;  ในกรณีที่ไม่ทราบครั้งที่ตีพิมพ์ ให้กรอกเป็นตีพิมพ์ครั้งที่ <b> 1 </b><br />
+          
+        </Paper>
+
         <Grid container spacing={3} sx={{ padding: 2 }}>
 
           <Grid item xs={12}>
