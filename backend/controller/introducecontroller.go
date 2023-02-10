@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/asaskevich/govalidator"
@@ -86,24 +85,25 @@ func GetIntroduce(c *gin.Context) {
 // DELETE /introduce/:id
 func DeleteIntroduce(c *gin.Context) {
 	id := c.Param("id")
-	if tx := entity.DB().Delete(&entity.Introduce{}, id); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "introduce ID not found"})
+	if tx := entity.DB().Exec("DELETE FROM introduces WHERE id = ?", id); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Introduce not found"})
 		return
 	}
 
-	c.JSON(http.StatusOK, fmt.Sprintf("IntroduceID :  id%s deleted.", id))
+	c.JSON(http.StatusOK, gin.H{"data": id})
 }
 
 // PATCH /introduce
 func UpdateIntroduce(c *gin.Context) {
+
 	var introduce entity.Introduce
 	if err := c.ShouldBindJSON(&introduce); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if tx := entity.DB().Where("id = ?", introduce.ID).First(&introduce); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "introduce not found"})
+	if _, err := govalidator.ValidateStruct(introduce); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
