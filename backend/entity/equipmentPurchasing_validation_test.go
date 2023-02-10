@@ -81,3 +81,26 @@ func TestDateinEquipmentBePresent(t *testing.T) {
 		g.Expect(err.Error()).To(Equal("วันที่จัดซื้ออุปกรณ์ต้องเป็นปัจจุบัน กรุณาลองใหม่อีกครั้ง"))
 	}
 }
+
+// ตรวจสอบจำนวนหนังสือที่อุปกรณ์
+func TestAmountinEquipment(t *testing.T) {
+	g := NewGomegaWithT(t)
+
+	amountequipment := EquipmentPurchasing{
+		EquipmentName: "หูฟัง",
+		Amount:        0,
+		Date:          time.Now(),
+	}
+	//ตรวจสอบด้วย govalidator
+	ok, err := govalidator.ValidateStruct(amountequipment)
+
+	//ok ต้องไม่เป็นค่า true แปลว่าต้องจับ err ได้
+	g.Expect(ok).ToNot(BeTrue())
+
+	// err ต้องไม่เป็นค่า nil แปลว่าต้องจับ error ได้
+	g.Expect(err).ToNot(BeNil())
+
+	// err.Error ต้องมี error message แสดงออกมา
+	g.Expect(err.Error()).To(Equal("จำนวนอุปกรณ์ต้องมากกว่า 0 กรุณาลองใหม่อีกครั้ง"))
+
+}
