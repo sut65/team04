@@ -85,13 +85,13 @@ function BorrowBookCreate() {
   function submit() {
     let data = {
       //เก็บข้อมูลที่จะเอาไปเก็บในดาต้าเบส
-      Borb_Day: borb_day,
-      Return_Day: return_day,
-      Color_Bar: borrowbook.Color_Bar ?? "",
-      Borb_Frequency: Number(borrowbook.Borb_Frequency) ?? "",
-      UserID: Number(borrowbook.UserID),
-      BookPurchasingID: Number(borrowbook.BookPurchasingID),
-      LibrarianID: Number(localStorage.getItem("nid")),
+      Borb_Day:           borb_day,
+      Return_Day:         return_day,
+      Color_Bar:          borrowbook.Color_Bar ?? "",
+      Borb_Frequency:     Number(borrowbook.Borb_Frequency) ?? "",
+      UserID:             Number(borrowbook.UserID),
+      BookPurchasingID:   Number(borrowbook.BookPurchasingID),
+      LibrarianID:        Number(localStorage.getItem("nid")),
     };
     console.log(data);
 
@@ -206,7 +206,9 @@ function BorrowBookCreate() {
         id="error"
         open={error} 
         autoHideDuration={6000} 
-        onClose={handleClose}>
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        >
         <Alert onClose={handleClose} severity="error">
         บันทึกไม่สำเร็จ: {errorMessage}
 
@@ -238,7 +240,7 @@ function BorrowBookCreate() {
         <Divider />
 
 
-        <Box sx={{ bgcolor: '#F0FFFF' }} flexGrow={1}>
+        <Box sx={{ bgcolor: '#e0f7fa' }} flexGrow={1}>
         <Grid container spacing={2} sx={{ padding: 1 }}>
           
           <Grid item xs={12}>
