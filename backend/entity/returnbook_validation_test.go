@@ -9,7 +9,7 @@ import (
 )
 
 // ตรวจสอบข้อมูลต้องถูกต้องหมดทุก field
-func TestReturnBookCorrect(t *testing.T) {
+func TestAllReturnBookCorrect(t *testing.T) {
 	g := NewGomegaWithT(t)
 
 	returnbook := ReturnBook{
@@ -82,7 +82,7 @@ func TestCurrent_DayMustBePresent(t *testing.T) {
 	}
 }
 
-// ตรวจสอบวันเลยกำหนดคืนต้องเป็นตัวเลขมากกว่าหรือเท่ากับ 0
+// ตรวจสอบวันเลยกำหนดคืนต้องเป็นตัวเลขมากกว่าหรือเท่ากับ 0 - 1000
 func TestLate_NumberMustBeMoreThanEqualZero(t *testing.T) {
 	g := NewGomegaWithT(t)
 
@@ -106,6 +106,6 @@ func TestLate_NumberMustBeMoreThanEqualZero(t *testing.T) {
 		g.Expect(err).ToNot(BeNil())
 
 		// err.Error ต้องมี error message แสดงออกมา
-		g.Expect(err.Error()).To(Equal("จำนวนวันเลยกำหนดคืนต้องเป็นตัวเลขมากกว่าหรือเท่ากับ 0"))
+		g.Expect(err.Error()).To(Equal("จำนวนวันเลยกำหนดคืนต้องเป็นตัวเลขมากกว่าหรือเท่ากับ 0 - 1000"))
 	}
 }
