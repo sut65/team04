@@ -252,19 +252,21 @@ function EditEquipmentPurchasing({ Cancle, Data }: EditBookPurchasing) {
               <p>ประเภทอุปกรณ์</p>
 
               <Select
+                native
                 value={equipmentpurchasing.EquipmentCategoryID}
                 onChange={handleChange}
                 inputProps={{
                   name: "EquipmentCategoryID", //เอาไว้เข้าถึงข้อมูลแพลนนิ่งไอดี
                 }}
               >
+                <option aria-label="None" value=""></option>
                 {equipmentcategory.map(
                   (
                     item: EquipmentCategoryInterface //map
                   ) => (
-                    <MenuItem value={item.ID} key={item.ID}>
+                    <option value={item.ID} key={item.ID}>
                       {item.Name}
-                    </MenuItem> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
+                    </option> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
                   )
                 )}
               </Select>
@@ -276,19 +278,21 @@ function EditEquipmentPurchasing({ Cancle, Data }: EditBookPurchasing) {
               <p>บริษัท</p>
 
               <Select
+                native
                 value={equipmentpurchasing.CompanyID}
                 onChange={handleChange}
                 inputProps={{
                   name: "CompanyID", //เอาไว้เข้าถึงข้อมูลแพลนนิ่งไอดี
                 }}
               >
+                <option aria-label="None" value=""></option>
                 {company.map(
                   (
                     item: CompanyInterface //map
                   ) => (
-                    <MenuItem value={item.ID} key={item.ID}>
+                    <option value={item.ID} key={item.ID}>
                       {item.Name}
-                    </MenuItem> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
+                    </option> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
                   )
                 )}
               </Select>
