@@ -32,13 +32,13 @@ type BorrowEquipment struct {
 func init() {
 	govalidator.CustomTypeTagMap.Set("Past", func(i interface{}, context interface{}) bool {
 		t := i.(time.Time)
-		return t.After(time.Now().Add(time.Minute*-2)) || t.Equal(time.Now())
+		return t.After(time.Now().Add(time.Minute*-5)) || t.Equal(time.Now())
 		//return t.Before(time.Now())
 	})
 
 	govalidator.CustomTypeTagMap.Set("Future", func(i interface{}, context interface{}) bool {
 		t := i.(time.Time)
-		return t.Before(time.Now().Add(time.Minute*24)) || t.Equal(time.Now())
+		return t.Before(time.Now().Add(time.Minute*5)) || t.Equal(time.Now())
 
 		// now := time.Now()
 		// return now.Before(time.Time(t))
