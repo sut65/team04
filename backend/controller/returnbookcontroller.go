@@ -49,17 +49,18 @@ func CreateReturnBook(c *gin.Context) { // c รับข้อมูลมา�
 		return
 	}
 
+	localtime := returnbook.Current_Day.Local()
 	// : สร้าง ReturnBook
 	ps := entity.ReturnBook{
 		LostBook:       lostbook,                  // โยงความสัมพันธ์กับ Entity LostBook
 		Librarian:      librarian,                 // โยงความสัมพันธ์กับ Entity Librarian
 		BorrowBook:     borrowbook,                // โยงความสัมพันธ์กับ Entity BorrowBook
-		Current_Day:    returnbook.Current_Day,    // ตั้งค่าฟิลด์ Current_Day
+		Current_Day:    localtime,                 // ตั้งค่าฟิลด์ Current_Day
 		Late_Number:    returnbook.Late_Number,    // ตั้งค่าฟิลด์ Late_Number
 		Book_Condition: returnbook.Book_Condition, // ตั้งค่าฟิลด์ Book_Condition
 		ForfeitCheck:   false,
 	}
-
+	// Validation
 	if _, err := govalidator.ValidateStruct(returnbook); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -103,6 +104,11 @@ func UpdateReturnBook(c *gin.Context) {
 	}
 	if tx := entity.DB().Where("id = ?", returnbook.ID).First(&entity.ReturnBook{}); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "returnbook not found"}) //เช็คว่ามีไอดีอยู่ในดาต้าเบสมั้ย
+		return
+	}
+	// Validation
+	if _, err := govalidator.ValidateStruct(returnbook); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	if err := entity.DB().Save(&returnbook).Error; err != nil {
