@@ -17,9 +17,9 @@ type Payment struct {
 
 type Forfeit struct {
 	gorm.Model
-	Pay          int       `valid:"required~จำนวนค่าปรับต้องอยู่ระหว่าง 0-14600 บาท กรุณาลองใหม่อีกครั้ง, range(0|14600)~จำนวนค่าปรับต้องอยู่ระหว่าง 0-14600 บาท กรุณาลองใหม่อีกครั้ง"`
+	Pay          int       `valid:"IsPositive~จำนวนค่าปรับต้องมากกว่าหรือเท่ากับ 0 กรุณาลองใหม่อีกครั้ง"`
 	Pay_Date     time.Time `valid:"present~วันที่บันทึกการชำระค่าปรับต้องเป็นปัจจุบัน"`
-	Note         string    `valid:"required~กรุณากรอกข้อมูลการหาหนังสือมาคืน"`
+	Note         string    `valid:"required~กรุณากรอกข้อมูลการหาหนังสือมาคืน, maxstringlength(70)~ข้อมูลการหาหนังสือมาคืนต้องมีความยาวไม่เกิน 70 ตัว"`
 	ModulateNote string    `valid:"required~กรุณากรอกข้อมูลการขอลดหย่อน"`
 
 	ReturnBookID *uint
@@ -36,8 +36,19 @@ type Forfeit struct {
 func init() {
 	govalidator.CustomTypeTagMap.Set("present", func(i interface{}, context interface{}) bool {
 		t := i.(time.Time)
-		now := time.Now()
-		return t.After(now.Add(3-time.Minute)) && t.Before(now.Add(3+time.Minute))
+		return t.After(time.Now().Add(10-time.Minute)) && t.Before(time.Now().Add(10+time.Minute))
+	})
+
+	govalidator.CustomTypeTagMap.Set("IsPositive", func(i interface{}, context interface{}) bool {
+		t := i.(int)
+		if t < 0 {
+			return false
+		}
+		if t > 14600 {
+			return false
+		} else {
+			return true
+		}
 	})
 
 }

@@ -131,8 +131,7 @@ func DeleteReturnBook(c *gin.Context) {
 func ListReturnBookNoForfeitCheck(c *gin.Context) {
 
 	var returnBook []entity.ReturnBook
-	Id := c.Param("id")
-	if err := entity.DB().Model(&entity.ReturnBook{}).Where("ID = ?", Id).Preload("BorrowBook.User").Preload("BorrowBook").Preload("BorrowBook.BookPurchasing").Preload("BorrowBook.BookPurchasing.BookCategory").Preload("LostBook").Preload("Librarian").Raw("SELECT * FROM return_books where forfeit_check = false").Find(&returnBook).Error; err != nil {
+	if err := entity.DB().Model(&entity.ReturnBook{}).Preload("BorrowBook.User").Preload("BorrowBook").Preload("BorrowBook.BookPurchasing").Preload("BorrowBook.BookPurchasing.BookCategory").Preload("LostBook").Preload("Librarian").Raw("SELECT * FROM return_books where forfeit_check = false").Find(&returnBook).Error; err != nil {
 
 		//Preload เหมือนจอยตาราง จอยตารางpatient
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

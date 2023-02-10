@@ -37,7 +37,7 @@ func TestForfeitPay(t *testing.T) {
 	g := NewGomegaWithT(t)
 
 	fixture := []int{
-		-2, -1, 14601}
+		-2, -1}
 
 	for _, pay := range fixture {
 		forfeit := Forfeit{
@@ -57,32 +57,55 @@ func TestForfeitPay(t *testing.T) {
 		g.Expect(err).ToNot(BeNil())
 
 		// err.Error ต้องมี error message แสดงออกมา
-		g.Expect(err.Error()).To(Equal("จำนวนค่าปรับต้องอยู่ระหว่าง 0-14600 บาท กรุณาลองใหม่อีกครั้ง"))
-
+		g.Expect(err.Error()).To(Equal("จำนวนค่าปรับต้องมากกว่าหรือเท่ากับ 0 กรุณาลองใหม่อีกครั้ง"))
 	}
 }
 
 func TestForfeitNote(t *testing.T) {
 	g := NewGomegaWithT(t)
 
-	forfeit := Forfeit{
-		Pay:          25,
-		Pay_Date:     time.Now(),
-		Note:         "", //ผิด
-		ModulateNote: "ไม่มี",
-	}
+	t.Run("Check Note", func(t *testing.T) {
+		forfeit := Forfeit{
+			Pay:          25,
+			Pay_Date:     time.Now(),
+			Note:         "", //ผิด
+			ModulateNote: "ไม่มี",
+		}
 
-	//ตรวจสอบด้วย govalidator
-	ok, err := govalidator.ValidateStruct(forfeit)
+		//ตรวจสอบด้วย govalidator
+		ok, err := govalidator.ValidateStruct(forfeit)
 
-	//ok ต้องไม่เป็นค่า true แปลว่าต้องจับ err ได้
-	g.Expect(ok).ToNot(BeTrue())
+		//ok ต้องไม่เป็นค่า true แปลว่าต้องจับ err ได้
+		g.Expect(ok).ToNot(BeTrue())
 
-	// err ต้องไม่เป็นค่า nil แปลว่าต้องจับ error ได้
-	g.Expect(err).ToNot(BeNil())
+		// err ต้องไม่เป็นค่า nil แปลว่าต้องจับ error ได้
+		g.Expect(err).ToNot(BeNil())
 
-	// err.Error ต้องมี error message แสดงออกมา
-	g.Expect(err.Error()).To(Equal("กรุณากรอกข้อมูลการหาหนังสือมาคืน"))
+		// err.Error ต้องมี error message แสดงออกมา
+		g.Expect(err.Error()).To(Equal("กรุณากรอกข้อมูลการหาหนังสือมาคืน"))
+
+	})
+
+	t.Run("Check Note max 70", func(t *testing.T) {
+		forfeit := Forfeit{
+			Pay:          375,
+			Pay_Date:     time.Now(),
+			Note:         "หนังสือที่หามาคืนมีพิมพ์ครั้งเดียวกันกับหนังสือที่หายไปปปปปปปปปปปปปปปปปปปปปปปปปป", //ผิด
+			ModulateNote: "ไม่มี",
+		}
+
+		//ตรวจสอบด้วย govalidator
+		ok, err := govalidator.ValidateStruct(forfeit)
+
+		//ok ต้องไม่เป็นค่า true แปลว่าต้องจับ err ได้
+		g.Expect(ok).ToNot(BeTrue())
+
+		// err ต้องไม่เป็นค่า nil แปลว่าต้องจับ error ได้
+		g.Expect(err).ToNot(BeNil())
+
+		// err.Error ต้องมี error message แสดงออกมา
+		g.Expect(err.Error()).To(Equal("ข้อมูลการหาหนังสือมาคืนต้องมีความยาวไม่เกิน 70 ตัว"))
+	})
 
 }
 
@@ -114,8 +137,8 @@ func TestPayDateMustBePresent(t *testing.T) {
 	g := NewGomegaWithT(t)
 
 	fixtures := []time.Time{
-		time.Now().Add(24 * time.Hour),
-		time.Now().Add(24 - time.Hour),
+		time.Now().Add(+24 * time.Hour),
+		time.Now().Add(-24 * time.Hour),
 	}
 
 	for _, paydate := range fixtures {
