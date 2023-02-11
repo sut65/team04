@@ -117,7 +117,7 @@ function EditConfirmation({ Cancle, Data }: Confirmation) {
         ReceiverID: convertType(confirmation.ReceiverID),
         NoteName: confirmation.NoteName,
         NoteTel: confirmation.NoteTel,
-        Datetime: date,
+        Date: date,
         LibrarianID: Number(localStorage.getItem("nid")),
     };
 
