@@ -138,7 +138,7 @@ function Confirmation() {
     { field: "ID", headerName: "ลำดับ", width: 20 },
     {
       field: "PreorderID",
-      headerName: "เลขรายการสั่งซื้อ",
+      headerName: "เลขใบรายการสั่งซื้อ",
       width: 120,
       valueGetter: (params) => {
         return params.getValue(params.id, "Preorder").ID;
@@ -162,24 +162,24 @@ function Confirmation() {
     },
     {
       field: "NoteName",
-      headerName: "หมายเหตุชื่อผู้รับ",
+      headerName: "ชื่อผู้รับ",
       width: 200,
     },
     { 
       field: "NoteTel", 
-      headerName: "หมายเหตุเบอร์ผู้รับ", 
-      width: 110,
+      headerName: "เบอร์โทรผู้รับ", 
+      width: 200,
     },
     
     {
       field: "Date",
-      headerName: "วันที่ส่งมอบหนังสือ",
+      headerName: "วันที่ส่งมอบ",
       width: 200,
       valueFormatter: (params) => format(new Date(params?.value), "dd/MM/yyyy"),
     },
     {
       field: "LibrarianName",
-      headerName: "บรรณารักษ์ผู้บันทึก",
+      headerName: "ผู้บันทึกข้อมูล",
       width: 150,
       valueGetter: (params) => {
         return params.getValue(params.id, "Librarian").Name;
