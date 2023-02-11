@@ -17,7 +17,7 @@ func TestConfirmationNoteNameNotBlank(t *testing.T) {
 
 			NoteName: "", //ผิด
 			NoteTel:  "0847852369",
-			Datetime: time.Now(),
+			Date:     time.Now(),
 		}
 		ok, err := govalidator.ValidateStruct(confirm)
 
@@ -44,7 +44,7 @@ func TestNoteTelMustBeInValidPattern(t *testing.T) {
 		c := Confirmation{
 			NoteName: "Maprang Saengarun",
 			NoteTel:  fixture, //ผิด
-			Datetime: time.Now(),
+			Date:     time.Now(),
 		}
 
 		// ตรวจสอบด้วย govalidator
@@ -69,7 +69,7 @@ func TestDateTimeMustBePresent(t *testing.T) {
 		confirm := Confirmation{
 			NoteName: "Maprang Saengarun",
 			NoteTel:  "0987456321",
-			Datetime: fixture, //ผิด
+			Date:     fixture, //ผิด
 		}
 
 		ok, err := govalidator.ValidateStruct(confirm)
@@ -81,6 +81,6 @@ func TestDateTimeMustBePresent(t *testing.T) {
 		g.Expect(err).ToNot(BeNil())
 
 		// err.Error ต้องมี error message แสดงออกมา
-		g.Expect(err.Error()).To(Equal("วันเวลาควรเป็นปัจจุบัน"))
+		g.Expect(err.Error()).To(Equal("วันที่ควรเป็นปัจจุบัน"))
 	}
 }

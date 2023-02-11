@@ -62,7 +62,7 @@ function EditConfirmation({ Cancle, Data }: Confirmation) {
   const [preorder, setPreorder] = useState<PreorderInterface[]>([]);
   const [receiver, setReceiver] = useState<ReceiverInterface[]>([]);
   const [Librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
-  const [datetime, setDatetime] = React.useState<Date | null>();
+  const [date, setDate] = React.useState<Date | null>();
 
   const [confirmation, setConfirmation] = useState<Partial<ConfirmationInterface>>({
     ID: Data?.ID,
@@ -70,7 +70,7 @@ function EditConfirmation({ Cancle, Data }: Confirmation) {
     ReceiverID: Data?.ReceiverID,
     NoteName: Data?.NoteName,
     NoteTel: Data?.NoteTel,
-    Datetime: Data?.Datetime,
+    Date: Data?.Date,
     LibrarianID: Data?.LibrarianID,
   });
 
@@ -117,7 +117,7 @@ function EditConfirmation({ Cancle, Data }: Confirmation) {
         ReceiverID: convertType(confirmation.ReceiverID),
         NoteName: confirmation.NoteName,
         NoteTel: confirmation.NoteTel,
-        Datetime: datetime,
+        Datetime: date,
         LibrarianID: Number(localStorage.getItem("nid")),
     };
 
@@ -266,10 +266,10 @@ function EditConfirmation({ Cancle, Data }: Confirmation) {
         <Divider />
         <Grid container spacing={3} sx={{ padding: 2 }}>
        
-        <Grid item xs={6}>
+         <Grid item xs={6}>
             <FormControl variant="standard">
             
-            <p>ใบรายการสั่งซื้อ</p>
+            <p>เลขบัตรประชาชนของสมาชิก</p>
 
                 <NativeSelect
                     value={confirmation.PreorderID}
@@ -281,11 +281,11 @@ function EditConfirmation({ Cancle, Data }: Confirmation) {
                     
                     >
                     <option aria-label="None" value="">
-                        กรุณาเลือกใบรายการสั่งซื้อ
+                     กรุณาเลือกเลขบัตรประจำตัวประชาชน
                     </option>
                     {preorder.map((item: PreorderInterface) => (
                         <option value={item.ID} key={item.ID}>
-                        {item.ID} 
+                        {item.User.Idcard}
                         </option>
                     ))}
                 
@@ -395,7 +395,7 @@ function EditConfirmation({ Cancle, Data }: Confirmation) {
 
           <Grid item xs={3}>
             <FormControl variant="standard">
-            <p>วันเวลาที่สั่งซื้อ</p>
+            <p>วันที่สั่งซื้อ</p>
                 <NativeSelect
                     value={confirmation.PreorderID}
                     disabled
@@ -474,12 +474,12 @@ function EditConfirmation({ Cancle, Data }: Confirmation) {
           </Grid>
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
-              <p>วันที่เวลาที่ส่งมอบ</p>
+              <p>วันที่ส่งมอบ</p>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DateTimePicker
-                  value={datetime}
+                <DatePicker
+                  value={date}
                   onChange={(newValue) => {
-                    setDatetime(newValue);
+                    setDate(newValue);
                   }}
                   renderInput={(params) => <TextField {...params} />}
                 />

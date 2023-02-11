@@ -27,7 +27,7 @@ type Confirmation struct {
 
 	NoteName string    `valid:"required~กรุณากรอกชื่อผู้รับหนังสือ"`
 	NoteTel  string    `valid:"required~รูปแบบเบอร์โทรผู้รับไม่ถูกต้อง ,matches(^0([6|8|9])([0-9]{8}$))~รูปแบบเบอร์โทรผู้รับไม่ถูกต้อง"`
-	Datetime time.Time `valid:"present~วันเวลาควรเป็นปัจจุบัน"`
+	Date     time.Time `valid:"present~วันที่ควรเป็นปัจจุบัน"`
 
 	LibrarianID *uint
 	Librarian   Librarian `gorm:"references:id;" valid:"-"`
