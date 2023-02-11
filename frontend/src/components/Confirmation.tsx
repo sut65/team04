@@ -172,10 +172,10 @@ function Confirmation() {
     },
     
     {
-      field: "Datetime",
-      headerName: "วันเวลาที่รับหนังสือ",
+      field: "Date",
+      headerName: "วันที่ส่งมอบหนังสือ",
       width: 200,
-      valueFormatter: (params) => format(new Date(params?.value), "P hh:mm a"),
+      valueFormatter: (params) => format(new Date(params?.value), "dd/MM/yyyy"),
     },
     {
       field: "LibrarianName",
