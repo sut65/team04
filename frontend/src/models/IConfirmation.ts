@@ -13,7 +13,7 @@ export interface ConfirmationInterface{
 
     NoteName: string
     NoteTel: string
-    Datetime: Date
+    Date: Date
 
     LibrarianID: number
     Librarian: LibrarianInterface
