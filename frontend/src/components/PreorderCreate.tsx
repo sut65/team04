@@ -240,7 +240,7 @@ function PreorderCreate() {
               color="primary"
               gutterBottom
             >
-              สร้างใบรายการคำสั่งซื้อ
+              สร้างใบรายการคำสั่งซื้อหนังสือ
             </Typography>
           </Box>
         </Box>
@@ -316,13 +316,13 @@ function PreorderCreate() {
 
           <Grid item xs={6}>
             <FormControl fullWidth variant="outlined">
-              <p>จำนวนเล่มที่จะซื้อ</p>
+              <p>จำนวนเล่ม</p>
               <TextField
                 id="Quantity"
                 variant="outlined"
                 InputProps={{ inputProps: { min: 0 , max: 5} }}
                 type="number"
-                placeholder="กรุณากรอกจำนวนเล่มที่จะซื้อ"
+                placeholder="กรุณากรอกจำนวนเล่ม"
                 size="medium"
                 rows={2}
                 value={preorder.Quantity || ""}
@@ -348,13 +348,13 @@ function PreorderCreate() {
 
           <Grid item xs={6}>
             <FormControl fullWidth variant="outlined">
-              <p>พิมพ์ครั้งที่</p>
+              <p>การพิมพ์ครั้งที่</p>
               <TextField
                 id="Edition"
                 variant="outlined"
                 InputProps={{ inputProps: { min: 0  }}}
                 type="number"
-                placeholder="กรุณากรอกจำนวนครั้งที่พิมพ์"
+                placeholder="กรุณากรอกการพิมพ์ครั้งที่"
                 size="medium"
                 rows={2}
                 value={preorder.Edition || ""}
@@ -380,13 +380,13 @@ function PreorderCreate() {
 
           <Grid item xs={6}>
             <FormControl fullWidth variant="outlined">
-              <p>ราคา</p>
+              <p>ราคาหนังสือ</p>
               <TextField
                 id="Price"
                 variant="outlined"
                 InputProps={{ inputProps: { min: 0 } }}
                 type="number"
-                placeholder="กรุณากรอกราคา"
+                placeholder="กรุณากรอกราคาหนังสือ"
                 size="medium"
                 rows={2}
                 value={preorder.Price || ""}
@@ -397,11 +397,12 @@ function PreorderCreate() {
 
           <Grid item xs={6}>
             <FormControl fullWidth variant="outlined">
-              <p>ราคาทั้งหมด</p>
+              <p>ราคารวมทั้งหมด</p>
               <TextField
                 id="Totalprice"
                 variant="outlined"
                 // InputProps={{ inputProps: { min: 0} }}
+                placeholder="กรุณากรอกราคารวมทั้งหมด"
                 type="number"
                 size="medium"
                 rows={2}
@@ -451,7 +452,7 @@ function PreorderCreate() {
 
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
-              <p>ผู้ทำรายการ</p>
+              <p>ผู้บันทึกข้อมูล</p>
 
               <Select
                 disabled
