@@ -57,7 +57,7 @@ function ConfirmationCreate() {
   const [confirmation, setConfirmation] = useState<Partial<ConfirmationInterface>>({});
 
   const [Librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
-  const [datetime, setDatetime] = React.useState<Date | null>();
+  const [date, setDate] = React.useState<Date | null>();
 
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
@@ -171,7 +171,7 @@ function ConfirmationCreate() {
 
         NoteName: confirmation.NoteName,
         NoteTel: confirmation.NoteTel,
-        Datetime: datetime,
+        Date: date,
         
         LibrarianID: Number(localStorage.getItem("nid")),
     };
@@ -263,7 +263,7 @@ function ConfirmationCreate() {
         <Grid item xs={6}>
             <FormControl variant="standard">
             
-            <p>ใบรายการสั่งซื้อ</p>
+            <p>เลขบัตรประชาชนของสมาชิก</p>
 
                 <NativeSelect
                     value={confirmation.PreorderID}
@@ -275,11 +275,11 @@ function ConfirmationCreate() {
                     
                     >
                     <option aria-label="None" value="">
-                        กรุณาเลือกใบรายการสั่งซื้อ
+                     กรุณาเลือกเลขบัตรประจำตัวประชาชน
                     </option>
                     {preorder.map((item: PreorderInterface) => (
                         <option value={item.ID} key={item.ID}>
-                        {item.ID} 
+                        {item.User.Idcard}
                         </option>
                     ))}
                 
@@ -304,7 +304,7 @@ function ConfirmationCreate() {
                     </option>
                     {preorder.map((item: PreorderInterface) => (
                         <option value={item.ID} key={item.ID}>
-                        {item.User.Idcard}, {item.User.Name}, {item.User.Tel} 
+                        {item.User.Name}, {item.User.Tel} 
                         </option>
                     ))}
                 
@@ -389,7 +389,7 @@ function ConfirmationCreate() {
 
           <Grid item xs={3}>
             <FormControl variant="standard">
-            <p>วันเวลาที่สั่งซื้อ</p>
+            <p>วันที่สั่งซื้อ</p>
                 <NativeSelect
                     value={confirmation.PreorderID}
                     disabled
@@ -468,12 +468,12 @@ function ConfirmationCreate() {
           </Grid>
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
-              <p>วันที่เวลาที่ส่งมอบ</p>
+              <p>วันที่ส่งมอบ</p>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DateTimePicker
-                  value={datetime}
+                <DatePicker
+                  value={date}
                   onChange={(newValue) => {
-                    setDatetime(newValue);
+                    setDate(newValue);
                   }}
                   renderInput={(params) => <TextField {...params} />}
                 />
