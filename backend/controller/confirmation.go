@@ -52,7 +52,7 @@ func CreateConfirmation(c *gin.Context) {
 		Receiver:  receiver,              //โยงความสัมพันธ์กับ Entity receiver
 		NoteName:  confirmation.NoteName, //ตั้งค่าฟิลด์ note_name
 		NoteTel:   confirmation.NoteTel,  //ตั้งค่าฟิลด์ note_tel
-		Datetime:  confirmation.Datetime, //ตั้งค่าฟิลด์ datetime
+		Date:      confirmation.Date,     //ตั้งค่าฟิลด์ datetime
 		Librarian: librarian,             // โยงความสัมพันธ์กับ Entity librarian
 
 	}
