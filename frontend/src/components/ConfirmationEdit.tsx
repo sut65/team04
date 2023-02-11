@@ -269,7 +269,7 @@ function EditConfirmation({ Cancle, Data }: Confirmation) {
          <Grid item xs={6}>
             <FormControl variant="standard">
             
-            <p>เลขบัตรประชาชนของสมาชิก</p>
+            <p>เลขบัตรประจำตัวประชาชน</p>
 
                 <NativeSelect
                     value={confirmation.PreorderID}
@@ -295,7 +295,7 @@ function EditConfirmation({ Cancle, Data }: Confirmation) {
 
           <Grid item xs={6}>
             <FormControl variant="standard">
-            <p>สมาชิกห้องสมุด</p>
+            <p>ข้อมูลของสมาชิก</p>
                 <NativeSelect
                     value={confirmation.PreorderID}
                     disabled
@@ -317,6 +317,12 @@ function EditConfirmation({ Cancle, Data }: Confirmation) {
                 </NativeSelect>
             </FormControl>
           </Grid>
+
+          <Grid item xs={12}>
+          <FormControl variant="standard">
+            <Typography>รายละเอียดใบรายการสั่งซื้อหนังสือ ดังนี้</Typography>
+          </FormControl>
+         </Grid>
             
           <Grid item xs={3}>
             <FormControl variant="standard">
@@ -345,7 +351,7 @@ function EditConfirmation({ Cancle, Data }: Confirmation) {
 
           <Grid item xs={3}>
             <FormControl variant="standard">
-            <p>จำนวน</p>
+            <p>จำนวนเล่ม</p>
                 <NativeSelect
                     value={confirmation.PreorderID}
                     disabled
@@ -370,7 +376,7 @@ function EditConfirmation({ Cancle, Data }: Confirmation) {
 
           <Grid item xs={3}>
             <FormControl variant="standard">
-            <p>ราคาทั้งหมด</p>
+            <p>ราคารวมทั้งหมด</p>
                 <NativeSelect
                     value={confirmation.PreorderID}
                     disabled
@@ -442,11 +448,15 @@ function EditConfirmation({ Cancle, Data }: Confirmation) {
             </FormControl>
           </Grid>
           
-          
+          <Grid item xs={12}>
+          <FormControl variant="standard">
+            <Typography>กรุณากรอกรายละเอียดการรับหนังสือ</Typography>
+          </FormControl>
+         </Grid>
 
           <Grid item xs={6}>
             <FormControl fullWidth variant="outlined">
-              <p>หมายเหตุชื่อผู้รับ</p>
+              <p>ชื่อผู้รับ</p>
               <TextField
                 id="NoteName"
                 variant="outlined"
@@ -460,7 +470,7 @@ function EditConfirmation({ Cancle, Data }: Confirmation) {
           </Grid>
           <Grid item xs={6}>
             <FormControl fullWidth variant="outlined">
-              <p>หมายเหตุเบอร์โทรผู้รับ</p>
+              <p>เบอร์โทรผู้รับ</p>
               <TextField
                 id="NoteTel"
                 variant="outlined"
@@ -489,7 +499,7 @@ function EditConfirmation({ Cancle, Data }: Confirmation) {
 
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
-              <p>ผู้ทำการส่งมอบ</p>
+              <p>ผู้บันทึกข้อมูล</p>
 
               <Select
                 disabled

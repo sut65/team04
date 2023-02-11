@@ -135,7 +135,7 @@ function Preorder() {
     { field: "ID", headerName: "ลำดับ", width: 20 },
     {
       field: "UserID",
-      headerName: "เลขบัตรประชาชน",
+      headerName: "เลขบัตรประจำตัวประชาชน",
       width: 120,
       valueGetter: (params) => {
         return params.getValue(params.id, "User").Idcard;
@@ -151,7 +151,7 @@ function Preorder() {
     },
 
     {field: "Name",headerName: "ชื่อหนังสือ", width: 140,},
-    {field: "Quantity",headerName: "จำนวน", width: 80,},
+    {field: "Quantity",headerName: "จำนวนเล่ม", width: 80,},
     {field: "Price",headerName: "ราคา", width: 50,},
     {field: "Totalprice",headerName: "ราคารวม", width: 100,},
 
@@ -167,7 +167,7 @@ function Preorder() {
     },
     {
       field: "LibrarianName",
-      headerName: "บรรณารักษ์ผู้บันทึก",
+      headerName: "ผู้บันทึกข้อมูล",
       width: 150,
       valueGetter: (params) => {
         return params.getValue(params.id, "Librarian").Name;
