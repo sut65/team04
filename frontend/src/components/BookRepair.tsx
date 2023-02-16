@@ -1,5 +1,6 @@
 import React from "react";
 import { useEffect, useState, useCallback } from "react";
+import EditBookRepair from "./BookRepairEdit";
 import { BookRepairInterface } from "../models/IBookRepair";
 import { DataGrid, GridRowsProp, GridColDef } from "@mui/x-data-grid";
 import { format } from "date-fns";
@@ -32,16 +33,21 @@ function BookRepair() {
   const [success, setSuccess] = useState(false); //จะยังไม่ให้แสดงบันทึกข้อมูล
   const [error, setError] = useState(false);
   const [opendelete, setOpenDelete] = useState(false);
+  const [openedit, setOpenEdit] = useState(false);
+  const [selectcellData, setSelectcellData] = useState<BookRepairInterface>();
 
   const [selectcell, setSelectCell] = useState(Number);
   const handleCellFocus = useCallback(
     (event: React.FocusEvent<HTMLDivElement>) => {
       const row = event.currentTarget.parentElement;
       const id = row!.dataset.id!;
+      const b = bookrepair.filter((v) => Number(v.ID) == Number(id));
       const field = event.currentTarget.dataset.field!;
+      console.log(b[0]);
+      setSelectcellData(b[0]);
       setSelectCell(Number(id));
     },
-    []
+    [bookrepair]
   );
   const handleClose = (
     event?: React.SyntheticEvent | Event,
@@ -65,9 +71,14 @@ function BookRepair() {
   const handleDelete = () => {
     setOpenDelete(true);
   };
-
+  const handleEdit = () => {
+    setOpenEdit(true);
+  };
   const handleDeleteClose = () => {
     setOpenDelete(false);
+  };
+  const handleEditClose = () => {
+    setOpenEdit(false);
   };
   const DeleteBookRepair = async (id: Number) => {
     const apiUrl = `http://localhost:8080/bookrepair/${id}`;
@@ -161,6 +172,7 @@ function BookRepair() {
         <div>
           &nbsp;
           <Button
+            onClick={handleEdit}
             variant="contained"
             size="small"
             startIcon={<EditIcon />}
@@ -222,6 +234,20 @@ function BookRepair() {
             <Button onClick={handleClickDelete} autoFocus>
               ตกลง
             </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog
+          open={openedit}
+          onClose={handleEditClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogActions>
+            <EditBookRepair
+              Cancle={handleEditClose}
+              Data={selectcellData}
+            />
           </DialogActions>
         </Dialog>
         <Box
