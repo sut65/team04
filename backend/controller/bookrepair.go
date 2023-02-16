@@ -39,12 +39,13 @@ func CreateBookRepair(c *gin.Context) { // c รับข้อมูลมา�
 		c.JSON(http.StatusBadRequest, gin.H{"error": "level not found"})
 		return
 	}
+	localtime := bookpurchasing.Date.Local()
 
 	//12: สร้าง bookrepair
 	br := entity.BookRepair{
 		BookPurchasingID: bookrepair.BookPurchasingID,
 		LevelID:          bookrepair.LevelID,
-		Date:             bookrepair.Date,
+		Date:             localtime,
 		Note:             bookrepair.Note,
 		LibrarianID:      bookrepair.LibrarianID,
 	}
@@ -100,6 +101,10 @@ func UpdateBookRepair(c *gin.Context) {
 	}
 	if tx := entity.DB().Where("id = ?", bookrepair.ID).First(&entity.BookRepair{}); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "bookrepair not found"}) //เช็คว่ามีไอดีอยู่ในดาต้าเบสมั้ย
+		return
+	}
+	if _, err := govalidator.ValidateStruct(bookrepair); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	if err := entity.DB().Save(&bookrepair).Error; err != nil {

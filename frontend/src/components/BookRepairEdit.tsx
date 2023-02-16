@@ -13,15 +13,15 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { DatePicker } from "@mui/x-date-pickers";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useEffect, useState } from "react";
 import { BookPurchasingInterface } from "../models/IBookPurchasing";
 import { LibrarianInterface } from "../models/ILibrarian";
-import { LevelInterface } from "../models/ILevel";
 import { BookRepairInterface } from "../models/IBookRepair";
+import { LevelInterface } from "../models/ILevel";
+import { type } from "os";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -31,19 +31,28 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-function BookRepairCreate() {
+interface BookRepair {
+  Cancle: () => void;
+  Data: BookRepairInterface | undefined;
+}
+
+function EditBookRepair({ Cancle, Data }: BookRepair) {
   const [date, setDate] = useState<Date | null>();
-  const [bookrepair, setBookRepair] = useState<Partial<BookRepairInterface>>(
-    {}
-  ); //Partial ชิ้นส่วนเอาไว้เซทข้อมูลที่ละส่วน
+  const [bookrepair, setBookRepair] = useState<
+    Partial<BookRepairInterface>
+  >({
+    ID: Data?.ID,
+    BookPurchasingID: Data?.BookPurchasingID,
+    LevelID: Data?.LevelID,
+    Date: Data?.Date,
+    Note: Data?.Note,
+    LibrarianID: Data?.LibrarianID,
+  }); //Partial ชิ้นส่วนเอาไว้เซทข้อมูลที่ละส่วน
   const [success, setSuccess] = useState(false); //จะยังไม่ให้แสดงบันทึกข้อมูล
   const [error, setError] = useState(false);
+  const [bookpurchasing, setBookPurchasing] = useState<BookPurchasingInterface[]>([]);
   const [level, setLevel] = useState<LevelInterface[]>([]);
-  const [bookpurchasing, setBookPurchasing] = useState<
-    BookPurchasingInterface[]
-  >([]);
   const [librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
-
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleClose = (
@@ -88,9 +97,10 @@ function BookRepairCreate() {
   function submit() {
     let data = {
       //เก็บข้อมูลที่จะเอาไปเก็บในดาต้าเบส
+      ID: Number(bookrepair.ID),
       BookPurchasingID: Number(bookrepair.BookPurchasingID),
       LevelID: Number(bookrepair.LevelID),
-      Date: date?.toISOString(),
+      Date: date?.toISOString(), //?.toISOString()
       Note: (bookrepair.Note) ?? "",
       LibrarianID: Number(localStorage.getItem("nid")),
     };
@@ -98,7 +108,7 @@ function BookRepairCreate() {
 
     const apiUrl = "http://localhost:8080/bookrepair";
     const requestOptions = {
-      method: "POST", //เอาข้อมูลไปเก็บไว้ในดาต้าเบส
+      method: "PATCH", //เอาข้อมูลไปเก็บไว้ในดาต้าเบส
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`, //การยืนยันตัวตน
         "Content-Type": "application/json",
@@ -114,6 +124,7 @@ function BookRepairCreate() {
         if (res.data) {
           console.log("บันทึกได้");
           setSuccess(true);
+          //window.location.reload();
           setErrorMessage("");
         } else {
           console.log("บันทึกไม่ได้");
@@ -121,18 +132,6 @@ function BookRepairCreate() {
           setErrorMessage(res.error);
         }
       });
-    // fetch(apiUrl, requestOptions)
-    //   .then((response) => response.json()) //มี then เพื่อรับ response มา
-
-    //   .then((res) => {
-    //     console.log(res);
-    //     if (res.data) {
-    //       setSuccess(true);
-    //       //   getPlanning();
-    //     } else {
-    //       setError(true);
-    //     }
-    //   });
   }
   const requestOptions = {
     method: "GET",
@@ -165,6 +164,8 @@ function BookRepairCreate() {
         console.log(res.data);
         if (res.data) {
           setBookPurchasing(res.data);
+        } else {
+          console.log(res.err);
         }
       });
   };
@@ -192,22 +193,6 @@ function BookRepairCreate() {
 
   return (
     <Container maxWidth="md">
-      {/* <Snackbar
-        open={success}
-        autoHideDuration={6000}
-        onClose={handleClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert onClose={handleClose} severity="success">
-          บันทึกข้อมูลสำเร็จ
-        </Alert>
-      </Snackbar>
-    
-      <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error">
-          บันทึกข้อมูลไม่สำเร็จ
-        </Alert>
-      </Snackbar> */}
       <Snackbar
         id="success"
         open={success}
@@ -219,7 +204,6 @@ function BookRepairCreate() {
           บันทึกสำเร็จ
         </Alert>
       </Snackbar>
-
       <Snackbar
         id="error"
         open={error}
@@ -245,14 +229,14 @@ function BookRepairCreate() {
               color="primary"
               gutterBottom
             >
-              บันทึกการแจ้งซ่อมหนังสือ
+              แก้ไขการแจ้งซ่อมหนังสือ
             </Typography>
           </Box>
         </Box>
 
         <Divider />
         <Grid container spacing={3} sx={{ padding: 2 }}>
-          <Grid item xs={6}>
+        <Grid item xs={6}>
             <FormControl fullWidth variant="outlined">
               <b>
                 <p>ชื่อหนังสือที่แจ้งซ่อม</p>
@@ -357,9 +341,9 @@ function BookRepairCreate() {
               />
             </FormControl>
           </Grid>
-
+          
           <Grid item xs={12}>
-            <Button component={RouterLink} to="/bookrepair" variant="contained">
+            <Button variant="contained" onClick={Cancle}>
               กลับ
             </Button>
 
@@ -369,7 +353,7 @@ function BookRepairCreate() {
               variant="contained"
               color="success"
             >
-              บันทึกการแจ้งซ่อมหนังสือ
+              บันทึกการแก้ไข
             </Button>
           </Grid>
         </Grid>
@@ -378,4 +362,4 @@ function BookRepairCreate() {
   );
 }
 
-export default BookRepairCreate;
+export default EditBookRepair;
