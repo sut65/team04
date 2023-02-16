@@ -13,15 +13,15 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { DatePicker } from "@mui/x-date-pickers";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useEffect, useState } from "react";
-import { BookPurchasingInterface } from "../models/IBookPurchasing";
+import { EquipmentPurchasingInterface } from "../models/IEquipmentPurchasing";
 import { LibrarianInterface } from "../models/ILibrarian";
+import { EquipmentRepairInterface } from "../models/IEquipmentRepair";
 import { LevelInterface } from "../models/ILevel";
-import { BookRepairInterface } from "../models/IBookRepair";
+import { type } from "os";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -31,19 +31,28 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-function BookRepairCreate() {
+interface EquipmentRepair {
+  Cancle: () => void;
+  Data: EquipmentRepairInterface | undefined;
+}
+
+function EditEquipmentRepair({ Cancle, Data }: EquipmentRepair) {
   const [date, setDate] = useState<Date | null>();
-  const [bookrepair, setBookRepair] = useState<Partial<BookRepairInterface>>(
-    {}
-  ); //Partial ชิ้นส่วนเอาไว้เซทข้อมูลที่ละส่วน
+  const [equipmentrepair, setEquipmentRepair] = useState<
+    Partial<EquipmentRepairInterface>
+  >({
+    ID: Data?.ID,
+    EquipmentPurchasingID: Data?.EquipmentPurchasingID,
+    LevelID: Data?.LevelID,
+    Date: Data?.Date,
+    Note: Data?.Note,
+    LibrarianID: Data?.LibrarianID,
+  }); //Partial ชิ้นส่วนเอาไว้เซทข้อมูลที่ละส่วน
   const [success, setSuccess] = useState(false); //จะยังไม่ให้แสดงบันทึกข้อมูล
   const [error, setError] = useState(false);
+  const [equipmentpurchasing, setEquipmentPurchasing] = useState<EquipmentPurchasingInterface[]>([]);
   const [level, setLevel] = useState<LevelInterface[]>([]);
-  const [bookpurchasing, setBookPurchasing] = useState<
-    BookPurchasingInterface[]
-  >([]);
   const [librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
-
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleClose = (
@@ -64,41 +73,42 @@ function BookRepairCreate() {
   const handleInputChange = (
     event: React.ChangeEvent<{ id?: string; value: any }> //ชื่อคอมลัมน์คือ id และค่าที่จะเอามาใส่ไว้ในคอมลัมน์นั้นคือ value
   ) => {
-    const id = event.target.id as keyof typeof bookrepair; //
+    const id = event.target.id as keyof typeof equipmentrepair; //
     // console.log(event.target.id);
     // console.log(event.target.value);
 
     const { value } = event.target;
 
-    setBookRepair({ ...bookrepair, [id]: value });
+    setEquipmentRepair({ ...equipmentrepair, [id]: value });
   };
 
   const handleChange = (
     event: React.ChangeEvent<{ name?: string; value: any }> //ชื่อคอมลัมน์คือ name และค่าที่จะเอามาใส่ไว้ในคอมลัมน์นั้นคือ value
   ) => {
-    const name = event.target.name as keyof typeof bookrepair; //
+    const name = event.target.name as keyof typeof equipmentrepair; //
     console.log("name", event.target.name);
     console.log("value", event.target.value);
 
     const { value } = event.target;
 
-    setBookRepair({ ...bookrepair, [name]: value });
+    setEquipmentRepair({ ...equipmentrepair, [name]: value });
   };
 
   function submit() {
     let data = {
       //เก็บข้อมูลที่จะเอาไปเก็บในดาต้าเบส
-      BookPurchasingID: Number(bookrepair.BookPurchasingID),
-      LevelID: Number(bookrepair.LevelID),
-      Date: date,
-      Note: (bookrepair.Note) ?? "",
+      ID: Number(equipmentrepair.ID),
+      EquipmentPurchasingID: Number(equipmentrepair.EquipmentPurchasingID),
+      LevelID: Number(equipmentrepair.LevelID),
+      Date: date, //?.toISOString()
+      Note: (equipmentrepair.Note) ?? "",
       LibrarianID: Number(localStorage.getItem("nid")),
     };
     console.log(data);
 
-    const apiUrl = "http://localhost:8080/bookrepair";
+    const apiUrl = "http://localhost:8080/equipmentrepair";
     const requestOptions = {
-      method: "POST", //เอาข้อมูลไปเก็บไว้ในดาต้าเบส
+      method: "PATCH", //เอาข้อมูลไปเก็บไว้ในดาต้าเบส
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`, //การยืนยันตัวตน
         "Content-Type": "application/json",
@@ -114,6 +124,7 @@ function BookRepairCreate() {
         if (res.data) {
           console.log("บันทึกได้");
           setSuccess(true);
+          window.location.reload();
           setErrorMessage("");
         } else {
           console.log("บันทึกไม่ได้");
@@ -121,18 +132,6 @@ function BookRepairCreate() {
           setErrorMessage(res.error);
         }
       });
-    // fetch(apiUrl, requestOptions)
-    //   .then((response) => response.json()) //มี then เพื่อรับ response มา
-
-    //   .then((res) => {
-    //     console.log(res);
-    //     if (res.data) {
-    //       setSuccess(true);
-    //       //   getPlanning();
-    //     } else {
-    //       setError(true);
-    //     }
-    //   });
   }
   const requestOptions = {
     method: "GET",
@@ -155,8 +154,8 @@ function BookRepairCreate() {
       });
   };
 
-  const GetAllBookPurchasing = async () => {
-    const apiUrl = "http://localhost:8080/bookPurchasing";
+  const GetAllEquipmentPurchasing = async () => {
+    const apiUrl = "http://localhost:8080/equipmentPurchasing";
 
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
@@ -164,7 +163,9 @@ function BookRepairCreate() {
       .then((res) => {
         console.log(res.data);
         if (res.data) {
-          setBookPurchasing(res.data);
+          setEquipmentPurchasing(res.data);
+        } else {
+          console.log(res.err);
         }
       });
   };
@@ -185,29 +186,13 @@ function BookRepairCreate() {
   useEffect(() => {
     //ทำงานทุกครั้งที่เรารีเฟชหน้าจอ
     //ไม่ให้รันแบบอินฟินิตี้ลูป
-    GetAllBookPurchasing();
+    GetAllEquipmentPurchasing();
     GetAllLevel();
     GetAllLibrarian();
   }, []);
 
   return (
     <Container maxWidth="md">
-      {/* <Snackbar
-        open={success}
-        autoHideDuration={6000}
-        onClose={handleClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert onClose={handleClose} severity="success">
-          บันทึกข้อมูลสำเร็จ
-        </Alert>
-      </Snackbar>
-    
-      <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error">
-          บันทึกข้อมูลไม่สำเร็จ
-        </Alert>
-      </Snackbar> */}
       <Snackbar
         id="success"
         open={success}
@@ -219,7 +204,6 @@ function BookRepairCreate() {
           บันทึกสำเร็จ
         </Alert>
       </Snackbar>
-
       <Snackbar
         id="error"
         open={error}
@@ -245,35 +229,35 @@ function BookRepairCreate() {
               color="primary"
               gutterBottom
             >
-              บันทึกการแจ้งซ่อมหนังสือ
+              แก้ไขการแจ้งซ่อมอุปกรณ์
             </Typography>
           </Box>
         </Box>
 
         <Divider />
         <Grid container spacing={3} sx={{ padding: 2 }}>
-          <Grid item xs={6}>
+        <Grid item xs={6}>
             <FormControl fullWidth variant="outlined">
               <b>
-                <p>ชื่อหนังสือที่แจ้งซ่อม</p>
+                <p>ชื่ออุปกรณ์ที่แจ้งซ่อม</p>
               </b>
 
               <Select
-                value={bookrepair.BookPurchasingID}
+                value={equipmentrepair.EquipmentPurchasingID}
                 onChange={handleChange}
                 inputProps={{
-                  name: "BookPurchasingID", //เอาไว้เข้าถึงข้อมูลแพลนนิ่งไอดี
+                  name: "EquipmentPurchasingID", //เอาไว้เข้าถึงข้อมูลแพลนนิ่งไอดี
                 }}
               >
                 <option aria-label="None" value="">
-                  กรุณาเลือกชื่อหนังสือที่จะแจ้งซ่อม
+                  กรุณาเลือกชื่ออุปกรณ์ที่จะแจ้งซ่อม
                 </option>
-                {bookpurchasing.map(
+                {equipmentpurchasing.map(
                   (
-                    item: BookPurchasingInterface //map
+                    item: EquipmentPurchasingInterface //map
                   ) => (
                     <MenuItem value={item.ID} key={item.ID}>
-                      {item.BookName}
+                      {item.EquipmentName}
                     </MenuItem> //key ไว้อ้างอิงว่าที่1ชื่อนี้ๆๆ value: เก็บค่า
                   )
                 )}
@@ -283,17 +267,17 @@ function BookRepairCreate() {
 
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
-              <p>ระดับความเสียหายของหนังสือ</p>
+              <p>ระดับความเสียหายของอุปกรณ์</p>
 
               <Select
-                value={bookrepair.LevelID}
+                value={equipmentrepair.LevelID}
                 onChange={handleChange}
                 inputProps={{
                   name: "LevelID", //เอาไว้เข้าถึงข้อมูลแพลนนิ่งไอดี
                 }}
               >
                 <option aria-label="None" value="">
-                  กรุณาเลือกระดับความเสียหายของหนังสือ
+                  กรุณาเลือกระดับความเสียหายของอุปกรณ์
                 </option>
                 {level.map(
                   (
@@ -352,14 +336,14 @@ function BookRepairCreate() {
                 variant="standard"
                 type="string"
                 size="medium"
-                value={bookrepair.Note || ""}
+                value={equipmentrepair.Note || ""}
                 onChange={handleInputChange}
               />
             </FormControl>
           </Grid>
-
+          
           <Grid item xs={12}>
-            <Button component={RouterLink} to="/bookrepair" variant="contained">
+            <Button variant="contained" onClick={Cancle}>
               กลับ
             </Button>
 
@@ -369,7 +353,7 @@ function BookRepairCreate() {
               variant="contained"
               color="success"
             >
-              บันทึกการแจ้งซ่อมหนังสือ
+              บันทึกการแก้ไข
             </Button>
           </Grid>
         </Grid>
@@ -378,4 +362,4 @@ function BookRepairCreate() {
   );
 }
 
-export default BookRepairCreate;
+export default EditEquipmentRepair;

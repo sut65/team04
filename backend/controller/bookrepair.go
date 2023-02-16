@@ -39,13 +39,12 @@ func CreateBookRepair(c *gin.Context) { // c รับข้อมูลมา�
 		c.JSON(http.StatusBadRequest, gin.H{"error": "level not found"})
 		return
 	}
-	localtime := bookpurchasing.Date.Local()
-
+	
 	//12: สร้าง bookrepair
 	br := entity.BookRepair{
 		BookPurchasingID: bookrepair.BookPurchasingID,
 		LevelID:          bookrepair.LevelID,
-		Date:             localtime,
+		Date:             bookrepair.Date,
 		Note:             bookrepair.Note,
 		LibrarianID:      bookrepair.LibrarianID,
 	}
