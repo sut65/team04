@@ -1,5 +1,6 @@
 import React from "react";
 import { useEffect, useState, useCallback } from "react";
+import EditEquipmentRepair from "./EquipmentRepairEdit";
 import { EquipmentRepairInterface } from "../models/IEquipmentRepair";
 import { DataGrid, GridRowsProp, GridColDef } from "@mui/x-data-grid";
 import { format } from "date-fns";
@@ -28,22 +29,25 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 });
 
 function EquipmentRepair() {
-  const [equipmentrepair, setEquipmentRepair] = useState<
-    EquipmentRepairInterface[]
-  >([]);
+  const [equipmentrepair, setEquipmentRepair] = useState<EquipmentRepairInterface[]>([]);
   const [success, setSuccess] = useState(false); //จะยังไม่ให้แสดงบันทึกข้อมูล
   const [error, setError] = useState(false);
   const [opendelete, setOpenDelete] = useState(false);
+  const [openedit, setOpenEdit] = useState(false);
+  const [selectcellData, setSelectcellData] = useState<EquipmentRepairInterface>();
 
   const [selectcell, setSelectCell] = useState(Number);
   const handleCellFocus = useCallback(
     (event: React.FocusEvent<HTMLDivElement>) => {
       const row = event.currentTarget.parentElement;
       const id = row!.dataset.id!;
+      const b = equipmentrepair.filter((v) => Number(v.ID) == Number(id));
       const field = event.currentTarget.dataset.field!;
+      console.log(b[0]);
+      setSelectcellData(b[0]);
       setSelectCell(Number(id));
     },
-    []
+    [equipmentrepair]
   );
   const handleClose = (
     event?: React.SyntheticEvent | Event,
@@ -67,9 +71,14 @@ function EquipmentRepair() {
   const handleDelete = () => {
     setOpenDelete(true);
   };
-
+  const handleEdit = () => {
+    setOpenEdit(true);
+  };
   const handleDeleteClose = () => {
     setOpenDelete(false);
+  };
+  const handleEditClose = () => {
+    setOpenEdit(false);
   };
   const DeleteEquipmentRepair = async (id: Number) => {
     const apiUrl = `http://localhost:8080/equipmentrepair/${id}`;
@@ -163,6 +172,7 @@ function EquipmentRepair() {
         <div>
           &nbsp;
           <Button
+            onClick={handleEdit}
             variant="contained"
             size="small"
             startIcon={<EditIcon />}
@@ -226,6 +236,21 @@ function EquipmentRepair() {
             </Button>
           </DialogActions>
         </Dialog>
+
+        <Dialog
+          open={openedit}
+          onClose={handleEditClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogActions>
+            <EditEquipmentRepair
+              Cancle={handleEditClose}
+              Data={selectcellData}
+            />
+          </DialogActions>
+        </Dialog>
+
         <Box
           display="flex"
           sx={{

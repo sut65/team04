@@ -40,12 +40,6 @@ func CreateEquipmentRepair(c *gin.Context) { // c รับข้อมูลม
 		return
 	}
 
-	//Validate
-	if _, err := govalidator.ValidateStruct(equipmentrepair); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
 	//12: สร้าง equimentrepair
 	er := entity.EquipmentRepair{
 		EquipmentPurchasingID:	equipmentrepair.EquipmentPurchasingID,
@@ -53,6 +47,12 @@ func CreateEquipmentRepair(c *gin.Context) { // c รับข้อมูลม
 		Date:             		equipmentrepair.Date,
 		Note:             		equipmentrepair.Note,
 		LibrarianID:      		equipmentrepair.LibrarianID,
+	}
+
+	//Validate
+	if _, err := govalidator.ValidateStruct(equipmentrepair); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	//13: บันทึก
@@ -100,6 +100,10 @@ func UpdateEquipmentRepair(c *gin.Context) {
 	}
 	if tx := entity.DB().Where("id = ?", equipmentrepair.ID).First(&entity.EquipmentRepair{}); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "equipmentrepair not found"}) //เช็คว่ามีไอดีอยู่ในดาต้าเบสมั้ย
+		return
+	}
+	if _, err := govalidator.ValidateStruct(equipmentrepair); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	if err := entity.DB().Save(&equipmentrepair).Error; err != nil {

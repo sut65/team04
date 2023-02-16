@@ -100,7 +100,7 @@ function EditBookRepair({ Cancle, Data }: BookRepair) {
       ID: Number(bookrepair.ID),
       BookPurchasingID: Number(bookrepair.BookPurchasingID),
       LevelID: Number(bookrepair.LevelID),
-      Date: date?.toISOString(), //?.toISOString()
+      Date: date, //?.toISOString()
       Note: (bookrepair.Note) ?? "",
       LibrarianID: Number(localStorage.getItem("nid")),
     };
@@ -124,7 +124,7 @@ function EditBookRepair({ Cancle, Data }: BookRepair) {
         if (res.data) {
           console.log("บันทึกได้");
           setSuccess(true);
-          //window.location.reload();
+          window.location.reload();
           setErrorMessage("");
         } else {
           console.log("บันทึกไม่ได้");
