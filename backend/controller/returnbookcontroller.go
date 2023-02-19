@@ -16,41 +16,41 @@ func CreateReturnBook(c *gin.Context) { // c รับข้อมูลมา�
 	var borrowbook entity.BorrowBook
 	var librarian entity.Librarian
 
-	// ผลลัพธ์ที่ได้จากขั้นตอนที่ 9 จะถูก bind เข้าตัวแปร returnbook
+	// ผลลัพธ์ที่ได้จากขั้นตอนที่ 8 จะถูก bind เข้าตัวแปร returnbook
 	if err := c.ShouldBindJSON(&returnbook); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// : ค้นหา Lostbook ด้วย id
-	if tx := entity.DB().Where("id = ?",
-		returnbook.LostBookID).First(&lostbook); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "lostbook not found"})
-		return
-	}
-
-	// : ค้นหา Borrowbook ด้วย id
+	// 9: ค้นหา Borrowbook ด้วย id
 	if tx := entity.DB().Where("id = ?",
 		returnbook.BorrowBookID).First(&borrowbook); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "borrowbook not found"})
 		return
 	}
 
-	// 11: อัพเดทคอลัมน์ TrackingCheck ว่าการคืนหนังสือถูกประเมินแล้ว
-	if tx := entity.DB().Model(&borrowbook).Update("TrackingCheck", true); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "borrowbook not found"})
+	// 10: ค้นหา Lostbook ด้วย id
+	if tx := entity.DB().Where("id = ?",
+		returnbook.LostBookID).First(&lostbook); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "lostbook not found"})
 		return
 	}
 
-	// : ค้นหา librarian ด้วย id
+	// 11: ค้นหา librarian ด้วย id
 	if tx := entity.DB().Where("id = ?",
 		returnbook.LibrarianID).First(&librarian); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "librarian not found"})
 		return
 	}
 
+	// 12: อัพเดทคอลัมน์ TrackingCheck ว่าการคืนหนังสือถูกประเมินแล้ว
+	if tx := entity.DB().Model(&borrowbook).Update("TrackingCheck", true); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "borrowbook not found"})
+		return
+	}
+
 	localtime := returnbook.Current_Day.Local()
-	// : สร้าง ReturnBook
+	// 13: สร้าง ReturnBook
 	ps := entity.ReturnBook{
 		LostBook:       lostbook,                  // โยงความสัมพันธ์กับ Entity LostBook
 		Librarian:      librarian,                 // โยงความสัมพันธ์กับ Entity Librarian
@@ -66,7 +66,7 @@ func CreateReturnBook(c *gin.Context) { // c รับข้อมูลมา�
 		return
 	}
 
-	// : บันทึก
+	// 14: บันทึก
 	if err := entity.DB().Create(&ps).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
