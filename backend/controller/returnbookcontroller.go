@@ -97,13 +97,35 @@ func GetReturnBookByID(c *gin.Context) {
 
 // PATCH /return_book
 func UpdateReturnBook(c *gin.Context) {
-	var returnbook entity.ReturnBook
+	var returnbook entity.ReturnBook //การประกาศตัวแปรให้เป็นไทป์ที่เราสร้างขึ้นเอง
+	var lostbook entity.LostBook
+	var borrowbook entity.BorrowBook
+	var librarian entity.Librarian
+
 	if err := c.ShouldBindJSON(&returnbook); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	if tx := entity.DB().Where("id = ?", returnbook.ID).First(&entity.ReturnBook{}); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "returnbook not found"}) //เช็คว่ามีไอดีอยู่ในดาต้าเบสมั้ย
+		return
+	}
+	// 9: ค้นหา Borrowbook ด้วย id
+	if tx := entity.DB().Where("id = ?",
+		returnbook.BorrowBookID).First(&borrowbook); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "borrowbook not found"})
+		return
+	}
+	// 10: ค้นหา Lostbook ด้วย id
+	if tx := entity.DB().Where("id = ?",
+		returnbook.LostBookID).First(&lostbook); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "lostbook not found"})
+		return
+	}
+	// 11: ค้นหา librarian ด้วย id
+	if tx := entity.DB().Where("id = ?",
+		returnbook.LibrarianID).First(&librarian); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "librarian not found"})
 		return
 	}
 	// Validation
