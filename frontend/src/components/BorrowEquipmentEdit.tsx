@@ -134,19 +134,6 @@ function EditBorrowEquipment({ Cancle, Data }: BorrowEquipment) {
     },
   };
 
-  const getBorrowEquipment = async () => {
-    const apiUrl = "http://localhost:8080/borrowEquipment";
-
-    fetch(apiUrl, requestOptions)
-      .then((response) => response.json())
-      .then((res) => {
-        console.log(res.data);
-        if (res.data) {
-          setBorrowEquipment(res.data);
-        }
-      });
-  };
-  
   const getLibrarian = async () => {
     const apiUrl = "http://localhost:8080/librarian";
     fetch(apiUrl, requestOptions)
