@@ -100,9 +100,14 @@ function BorrowEquipment() {
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
       .then((res) => {
+        //ตรงนี้คือลบในดาต้าเบสสำเร็จแล้ว
         if (res.data) {
-          setSuccess(true);
-          window.location.reload();
+        setSuccess(true);
+        const remove = borrowequipment.filter(
+          //กรองเอาข้อมูลที่ไม่ได้ลบ
+          (perv) => perv.ID !== selectcellData?.ID
+        );
+          setBorrowEquipment(remove);
         } else {
           setError(true);
         }
