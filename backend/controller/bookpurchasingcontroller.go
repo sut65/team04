@@ -95,6 +95,9 @@ func GetBookPurchasingByID(c *gin.Context) {
 // PATCH /bookPurchasing
 func UpdateBookPurchasing(c *gin.Context) {
 	var bookPurchasing entity.BookPurchasing
+	var librarian entity.Librarian
+	var bookcategory entity.BookCategory
+	var publisher entity.Publisher
 
 	if err := c.ShouldBindJSON(&bookPurchasing); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -102,6 +105,23 @@ func UpdateBookPurchasing(c *gin.Context) {
 	}
 	if tx := entity.DB().Where("id = ?", bookPurchasing.ID).First(&entity.BookPurchasing{}); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "bookPurchasing not found"}) //เช็คว่ามีไอดีอยู่ในดาต้าเบสมั้ย
+		return
+	}
+	// 9: ค้นหา bookcategory ด้วย id
+	if tx := entity.DB().Where("id = ?", bookPurchasing.BookCategoryID).First(&bookcategory); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "bookcategory not found"})
+		return
+	}
+
+	// 10: ค้นหา publisher ด้วย id
+	if tx := entity.DB().Where("id = ?", bookPurchasing.PublisherID).First(&publisher); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "publisher not found"})
+		return
+	}
+
+	// 11: ค้นหา librarian ด้วย id
+	if tx := entity.DB().Where("id = ?", bookPurchasing.LibrarianID).First(&librarian); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "librarian not found"})
 		return
 	}
 	if _, err := govalidator.ValidateStruct(bookPurchasing); err != nil {

@@ -22,17 +22,17 @@ func CreateEquipmentPurchasing(c *gin.Context) { // c รับข้อมู�
 		return
 	} //การบาย
 
-	// 9: ค้นหา company ด้วย id
-	if tx := entity.DB().Where("id = ?", equipmentpurchasing.CompanyID).First(&company); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "company not found"})
-		return
-	}
-	// 10: ค้นหา equipmentcategory ด้วย id
+	// 9: ค้นหา equipmentcategory ด้วย id
 	if tx := entity.DB().Where("id = ?", equipmentpurchasing.EquipmentCategoryID).First(&equipmentcategory); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "equipmentcategory not found"})
 		return
 	}
 
+	// 10: ค้นหา company ด้วย id
+	if tx := entity.DB().Where("id = ?", equipmentpurchasing.CompanyID).First(&company); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "company not found"})
+		return
+	}
 	// 11: ค้นหา librarian ด้วย id
 	if tx := entity.DB().Where("id = ?", equipmentpurchasing.LibrarianID).First(&librarian); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "librarian not found"})
@@ -94,6 +94,9 @@ func GetEquipmentPurchasingByID(c *gin.Context) {
 // PATCH /EquipmentPurchasing
 func UpdateEquipmentPurchasing(c *gin.Context) {
 	var equipmentpurchasing entity.EquipmentPurchasing
+	var librarian entity.Librarian
+	var equipmentcategory entity.EquipmentCategory
+	var company entity.Company
 
 	if err := c.ShouldBindJSON(&equipmentpurchasing); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -101,6 +104,22 @@ func UpdateEquipmentPurchasing(c *gin.Context) {
 	}
 	if tx := entity.DB().Where("id = ?", equipmentpurchasing.ID).First(&entity.EquipmentPurchasing{}); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "equipmentpurchasing not found"}) //เช็คว่ามีไอดีอยู่ในดาต้าเบสมั้ย
+		return
+	}
+	// 9: ค้นหา equipmentcategory ด้วย id
+	if tx := entity.DB().Where("id = ?", equipmentpurchasing.EquipmentCategoryID).First(&equipmentcategory); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "equipmentcategory not found"})
+		return
+	}
+
+	// 10: ค้นหา company ด้วย id
+	if tx := entity.DB().Where("id = ?", equipmentpurchasing.CompanyID).First(&company); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "company not found"})
+		return
+	}
+	// 11: ค้นหา librarian ด้วย id
+	if tx := entity.DB().Where("id = ?", equipmentpurchasing.LibrarianID).First(&librarian); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "librarian not found"})
 		return
 	}
 	if _, err := govalidator.ValidateStruct(equipmentpurchasing); err != nil {
