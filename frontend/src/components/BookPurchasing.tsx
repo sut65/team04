@@ -32,13 +32,13 @@ function BookPurchasing() {
 
   const [selectcellData, setSelectcellData] =
     useState<BookPurchasingInterface>();
-
   const [success, setSuccess] = useState(false); //จะยังไม่ให้แสดงบันทึกข้อมูล
   const [error, setError] = useState(false);
   const [opendelete, setOpenDelete] = useState(false);
   const [openedit, setOpenEdit] = useState(false);
 
   const handleCellFocus = useCallback(
+    //การเรียกใช้ระหว่าง component
     (event: React.FocusEvent<HTMLDivElement>) => {
       const row = event.currentTarget.parentElement;
       const id = row?.dataset.id;
