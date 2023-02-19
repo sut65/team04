@@ -91,6 +91,10 @@ func GetBorrowBookByID(c *gin.Context) {
 // PATCH /borrow_books
 func UpdateBorrowBook(c *gin.Context) {
 	var borrowbook entity.BorrowBook
+	var user entity.User
+	var bookpurchasing entity.BookPurchasing
+	var librarian entity.Librarian
+
 	if err := c.ShouldBindJSON(&borrowbook); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -99,11 +103,30 @@ func UpdateBorrowBook(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "borrowbook not found"}) //เช็คว่ามีไอดีอยู่ในดาต้าเบสมั้ย
 		return
 	}
+	// 9: ค้นหา User ด้วย id
+	if tx := entity.DB().Where("id = ?",
+		borrowbook.UserID).First(&user); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "user not found"})
+		return
+	}
+	// 10: ค้นหา Bookpurchasing ด้วย id
+	if tx := entity.DB().Where("id = ?",
+		borrowbook.BookPurchasingID).First(&bookpurchasing); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "bookpurchasing not found"})
+		return
+	}
+	// 11: ค้นหา librarian ด้วย id
+	if tx := entity.DB().Where("id = ?",
+		borrowbook.LibrarianID).First(&librarian); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "librarian not found"})
+		return
+	}
 	// Validation
 	if _, err := govalidator.ValidateStruct(borrowbook); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	// อัพเดต
 	if err := entity.DB().Save(&borrowbook).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
