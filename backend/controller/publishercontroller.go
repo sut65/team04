@@ -68,21 +68,6 @@ func UpdatePublisher(c *gin.Context) {
 		return
 	}
 
-	// if err := c.ShouldBindJSON(&publisher); err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return
-	// }
-
-	// if tx := entity.DB().Where("id = ?", publisher.ID).First(&entity.Publisher{}); tx.RowsAffected == 0 {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "category not found"})
-	// 	return
-	// }
-
-	// if err := entity.DB().Model(&publisher).Update("Name", publisher.Name).Error; err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return
-	// }
-
 	c.JSON(http.StatusOK, gin.H{"data": publisher})
 }
 

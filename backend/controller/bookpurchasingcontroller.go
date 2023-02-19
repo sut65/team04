@@ -16,32 +16,32 @@ func CreateBookPurchasing(c *gin.Context) { // c รับข้อมูลม�
 	var bookcategory entity.BookCategory
 	var publisher entity.Publisher
 
-	// ผลลัพธ์ที่ได้จากขั้นตอนที่ 10 จะถูก bind เข้าตัวแปร bookpurchasing
+	// ผลลัพธ์ที่ได้จากขั้นตอนที่ 8 จะถูก bind เข้าตัวแปร bookpurchasing
 	if err := c.ShouldBindJSON(&bookpurchasing); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	} //การบาย
 
-	// 11: ค้นหา bookcategory ด้วย id
+	// 9: ค้นหา bookcategory ด้วย id
 	if tx := entity.DB().Where("id = ?", bookpurchasing.BookCategoryID).First(&bookcategory); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "bookcategory not found"})
 		return
 	}
 
-	// 13: ค้นหา publisher ด้วย id
+	// 10: ค้นหา publisher ด้วย id
 	if tx := entity.DB().Where("id = ?", bookpurchasing.PublisherID).First(&publisher); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "publisher not found"})
 		return
 	}
 
-	// 15: ค้นหา librarian ด้วย id
+	// 11: ค้นหา librarian ด้วย id
 	if tx := entity.DB().Where("id = ?", bookpurchasing.LibrarianID).First(&librarian); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "librarian not found"})
 		return
 	}
 
 	localtime := bookpurchasing.Date.Local()
-	// 17: สร้าง bookpurchasing
+	// 12: สร้าง bookpurchasing
 	BP := entity.BookPurchasing{
 
 		BookName:     bookpurchasing.BookName, //ตั้งค่าฟิลด์ใส่ symtom, ใส่ข้อมูลให้เข้าไปในคอลัมน์ symtom
@@ -56,7 +56,7 @@ func CreateBookPurchasing(c *gin.Context) { // c รับข้อมูลม�
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	// 18: บันทึก
+	// 13: บันทึก
 	if err := entity.DB().Create(&BP).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

@@ -16,31 +16,31 @@ func CreateEquipmentPurchasing(c *gin.Context) { // c รับข้อมู�
 	var equipmentcategory entity.EquipmentCategory
 	var company entity.Company
 
-	// ผลลัพธ์ที่ได้จากขั้นตอนที่ 10 จะถูก bind เข้าตัวแปร EquipmentPurchasing
+	// ผลลัพธ์ที่ได้จากขั้นตอนที่ 8 จะถูก bind เข้าตัวแปร EquipmentPurchasing
 	if err := c.ShouldBindJSON(&equipmentpurchasing); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	} //การบาย
 
-	// 11: ค้นหา equipmentcategory ด้วย id
+	// 9: ค้นหา company ด้วย id
+	if tx := entity.DB().Where("id = ?", equipmentpurchasing.CompanyID).First(&company); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "company not found"})
+		return
+	}
+	// 10: ค้นหา equipmentcategory ด้วย id
 	if tx := entity.DB().Where("id = ?", equipmentpurchasing.EquipmentCategoryID).First(&equipmentcategory); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "equipmentcategory not found"})
 		return
 	}
 
-	// 13: ค้นหา company ด้วย id
-	if tx := entity.DB().Where("id = ?", equipmentpurchasing.CompanyID).First(&company); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "company not found"})
-		return
-	}
-
-	// 15: ค้นหา librarian ด้วย id
+	// 11: ค้นหา librarian ด้วย id
 	if tx := entity.DB().Where("id = ?", equipmentpurchasing.LibrarianID).First(&librarian); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "librarian not found"})
 		return
 	}
+
 	localtime := equipmentpurchasing.Date.Local()
-	// 17: สร้าง EquipmentPurchasing
+	// 12: สร้าง EquipmentPurchasing
 	EP := entity.EquipmentPurchasing{
 
 		EquipmentName:     equipmentpurchasing.EquipmentName, //ตั้งค่าฟิลด์ใส่ symtom, ใส่ข้อมูลให้เข้าไปในคอลัมน์ symtom
@@ -55,7 +55,7 @@ func CreateEquipmentPurchasing(c *gin.Context) { // c รับข้อมู�
 		return
 	}
 
-	// 18: บันทึก
+	// 13: บันทึก
 	if err := entity.DB().Create(&EP).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
