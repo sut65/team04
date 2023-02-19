@@ -15,34 +15,34 @@ func CreateBorrowBook(c *gin.Context) {
 	var bookpurchasing entity.BookPurchasing
 	var librarian entity.Librarian
 
-	// ผลลัพธ์ที่ได้จากขั้นตอนที่ 9 จะถูก bind เข้าตัวแปร borrowbook
+	// ผลลัพธ์ที่ได้จากขั้นตอนที่ 8 จะถูก bind เข้าตัวแปร borrowbook
 	if err := c.ShouldBindJSON(&borrowbook); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// : ค้นหา User ด้วย id
+	// 9: ค้นหา User ด้วย id
 	if tx := entity.DB().Where("id = ?",
 		borrowbook.UserID).First(&user); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "user not found"})
 		return
 	}
 
-	// : ค้นหา Bookpurchasing ด้วย id
+	// 10: ค้นหา Bookpurchasing ด้วย id
 	if tx := entity.DB().Where("id = ?",
 		borrowbook.BookPurchasingID).First(&bookpurchasing); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "bookpurchasing not found"})
 		return
 	}
 
-	// : ค้นหา librarian ด้วย id
+	// 11: ค้นหา librarian ด้วย id
 	if tx := entity.DB().Where("id = ?",
 		borrowbook.LibrarianID).First(&librarian); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "librarian not found"})
 		return
 	}
 
-	// : สร้าง BorrowBook
+	// 12: สร้าง BorrowBook
 	ps := entity.BorrowBook{
 		User:           user,                      // โยงความสัมพันธ์กับ Entity User
 		BookPurchasing: bookpurchasing,            // โยงความสัมพันธ์กับ Entity BookPurchasing
@@ -60,7 +60,7 @@ func CreateBorrowBook(c *gin.Context) {
 		return
 	}
 
-	// : บันทึก
+	// 13: บันทึก
 	if err := entity.DB().Create(&ps).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
