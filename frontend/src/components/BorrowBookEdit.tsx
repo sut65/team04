@@ -40,8 +40,8 @@ interface BorrowBook {
 
 
 function EditBorrowBook({ Cancle, Data }: BorrowBook) {
-  const [borb_day, setBorb_Day] = useState<Date | null>();
-  const [return_day, setReturn_Day] = useState<Date | null>();
+  const [borb_day, setBorb_Day] = useState<Date | null>(new Date());
+  const [return_day, setReturn_Day] = useState<Date | null>(new Date());
   const [borrowbook, setBorrowBook] = useState<Partial<BorrowBookInterface>>({
           ID:                Data?.ID,
           Borb_Day:          Data?.Borb_Day,
