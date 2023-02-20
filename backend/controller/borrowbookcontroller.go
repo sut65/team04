@@ -42,13 +42,17 @@ func CreateBorrowBook(c *gin.Context) {
 		return
 	}
 
+	// เเก้เวลาให้เป็น UTC +7.00
+	localtime1 := borrowbook.Borb_Day.Local()
+	localtime2 := borrowbook.Return_Day.Local()
+
 	// 12: สร้าง BorrowBook
 	ps := entity.BorrowBook{
 		User:           user,                      // โยงความสัมพันธ์กับ Entity User
 		BookPurchasing: bookpurchasing,            // โยงความสัมพันธ์กับ Entity BookPurchasing
 		Librarian:      librarian,                 // โยงความสัมพันธ์กับ Entity Librarian
-		Borb_Day:       borrowbook.Borb_Day,       // ตั้งค่าฟิลด์ Borb_Day
-		Return_Day:     borrowbook.Return_Day,     // ตั้งค่าฟิลด์ Return_Day
+		Borb_Day:       localtime1,                // ตั้งค่าฟิลด์ Borb_Day
+		Return_Day:     localtime2,                // ตั้งค่าฟิลด์ Return_Day
 		Color_Bar:      borrowbook.Color_Bar,      // ตั้งค่าฟิลด์ Color_Bar
 		Borb_Frequency: borrowbook.Borb_Frequency, // ตั้งค่าฟิลด์ Borb_Frequency
 		TrackingCheck:  false,                     // สำหรับ returnbook system
@@ -126,6 +130,11 @@ func UpdateBorrowBook(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	// เเก้เวลาให้เป็น UTC +7.00
+	borrowbook.Borb_Day = borrowbook.Borb_Day.Local()
+	borrowbook.Return_Day = borrowbook.Return_Day.Local()
+
 	// อัพเดต
 	if err := entity.DB().Save(&borrowbook).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
