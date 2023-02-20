@@ -111,6 +111,8 @@ func UpdateBorrowEquipment(c *gin.Context) {
 		return
 	}
 
+	borrowequipment.BorrowEquipment_Day = borrowequipment.BorrowEquipment_Day.Local()
+
 	if err := entity.DB().Save(&borrowequipment).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
