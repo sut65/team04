@@ -48,8 +48,9 @@ func CreateReturnBook(c *gin.Context) { // c รับข้อมูลมา�
 		c.JSON(http.StatusBadRequest, gin.H{"error": "borrowbook not found"})
 		return
 	}
-
+	// เเก้เวลาให้เป็น UTC +7.00
 	localtime := returnbook.Current_Day.Local()
+
 	// 13: สร้าง ReturnBook
 	ps := entity.ReturnBook{
 		LostBook:       lostbook,                  // โยงความสัมพันธ์กับ Entity LostBook
@@ -133,6 +134,11 @@ func UpdateReturnBook(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	// เเก้เวลาให้เป็น UTC +7.00
+	returnbook.Current_Day = returnbook.Current_Day.Local()
+
+	// อัพเดตข้อมูล
 	if err := entity.DB().Save(&returnbook).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
