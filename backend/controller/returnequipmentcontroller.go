@@ -120,6 +120,8 @@ func UpdateReturnEquipment(c *gin.Context) {
 		return
 	}
 
+	returnequipment.Return_Day = returnequipment.Return_Day.Local()
+
 	if err := entity.DB().Save(&returnequipment).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
