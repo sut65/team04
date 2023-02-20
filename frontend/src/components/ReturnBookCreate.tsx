@@ -33,7 +33,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 });
 
 function ReturnBookCreate() {
-  const [current_day, setCurrent_Day] = useState<Date | null>();
+  const [current_day, setCurrent_Day] = useState<Date | null>(new Date());
   const [returnbook, setReturnBook] = useState<Partial<ReturnBookInterface>>({}); //Partial ชิ้นส่วนเอาไว้เซทข้อมูลที่ละส่วน
   const [borrowbook, setBorrowBook] = useState<BorrowBookInterface[]>([]);
   const [lostbook, setLostBook] = useState<LostBookInterface[]>([]);
