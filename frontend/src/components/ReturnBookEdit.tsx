@@ -40,7 +40,7 @@ interface ReturnBook {
 
 
 function EditReturnBook({ Cancle, Data }: ReturnBook) {
-  const [current_day, setCurrent_Day] = useState<Date | null>();
+  const [current_day, setCurrent_Day] = useState<Date | null>(new Date());
   const [returnbook, setReturnBook] = useState<Partial<ReturnBookInterface>>({
           ID:              Data?.ID,
           Current_Day:     Data?.Current_Day,
