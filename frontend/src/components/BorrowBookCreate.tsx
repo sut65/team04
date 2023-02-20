@@ -33,8 +33,8 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 });
 
 function BorrowBookCreate() {
-  const [borb_day, setBorb_Day] = useState<Date | null>();
-  const [return_day, setReturn_Day] = useState<Date | null>();
+  const [borb_day, setBorb_Day] = useState<Date | null>(new Date());
+  const [return_day, setReturn_Day] = useState<Date | null>(new Date());
   const [borrowbook, setBorrowBook] = useState<Partial<BorrowBookInterface>>({}); //Partial ชิ้นส่วนเอาไว้เซทข้อมูลที่ละส่วน
   const [bookpurchasing, setBookPurchasing] = useState<BookPurchasingInterface[]>([]);
   const [user, setUser] = useState<UserInterface[]>([]);
