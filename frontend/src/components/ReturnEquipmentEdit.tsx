@@ -43,7 +43,7 @@ function EditReturnEquipment({ Cancle, Data }: ReturnEquipment) {
 
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
-  const [return_day, setReturn_Day] = useState<Date | null>();
+  const [return_day, setReturn_Day] = useState<Date | null>(new Date());
   const [equipmentstatus, setEquipmentStatus] = useState<EquipmentStatusInterface[]>([]);
   const [user, setUser] = useState<UserInterface[]>([] );
   const [librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
