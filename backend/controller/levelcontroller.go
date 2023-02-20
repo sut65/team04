@@ -65,20 +65,6 @@ func UpdateLevel(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	// if err := c.ShouldBindJSON(&level); err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return
-	// }
-
-	// if tx := entity.DB().Where("id = ?", level.ID).First(&entity.Level{}); tx.RowsAffected == 0 {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "equipment status not found"})
-	// 	return
-	// }
-
-	// if err := entity.DB().Model(&level).Update("Name", level.Name).Error; err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return
-	// }
 
 	c.JSON(http.StatusOK, gin.H{"data": level})
 }
