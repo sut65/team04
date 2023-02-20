@@ -37,7 +37,7 @@ interface BorrowEquipment {
 }
 
 function EditBorrowEquipment({ Cancle, Data }: BorrowEquipment) {
-  const [borrowequipment_day, setBorrowEquipment_Day] = useState<Date | null>();
+  const [borrowequipment_day, setBorrowEquipment_Day] = useState<Date | null>(new Date());
   const [borrowequipment, setBorrowEquipment] = useState<Partial<BorrowEquipmentInterface>>({
     ID:                     Data?.ID,
     UserID:                 Data?.UserID,
