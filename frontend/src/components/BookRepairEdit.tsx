@@ -37,7 +37,7 @@ interface BookRepair {
 }
 
 function EditBookRepair({ Cancle, Data }: BookRepair) {
-  const [date, setDate] = useState<Date | null>();
+  const [date, setDate] = useState<Date | null>(new Date());
   const [bookrepair, setBookRepair] = useState<
     Partial<BookRepairInterface>
   >({

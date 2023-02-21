@@ -32,7 +32,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 });
 
 function EquipmentRepairCreate() {
-  const [date, setDate] = useState<Date | null>();
+  const [date, setDate] = useState<Date | null>(new Date());
   const [equipmentrepair, setEquipmentRepair] = useState<
     Partial<EquipmentRepairInterface>
   >({}); //Partial ชิ้นส่วนเอาไว้เซทข้อมูลที่ละส่วน

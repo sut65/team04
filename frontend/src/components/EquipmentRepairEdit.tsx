@@ -37,7 +37,7 @@ interface EquipmentRepair {
 }
 
 function EditEquipmentRepair({ Cancle, Data }: EquipmentRepair) {
-  const [date, setDate] = useState<Date | null>();
+  const [date, setDate] = useState<Date | null>(new Date());
   const [equipmentrepair, setEquipmentRepair] = useState<
     Partial<EquipmentRepairInterface>
   >({
