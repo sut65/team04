@@ -126,6 +126,7 @@ func UpdateEquipmentPurchasing(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	equipmentpurchasing.Date = equipmentpurchasing.Date.Local()
 	if err := entity.DB().Save(&equipmentpurchasing).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
