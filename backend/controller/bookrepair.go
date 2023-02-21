@@ -44,7 +44,7 @@ func CreateBookRepair(c *gin.Context) { // c รับข้อมูลมา�
 	br := entity.BookRepair{
 		BookPurchasingID: bookrepair.BookPurchasingID,
 		LevelID:          bookrepair.LevelID,
-		Date:             bookrepair.Date,
+		Date:             bookrepair.Date.Local(),
 		Note:             bookrepair.Note,
 		LibrarianID:      bookrepair.LibrarianID,
 	}
@@ -106,6 +106,9 @@ func UpdateBookRepair(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	bookrepair.Date = bookrepair.Date.Local()
+
 	if err := entity.DB().Save(&bookrepair).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
