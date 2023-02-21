@@ -44,7 +44,7 @@ func CreateEquipmentRepair(c *gin.Context) { // c รับข้อมูลม
 	er := entity.EquipmentRepair{
 		EquipmentPurchasingID:	equipmentrepair.EquipmentPurchasingID,
 		LevelID:          		equipmentrepair.LevelID,
-		Date:             		equipmentrepair.Date,
+		Date:             		equipmentrepair.Date.Local(),
 		Note:             		equipmentrepair.Note,
 		LibrarianID:      		equipmentrepair.LibrarianID,
 	}
@@ -106,6 +106,9 @@ func UpdateEquipmentRepair(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	equipmentrepair.Date = equipmentrepair.Date.Local()
+
 	if err := entity.DB().Save(&equipmentrepair).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
