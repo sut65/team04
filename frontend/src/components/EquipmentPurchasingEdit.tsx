@@ -36,7 +36,7 @@ interface EditBookPurchasing {
 }
 
 function EditEquipmentPurchasing({ Cancle, Data }: EditBookPurchasing) {
-  const [date, setDate] = useState<Date | null>();
+  const [date, setDate] = useState<Date | null>(new Date());
   const [equipmentpurchasing, setEquipmentPurchasing] = useState<
     Partial<EquipmentPurchasingInterface>
   >({

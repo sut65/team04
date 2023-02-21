@@ -128,6 +128,7 @@ func UpdateBookPurchasing(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	bookPurchasing.Date = bookPurchasing.Date.Local()
 
 	if err := entity.DB().Save(&bookPurchasing).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
