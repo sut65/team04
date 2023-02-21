@@ -314,7 +314,7 @@ function EditBookRepair({ Cancle, Data }: BookRepair) {
           </Grid>
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
-              <p>วันที่และเวลาบันทึกข้อมูล</p>
+              <p>วันที่บันทึกข้อมูล</p>
 
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DatePicker
