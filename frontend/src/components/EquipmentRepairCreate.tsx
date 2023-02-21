@@ -106,19 +106,6 @@ function EquipmentRepairCreate() {
 
       body: JSON.stringify(data),
     };
-
-    // fetch(apiUrl, requestOptions)
-    //   .then((response) => response.json()) //มี then เพื่อรับ response มา
-
-    //   .then((res) => {
-    //     console.log(res);
-    //     if (res.data) {
-    //       setSuccess(true);
-    //       //   getPlanning();
-    //     } else {
-    //       setError(true);
-    //     }
-    //   });
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
       .then((res) => {
@@ -192,22 +179,6 @@ function EquipmentRepairCreate() {
 
   return (
     <Container maxWidth="md">
-      {/* <Snackbar
-        open={success}
-        autoHideDuration={6000}
-        onClose={handleClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert onClose={handleClose} severity="success">
-          บันทึกข้อมูลสำเร็จ
-        </Alert>
-      </Snackbar>
-
-      <Snackbar open={error} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error">
-          บันทึกข้อมูลไม่สำเร็จ
-        </Alert>
-      </Snackbar> */}
       <Snackbar
         id="success"
         open={success}
@@ -330,7 +301,7 @@ function EquipmentRepairCreate() {
           </Grid>
           <Grid item xs={6}>
             <FormControl fullWidth variant="standard">
-              <p>วันที่และเวลาบันทึกข้อมูล</p>
+              <p>วันที่บันทึกข้อมูล</p>
 
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DatePicker

@@ -151,7 +151,7 @@ function BookRepair() {
     { field: "Note", headerName: "หมายเหตุ", width: 250 },
     {
       field: "Date",
-      headerName: "วันที่และเวลา",
+      headerName: "วันที่",
       width: 170,
       valueFormatter: (params) => format(new Date(params?.value), "dd/MM/yyyy"),
     },
