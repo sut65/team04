@@ -40,6 +40,8 @@ func CreatePreorder(c *gin.Context) {
 		return
 	}
 
+	localtime := preorder.Datetime.Local()
+
 	// 11: สร้าง preorder
 	ps := entity.Preorder{ //object ที่จะเก็บข้อมูลของเรา
 		User:              user,                //โยงความสัมพันธ์กับ Entity user
@@ -51,7 +53,7 @@ func CreatePreorder(c *gin.Context) {
 		Quantity:          preorder.Quantity,   //ตั้งค่าฟิลด์ quantity
 		Totalprice:        preorder.Totalprice, //ตั้งค่าฟิลด์ totalprice
 		Payment:           payment,             //โยงความสัมพันธ์กับ Entity payment
-		Datetime:          preorder.Datetime,   //ตั้งค่าฟิลด์ datetime
+		Datetime:          localtime,           //ตั้งค่าฟิลด์ datetime
 		Librarian:         librarian,           // โยงความสัมพันธ์กับ Entity librarian
 		ConfirmationCheck: false,
 	}
@@ -119,6 +121,8 @@ func UpdatePreorder(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	preorder.Datetime = preorder.Datetime.Local()
 
 	if err := entity.DB().Save(&preorder).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
