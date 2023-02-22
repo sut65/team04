@@ -59,7 +59,7 @@ function EditPreorder({ Cancle, Data }: Preorder) {
   const [User, setUser] = useState<UserInterface[]>([]);
   const [Payment, setPayment] = useState<PaymentInterface[]>([]);
   const [Librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
-  const [datetime, setDatetime] = React.useState<Date | null>();
+  const [datetime, setDatetime] = React.useState<Date | null>(new Date());
 
   const [preorder, setPreorder] = useState<Partial<PreorderInterface>>({
     ID: Data?.ID,

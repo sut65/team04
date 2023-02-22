@@ -33,7 +33,7 @@ func CreateConfirmation(c *gin.Context) {
 		return
 	}
 
-	// 9.5: อัพเดทคอลัมน์ ConfirmationCheck ว่า preorder ถูกประเมินแล้ว
+	//  อัพเดทคอลัมน์ ConfirmationCheck ว่า preorder ถูกประเมินแล้ว
 	if tx := entity.DB().Model(&preorder).Update("ConfirmationCheck", true); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "preorder not found"})
 		return
@@ -45,6 +45,8 @@ func CreateConfirmation(c *gin.Context) {
 		return
 	}
 
+	localtime := confirmation.Date.Local()
+
 	// 11: สร้าง confirmation
 	ps := entity.Confirmation{ //object ที่จะเก็บข้อมูลของเรา
 
@@ -52,7 +54,7 @@ func CreateConfirmation(c *gin.Context) {
 		Receiver:  receiver,              //โยงความสัมพันธ์กับ Entity receiver
 		NoteName:  confirmation.NoteName, //ตั้งค่าฟิลด์ note_name
 		NoteTel:   confirmation.NoteTel,  //ตั้งค่าฟิลด์ note_tel
-		Date:      confirmation.Date,     //ตั้งค่าฟิลด์ datetime
+		Date:      localtime,             //ตั้งค่าฟิลด์ datetime
 		Librarian: librarian,             // โยงความสัมพันธ์กับ Entity librarian
 
 	}
@@ -119,6 +121,9 @@ func UpdateConfirmation(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	confirmation.Date = confirmation.Date.Local()
+
 	if err := entity.DB().Save(&confirmation).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

@@ -57,7 +57,7 @@ function ConfirmationCreate() {
   const [confirmation, setConfirmation] = useState<Partial<ConfirmationInterface>>({});
 
   const [Librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
-  const [date, setDate] = React.useState<Date | null>();
+  const [date, setDate] = React.useState<Date | null>(new Date());
 
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);

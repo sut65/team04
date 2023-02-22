@@ -62,7 +62,7 @@ function EditConfirmation({ Cancle, Data }: Confirmation) {
   const [preorder, setPreorder] = useState<PreorderInterface[]>([]);
   const [receiver, setReceiver] = useState<ReceiverInterface[]>([]);
   const [Librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
-  const [date, setDate] = React.useState<Date | null>();
+  const [date, setDate] = React.useState<Date | null>(new Date());
 
   const [confirmation, setConfirmation] = useState<Partial<ConfirmationInterface>>({
     ID: Data?.ID,
