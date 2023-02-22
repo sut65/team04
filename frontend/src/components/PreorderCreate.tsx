@@ -55,7 +55,7 @@ function PreorderCreate() {
   const [preorder, setPreorder] = useState<Partial<PreorderInterface>>({});
   const [Payment, setPayment] = useState<PaymentInterface[]>([]);
   const [Librarian, setLibrarian] = useState<LibrarianInterface[]>([]);
-  const [datetime, setDatetime] = React.useState<Date | null>();
+  const [datetime, setDatetime] = React.useState<Date | null>(new Date());
 
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
