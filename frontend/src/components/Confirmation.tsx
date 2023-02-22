@@ -31,7 +31,7 @@ function Confirmation() {
   const [confirmation, setConfirmation] = useState<ConfirmationInterface[]>([]);
 
   const [opendelete, setOpenDelete] = useState(false);
-  const [selectcell, setSelectCell] = useState(Number);
+ 
   const [success, setSuccess] = useState(false); //จะยังไม่ให้แสดงบันทึกข้อมูล
   const [error, setError] = useState(false);
   
