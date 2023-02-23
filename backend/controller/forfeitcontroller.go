@@ -47,11 +47,12 @@ func CreateForfeit(c *gin.Context) {
 		return
 	}
 
+	localtime := forfeit.Pay_Date.Local()
 	// 13: สร้าง Forfeit
 	ff := entity.Forfeit{
 
 		Pay:          forfeit.Pay,          // ตั้งค่าฟิลด์ Pay
-		Pay_Date:     forfeit.Pay_Date,     // ตั้งค่าฟิลด์ Pay_Date
+		Pay_Date:     localtime,            // ตั้งค่าฟิลด์ Pay_Date
 		Note:         forfeit.Note,         // ตั้งค่าฟิลด์ Note
 		ModulateNote: forfeit.ModulateNote, // ตั้งค่าฟิลด์ Note
 		ReturnBook:   returnBook,           // โยงความสัมพันธ์กับ Entity ReturnBook
@@ -102,6 +103,10 @@ func UpdateForfeit(c *gin.Context) {
 
 	var forfeit entity.Forfeit
 
+	var returnBook entity.ReturnBook
+	var payment entity.Payment
+	var librarian entity.Librarian
+
 	if err := c.ShouldBindJSON(&forfeit); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -112,11 +117,31 @@ func UpdateForfeit(c *gin.Context) {
 		return
 	}
 
+	// 10: ค้นหา returnBook ด้วย id
+	if tx := entity.DB().Where("id = ?", forfeit.ReturnBookID).First(&returnBook); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "returnBook not found"})
+		return
+	}
+
+	// 11: ค้นหา payment ด้วย id
+	if tx := entity.DB().Where("id = ?", forfeit.PaymentID).First(&payment); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "payment not found"})
+		return
+	}
+
+	// 12: ค้นหา librarian ด้วย id
+	if tx := entity.DB().Where("id = ?", forfeit.LibrarianID).First(&librarian); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "librarian not found"})
+		return
+	}
+
 	// การ validate
 	if _, err := govalidator.ValidateStruct(forfeit); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	forfeit.Pay_Date = forfeit.Pay_Date.Local()
 
 	if err := entity.DB().Save(&forfeit).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
