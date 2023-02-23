@@ -324,26 +324,26 @@ func SetupDatabase() {
 	db.Model(&LostBook{}).Create(&lostBook2)
 
 	//
-	//-----จำลองตาราง ReturnBook ---เปรี้ยว---
-	returnBook1 := ReturnBook{
-		Current_Day:    time.Now(),
-		Late_Number:    5,
-		Book_Condition: "สมบูรณ์ ปกติดี",
-		LostBook:       lostBook2,
-		Librarian:      thanphirom,
-		BorrowBook:     borrowBook1,
-	}
-	db.Model(&ReturnBook{}).Create(&returnBook1)
+	// //-----จำลองตาราง ReturnBook ---เปรี้ยว---
+	// returnBook1 := ReturnBook{
+	// 	Current_Day:    time.Now(),
+	// 	Late_Number:    5,
+	// 	Book_Condition: "สมบูรณ์ ปกติดี",
+	// 	LostBook:       lostBook2,
+	// 	Librarian:      thanphirom,
+	// 	BorrowBook:     borrowBook1,
+	// }
+	// db.Model(&ReturnBook{}).Create(&returnBook1)
 
-	returnBook2 := ReturnBook{
-		Current_Day:    time.Now(),
-		Late_Number:    5,
-		Book_Condition: "สมบูรณ์ ปกติดี",
-		LostBook:       lostBook2,
-		Librarian:      thanphirom,
-		BorrowBook:     borrowBook2,
-	}
-	db.Model(&ReturnBook{}).Create(&returnBook2)
+	// returnBook2 := ReturnBook{
+	// 	Current_Day:    time.Now(),
+	// 	Late_Number:    5,
+	// 	Book_Condition: "สมบูรณ์ ปกติดี",
+	// 	LostBook:       lostBook2,
+	// 	Librarian:      thanphirom,
+	// 	BorrowBook:     borrowBook2,
+	// }
+	// db.Model(&ReturnBook{}).Create(&returnBook2)
 
 	//--- maprang ---
 	//payment
@@ -608,22 +608,22 @@ func SetupDatabase() {
 	}
 	db.Model(&BorrowEquipment{}).Create(&borrowEquipment2)
 
-	//-----จำลองตาราง Return Equipment
-	returnEquipment1 := ReturnEquipment{
-		Return_Day:      time.Now(),
-		EquipmentStatus: equipment_status2,
-		Return_Detail:   "ปกติ",
-		Librarian:       chanaporn,
-		BorrowEquipment: borrowEquipment1,
-	}
-	db.Model(&ReturnEquipment{}).Create(&returnEquipment1)
+	// //-----จำลองตาราง Return Equipment
+	// returnEquipment1 := ReturnEquipment{
+	// 	Return_Day:      time.Now(),
+	// 	EquipmentStatus: equipment_status2,
+	// 	Return_Detail:   "ปกติ",
+	// 	Librarian:       chanaporn,
+	// 	BorrowEquipment: borrowEquipment1,
+	// }
+	// db.Model(&ReturnEquipment{}).Create(&returnEquipment1)
 
-	returnEquipment2 := ReturnEquipment{
-		Return_Day:      time.Now(),
-		EquipmentStatus: equipment_status1,
-		Return_Detail:   "ปากกาเขียนไม่ติด",
-		Librarian:       chanaporn,
-		BorrowEquipment: borrowEquipment2,
-	}
-	db.Model(&ReturnEquipment{}).Create(&returnEquipment2)
+	// returnEquipment2 := ReturnEquipment{
+	// 	Return_Day:      time.Now(),
+	// 	EquipmentStatus: equipment_status1,
+	// 	Return_Detail:   "ปากกาเขียนไม่ติด",
+	// 	Librarian:       chanaporn,
+	// 	BorrowEquipment: borrowEquipment2,
+	// }
+	// db.Model(&ReturnEquipment{}).Create(&returnEquipment2)
 }
