@@ -72,6 +72,7 @@ import BookRepairCreate from "./components/BookRepairCreate";
 import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 import EquipmentRepair from "./components/EquipmentRepair";
 import EquipmentRepairCreate from "./components/EquipmentRepairCreate";
+import { UserInterface } from "./models/IUser";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
@@ -147,6 +148,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function MiniDrawer() {
   const [librarians, setLibrarians] = useState<Partial<LibrarianInterface>>({});
+  const [user, setUser] = useState<Partial<UserInterface>>({});
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -220,11 +222,6 @@ export default function MiniDrawer() {
   const menuUser = [
     { name: "หน้าแรก", icon: <HomeIcon />, path: "/" },
 
-    {
-      name: "ระบบบันทึกข้อมูลนักโภชนาการ",
-      icon: <AccountCircleIcon />,
-      path: "/nutritionists",
-    },
     {
       name: "ระบบแนะนำหนังสือเข้าห้องสมุด",
       icon: <RecommendIcon />,
@@ -306,7 +303,7 @@ export default function MiniDrawer() {
 
                 <Grid item xs={2}>
                   <Typography className={classes.title}>
-                    {librarians?.Email}
+                    {user?.Email}
                   </Typography>
                 </Grid>
 
