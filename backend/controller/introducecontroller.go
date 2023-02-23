@@ -41,6 +41,7 @@ func CreateIntroduce(c *gin.Context) {
 		return
 	}
 
+	localtime := introduce.I_Date.Local()
 	// 12: สร้าง Introduce
 	in := entity.Introduce{
 
@@ -50,7 +51,7 @@ func CreateIntroduce(c *gin.Context) {
 		Edition:   introduce.Edition,  // ตั้งค่าฟิลด์ Edition
 		Pub_Name:  introduce.Pub_Name, // ตั้งค่าฟิลด์ Pub_Name
 		Pub_Year:  introduce.Pub_Year, // ตั้งค่าฟิลด์ Pub_Year
-		I_Date:    introduce.I_Date,   // ตั้งค่าฟิลด์ I_Date
+		I_Date:    localtime,          // ตั้งค่าฟิลด์ I_Date
 		BookType:  bookType,           // โยงความสัมพันธ์กับ Entity BookType
 		Objective: objective,          // โยงความสัมพันธ์กับ Entity Objective
 		User:      user,               // โยงความสัมพันธ์กับ Entity User
@@ -97,8 +98,31 @@ func DeleteIntroduce(c *gin.Context) {
 func UpdateIntroduce(c *gin.Context) {
 
 	var introduce entity.Introduce
+
+	var bookType entity.BookType
+	var objective entity.Objective
+	var user entity.User
+
 	if err := c.ShouldBindJSON(&introduce); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// 9: ค้นหา bookType ด้วย id
+	if tx := entity.DB().Where("id = ?", introduce.BookTypeID).First(&bookType); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "bookType not found"})
+		return
+	}
+
+	// 10: ค้นหา objective ด้วย id
+	if tx := entity.DB().Where("id = ?", introduce.ObjectiveID).First(&objective); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "objective not found"})
+		return
+	}
+
+	// 11: ค้นหา user ด้วย id
+	if tx := entity.DB().Where("id = ?", introduce.UserID).First(&user); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "user not found"})
 		return
 	}
 
@@ -107,6 +131,7 @@ func UpdateIntroduce(c *gin.Context) {
 		return
 	}
 
+	introduce.I_Date = introduce.I_Date.Local()
 	if err := entity.DB().Save(&introduce).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
