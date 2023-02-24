@@ -1,12 +1,31 @@
 package entity
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
 	"github.com/asaskevich/govalidator"
 	. "github.com/onsi/gomega"
 )
+
+// test correct all
+func TestConfimationCorrectALL(t *testing.T) {
+	g := NewGomegaWithT(t)
+
+	confirm := Confirmation{
+		NoteName: "maprang",
+		NoteTel:  "0874569321",
+		Date:     time.Now(),
+	}
+	ok, err := govalidator.ValidateStruct(confirm)
+
+	g.Expect(ok).To(BeTrue())
+	g.Expect(err).To((BeNil()))
+
+	fmt.Println(err)
+
+}
 
 // ตรวจสอบหมายเหตุชื่อผู้รับต้องไม่เป็นค่าว่าง
 func TestConfirmationNoteNameNotBlank(t *testing.T) {
