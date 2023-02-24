@@ -46,12 +46,12 @@ type BorrowBook struct {
 func init() {
 	govalidator.CustomTypeTagMap.Set("Past", func(i interface{}, context interface{}) bool {
 		t := i.(time.Time)
-		return t.After(time.Now().Add(time.Minute*-2)) || t.Equal(time.Now())
+		return t.After(time.Now().Add(time.Minute*-10)) || t.Equal(time.Now())
 	})
 
 	govalidator.CustomTypeTagMap.Set("Present", func(i interface{}, context interface{}) bool {
 		t := i.(time.Time)
-		return t.After(time.Now().Add(2-time.Minute)) && t.Before(time.Now().Add(2+time.Minute))
+		return t.After(time.Now().Add(10-time.Minute)) && t.Before(time.Now().Add(10+time.Minute))
 	})
 
 }
