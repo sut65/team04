@@ -155,27 +155,37 @@ func TestPreorderEditionNotZero(t *testing.T) {
 func TestPreorderYearNotBlank(t *testing.T) {
 	g := NewGomegaWithT(t)
 
-	pr := Preorder{
-		Name:       "css",
-		Price:      150,
-		Author:     "maprang",
-		Edition:    1,
-		Year:       "", //ผิด
-		Quantity:   1,
-		Totalprice: 150,
+	fixture := []string{
+		"12",
+		"",
+		"25000",
+		"201",
 	}
 
-	// ตรวจสอบด้วย govalidator
-	ok, err := govalidator.ValidateStruct(pr)
+	for _, year := range fixture {
+		pr := Preorder{
+			Name:       "Css",
+			Price:      1,
+			Author:     "maprang",
+			Edition:    1,
+			Year:       year, //ผิด
+			Quantity:   1,
+			Totalprice: 150,
+		}
 
-	// ok ต้องไม่เป็นค่า true แปลว่าต้องจับ error ได้
-	g.Expect(ok).ToNot(BeTrue())
+		//ตรวจสอบด้วย govalidator
+		ok, err := govalidator.ValidateStruct(pr)
 
-	// err ต้องไม่เป็นค่า nil แปลว่าต้องจับ error ได้
-	g.Expect(err).ToNot(BeNil())
+		//ok ต้องไม่เป็นค่า true แปลว่าต้องจับ err ได้
+		g.Expect(ok).ToNot(BeTrue())
 
-	// err.Error ต้องมี error message แสดงออกมา
-	g.Expect(err.Error()).To(Equal("กรุณากรอกปีที่พิมพ์"))
+		// err ต้องไม่เป็นค่า nil แปลว่าต้องจับ error ได้
+		g.Expect(err).ToNot(BeNil())
+
+		// err.Error ต้องมี error message แสดงออกมา
+		g.Expect(err.Error()).To(Equal("ปีที่พิมพ์ไม่ถูกต้อง"))
+
+	}
 }
 
 // ตรวจสอบจำนวนเล่ม ต้องเป็นตัวเลข มากกว่า 0 น้อยกว่า 5 - ถ้าไม่ตรงจะ error
