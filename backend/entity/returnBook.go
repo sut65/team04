@@ -37,7 +37,7 @@ type ReturnBook struct {
 func init() {
 	govalidator.CustomTypeTagMap.Set("present", func(i interface{}, context interface{}) bool {
 		t := i.(time.Time)
-		return t.After(time.Now().Add(2-time.Minute)) && t.Before(time.Now().Add(2+time.Minute))
+		return t.After(time.Now().Add(10-time.Minute)) && t.Before(time.Now().Add(10+time.Minute))
 	})
 
 	govalidator.CustomTypeTagMap.Set("MoreThanEqualZeroToOneThousand", func(i interface{}, context interface{}) bool {
