@@ -165,7 +165,7 @@ function EditReturnBook({ Cancle, Data }: ReturnBook) {
 
   // การยืมหนังสือ BorrowBook
   const getBorrowBook = async () => {
-    const apiUrl = "http://localhost:8080/BorrowBookForTrackingCheck";
+    const apiUrl = "http://localhost:8080/borrow_books";
 
     fetch(apiUrl, requestOptions)
     .then((response) => response.json()) //เปลี่ยนจากเจสันเป็นจาว่าสคริปต์
